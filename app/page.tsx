@@ -215,7 +215,7 @@ export default function Home() {
             gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
             gap: '1.5rem',
           }}>
-            [
+            {[
               { quote: 'Nagyon kedves és segítőkész kiszolgálásban volt részem. Széles választék, jó minőségű kerékpárok, barátságos hangulat. Bátran ajánlom mindenkinek, aki bringát keres!', name: 'Dávid S.' },
               { quote: 'Hat bicikli vásárlásán vagyok túl tőlük és évek óta semmi gond semelyikkel. Korrekt!', name: 'Adrián' },
               { quote: 'Nagyon jó kis bolt. Szuper bringákkal, kedves, segítőkész eladóval.', name: 'Kollár Gábor' },
