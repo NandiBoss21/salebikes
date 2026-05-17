@@ -1,5 +1,6 @@
-export const revalidate = 0
+'use client'
 
+import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import BikeCard from '@/components/BikeCard'
@@ -18,29 +19,31 @@ const CATEGORIES = [
 
 const BRANDS = ['Cube', 'Scott', 'Bulls', 'Giant', 'KTM', 'Merida', 'Corratec', 'Genesis', 'Focus', 'Brennabor']
 
-async function getBikes(category?: string) {
-  let query = supabase
-    .from('bikes')
-    .select('*')
-    .eq('available', true)
-    .order('featured', { ascending: false })
-    .order('created_at', { ascending: false })
+export default function Home() {
+  const [category, setCategory] = useState('all')
+  const [bikes, setBikes] = useState<Bike[]>([])
+  const [loading, setLoading] = useState(true)
 
-  if (category && category !== 'all') {
-    query = query.eq('category', category)
-  }
+  useEffect(() => {
+    async function fetchBikes() {
+      setLoading(true)
+      let query = supabase
+        .from('bikes')
+        .select('*')
+        .eq('available', true)
+        .order('featured', { ascending: false })
+        .order('created_at', { ascending: false })
 
-  const { data } = await query
-  return (data || []) as Bike[]
-}
+      if (category !== 'all') {
+        query = query.eq('category', category)
+      }
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: { kategoria?: string }
-}) {
-  const category = searchParams.kategoria || 'all'
-  const bikes = await getBikes(category)
+      const { data } = await query
+      setBikes((data || []) as Bike[])
+      setLoading(false)
+    }
+    fetchBikes()
+  }, [category])
 
   return (
     <>
@@ -86,7 +89,7 @@ export default async function Home({
         {/* Stats */}
         <div style={{ display: 'flex', gap: '3rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
           {[
-            { val: `${bikes.length}+`, label: 'Kerékpár raktáron' },
+            { val: loading ? '…' : `${bikes.length}+`, label: 'Kerékpár raktáron' },
             { val: '3 hó', label: 'Garancia minden bringán' },
             { val: '−50%', label: 'Bolti árhoz képest' },
           ].map(s => (
@@ -167,16 +170,16 @@ export default async function Home({
         {/* Filters */}
         <div style={{ display: 'flex', gap: '8px', marginBottom: '2rem', flexWrap: 'wrap' }}>
           {CATEGORIES.map(cat => (
-            <a
+            <button
               key={cat.key}
-              href={cat.key === 'all' ? '/' : `/?kategoria=${cat.key}`}
+              onClick={() => setCategory(cat.key)}
               style={{
                 padding: '7px 16px',
                 fontSize: '12px', fontWeight: 600,
                 letterSpacing: '0.08em', textTransform: 'uppercase',
                 borderRadius: '2px',
                 border: '1px solid',
-                textDecoration: 'none',
+                cursor: 'pointer',
                 ...(category === cat.key
                   ? { background: '#e8c547', color: '#0a0a0a', borderColor: '#e8c547' }
                   : { background: 'transparent', color: 'rgba(240,237,232,0.6)', borderColor: 'rgba(240,237,232,0.2)' }
@@ -184,18 +187,32 @@ export default async function Home({
               }}
             >
               {cat.label}
-            </a>
+            </button>
           ))}
         </div>
 
-        {bikes.length === 0 ? (
+        {loading ? (
+          <div style={{
+            textAlign: 'center', padding: '4rem',
+            color: 'rgba(240,237,232,0.3)',
+            fontSize: '15px',
+          }}>
+            Kerékpárok betöltése…
+          </div>
+        ) : bikes.length === 0 ? (
           <div style={{
             textAlign: 'center', padding: '4rem',
             color: 'rgba(240,237,232,0.4)',
           }}>
             <div style={{ fontSize: '48px', marginBottom: '1rem' }}>🚲</div>
             <div style={{ fontSize: '18px' }}>Ebben a kategóriában nincs elérhető kerékpár.</div>
-            <a href="/" style={{ color: '#e8c547', marginTop: '1rem', display: 'inline-block' }}>← Összes kerékpár</a>
+            <button
+              onClick={() => setCategory('all')}
+              style={{
+                color: '#e8c547', marginTop: '1rem', display: 'inline-block',
+                background: 'none', border: 'none', cursor: 'pointer', fontSize: '15px',
+              }}
+            >← Összes kerékpár</button>
           </div>
         ) : (
           <div style={{
