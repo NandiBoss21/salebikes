@@ -5,8 +5,9 @@ import Link from 'next/link'
 import type { Bike } from '@/lib/supabase'
 import type { Metadata } from 'next'
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const { data } = await supabase.from('bikes').select('*').eq('id', params.id).single()
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const { data } = await supabase.from('bikes').select('*').eq('id', id).single()
   if (!data) return { title: 'Kerékpár | SaleBikes' }
   const bike = data as Bike
   return {
@@ -15,8 +16,9 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   }
 }
 
-export default async function BikePage({ params }: { params: { id: string } }) {
-  const { data } = await supabase.from('bikes').select('*').eq('id', params.id).single()
+export default async function BikePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const { data } = await supabase.from('bikes').select('*').eq('id', id).single()
 
   if (!data) {
     return (
