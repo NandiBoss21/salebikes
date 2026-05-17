@@ -161,14 +161,14 @@ export default function BikeCard({ bike }: { bike: Bike }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           gap: '6px', padding: '14px',
           minHeight: '48px',
-          background: '#e8c547', color: '#111111',
+          background: '#111111', color: '#ffffff',
           borderRadius: '7px', textDecoration: 'none',
           fontSize: '13px', fontWeight: 700,
           letterSpacing: '-0.01em',
           transition: 'background 0.15s',
         }}
-          onMouseEnter={e => (e.currentTarget.style.background = '#d4b23e')}
-          onMouseLeave={e => (e.currentTarget.style.background = '#e8c547')}
+          onMouseEnter={e => (e.currentTarget.style.background = '#333333')}
+          onMouseLeave={e => (e.currentTarget.style.background = '#111111')}
         >
           <Phone size={13} />
           Érdeklődöm

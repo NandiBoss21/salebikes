@@ -37,7 +37,7 @@ a { color: inherit; }
 .card-img { transition: transform 0.5s ease !important; }
 .card-img-wrap:hover .card-img { transform: scale(1.04) !important; }
 
-/* ── Responsive grid ──────────────────────────── */
+/* ── Responsive grids ─────────────────────────── */
 .bikes-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -48,6 +48,27 @@ a { color: inherit; }
 }
 @media (max-width: 600px) {
   .bikes-grid { grid-template-columns: 1fr; }
+}
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+@media (max-width: 640px) {
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── Hero split layout ────────────────────────── */
+.hero-split {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  min-height: 460px;
+  overflow: hidden;
+}
+@media (max-width: 860px) {
+  .hero-split { grid-template-columns: 1fr; }
+  .hero-savings-panel { display: none !important; }
 }
 
 /* ── Sticky mobile CTA ────────────────────────── */

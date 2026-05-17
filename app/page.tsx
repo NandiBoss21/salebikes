@@ -1,20 +1,26 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import BikeCard from '@/components/BikeCard'
-import { Phone, Shield, FileText, RotateCcw, MapPin, Star } from 'lucide-react'
+import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
 
-const CATS = [
-  { key: 'all',       label: 'Összes' },
-  { key: 'ebike',     label: 'Ebike' },
-  { key: 'mtb',       label: 'MTB' },
-  { key: 'trekking',  label: 'Trekking' },
-  { key: 'gravel',    label: 'Gravel' },
-  { key: 'gyerek',    label: 'Gyerek' },
-  { key: 'orszaguti', label: 'Országúti' },
+const CATEGORIES = [
+  { label: 'Ebike',    href: '/ebike',    bg: '#1a1a2e' },
+  { label: 'MTB',      href: '/mtb',      bg: '#16213e' },
+  { label: 'Trekking', href: '/trekking', bg: '#0f3460' },
+  { label: 'Gravel',   href: '/gravel',   bg: '#533483' },
+  { label: 'Gyerek',   href: '/gyerek',   bg: '#2b2d42' },
+  { label: 'Összes',   href: '#termekek', bg: '#111111' },
+]
+
+const REVIEWS = [
+  { text: 'Nagyon kedves és segítőkész kiszolgálásban volt részem. Széles választék, jó minőségű kerékpárok, barátságos hangulat. Bátran ajánlom mindenkinek, aki bringát keres!', name: 'Dávid S.' },
+  { text: 'Hat bicikli vásárlásán vagyok túl tőlük és évek óta semmi gond semelyikkel. Korrekt!', name: 'Adrián' },
+  { text: 'Nagyon jó kis bolt. Szuper bringákkal, kedves, segítőkész eladóval.', name: 'Kollár Gábor' },
 ]
 
 function useAos(deps: unknown[]) {
@@ -31,271 +37,256 @@ function useAos(deps: unknown[]) {
   }, deps)
 }
 
+function useCountUp(target: number, durationMs = 1400) {
+  const [val, setVal] = useState(0)
+  useEffect(() => {
+    if (!target) return
+    setVal(0)
+    let frame = 0
+    const totalFrames = Math.round(durationMs / 16)
+    const id = setInterval(() => {
+      frame++
+      const t = Math.min(frame / totalFrames, 1)
+      const eased = 1 - Math.pow(1 - t, 3)
+      setVal(Math.round(target * eased))
+      if (frame >= totalFrames) clearInterval(id)
+    }, 16)
+    return () => clearInterval(id)
+  }, [target, durationMs])
+  return val
+}
+
 export default function Home() {
-  const [cat, setCat] = useState('all')
   const [bikes, setBikes] = useState<Bike[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setLoading(true)
-    let q = supabase.from('bikes').select('*').eq('available', true)
+    supabase.from('bikes').select('*').eq('available', true)
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false })
-    if (cat !== 'all') q = q.eq('category', cat)
-    q.then(({ data }) => { setBikes((data || []) as Bike[]); setLoading(false) })
-  }, [cat])
+      .then(({ data }) => { setBikes((data || []) as Bike[]); setLoading(false) })
+  }, [])
 
   useAos([])
   useAos([loading])
 
-  const avgSavings = !loading && bikes.length > 0
+  const savingsTarget = !loading && bikes.length > 0
     ? Math.round(bikes.reduce((s, b) => s + (b.original_price - b.sale_price), 0) / bikes.length / 1000) * 1000
-    : null
+    : 180000
+  const displaySavings = useCountUp(savingsTarget)
 
   return (
     <>
       <Navbar />
 
-      {/* ── HERO ─────────────────────────────────── */}
-      <section style={{
-        background: '#ffffff',
-        padding: 'clamp(2rem, 4vw, 3.5rem) 2rem clamp(3rem, 6vw, 5rem)',
-        borderBottom: '1px solid rgba(0,0,0,0.07)',
-      }}>
-        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+      {/* ── HERO ─────────────────────────────────────────── */}
+      <section className="hero-split" style={{ borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
 
+        {/* Left – text */}
+        <div style={{
+          padding: 'clamp(3rem, 6vw, 5.5rem) clamp(2rem, 5vw, 5rem)',
+          display: 'flex', flexDirection: 'column', justifyContent: 'center',
+          background: '#ffffff',
+        }}>
           <div className="aos" style={{
-            display: 'inline-flex', alignItems: 'center', gap: '8px',
             fontSize: '11px', fontWeight: 600,
             letterSpacing: '0.08em', textTransform: 'uppercase',
-            color: '#111111', background: '#f5f5f5',
-            padding: '6px 14px', borderRadius: '20px',
-            marginBottom: '2rem',
+            color: 'rgba(17,17,17,0.4)', marginBottom: '1.25rem',
           }}>
-            <span style={{
-              display: 'inline-block', width: '6px', height: '6px',
-              borderRadius: '50%', background: '#e8c547',
-            }} />
             Outlet · Bemutató · Használt
           </div>
 
           <h1 className="aos d1" style={{
-            fontSize: 'clamp(3rem, 8vw, 6rem)',
-            fontWeight: 900, lineHeight: 1.0,
-            letterSpacing: '-0.04em', color: '#111111',
-            marginBottom: '1.5rem',
+            fontSize: 'clamp(2.2rem, 5vw, 4rem)',
+            fontWeight: 900, letterSpacing: '-0.04em',
+            lineHeight: 1.05, color: '#111111',
+            marginBottom: '1.25rem',
           }}>
-            Prémium kerékpárok<br />
-            <span style={{ color: '#e8c547' }}>félár alatt.</span>
+            Prémium kerékpárok<br />félár alatt
           </h1>
 
-          <p className="aos d2" style={{
-            fontSize: 'clamp(15px, 2.5vw, 18px)',
-            fontWeight: 400, lineHeight: 1.65,
-            color: 'rgba(17,17,17,0.5)',
-            maxWidth: '560px',
-            marginBottom: avgSavings ? '1rem' : '2.5rem',
+          <div className="aos d2" style={{
+            display: 'flex', gap: '12px', flexWrap: 'wrap',
+            fontSize: '13px', fontWeight: 500,
+            color: 'rgba(17,17,17,0.45)',
+            marginBottom: '2.25rem',
           }}>
-            Cube, Scott, Bulls, Giant, KTM – outlet és használt bringák
-            3 hónap garanciával{avgSavings ? '. Átlagos megtakarítás:' : '.'}
-          </p>
+            <span>1000+ eladás</span>
+            <span style={{ color: 'rgba(17,17,17,0.18)' }}>·</span>
+            <span>2008 óta</span>
+            <span style={{ color: 'rgba(17,17,17,0.18)' }}>·</span>
+            <span>3 hónap garancia</span>
+          </div>
 
-          {avgSavings && (
-            <div className="aos d2" style={{
-              fontSize: 'clamp(1.5rem, 4vw, 2.25rem)',
-              fontWeight: 800, letterSpacing: '-0.04em',
-              color: '#111111', marginBottom: '2.5rem',
-            }}>
-              <span style={{
-                background: '#e8c547', padding: '2px 12px',
-                borderRadius: '6px',
-              }}>
-                {avgSavings.toLocaleString('hu-HU')} Ft
-              </span>
-              {' '}vásárlásonként
-            </div>
-          )}
-
-          <div className="aos d3" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <div className="aos d3" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             <a href="#termekek" style={{
               background: '#111111', color: '#ffffff',
-              padding: '13px 26px', borderRadius: '8px',
+              padding: '13px 24px', borderRadius: '8px',
               fontSize: '14px', fontWeight: 700,
               letterSpacing: '-0.02em', textDecoration: 'none',
               transition: 'background 0.15s',
             }}
               onMouseEnter={e => (e.currentTarget.style.background = '#333')}
               onMouseLeave={e => (e.currentTarget.style.background = '#111111')}
-            >Kerékpárok megtekintése →</a>
+            >Kerékpárok böngészése →</a>
 
             <a href="tel:+36308897559" style={{
               background: 'transparent', color: '#111111',
               border: '1.5px solid rgba(17,17,17,0.2)',
-              padding: '13px 26px', borderRadius: '8px',
+              padding: '13px 24px', borderRadius: '8px',
               fontSize: '14px', fontWeight: 600,
               letterSpacing: '-0.02em', textDecoration: 'none',
-              display: 'flex', alignItems: 'center', gap: '8px',
+              display: 'flex', alignItems: 'center', gap: '7px',
               transition: 'border-color 0.15s',
             }}
               onMouseEnter={e => (e.currentTarget.style.borderColor = '#111111')}
               onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(17,17,17,0.2)')}
             >
-              <Phone size={14} />
-              +36 30 889 7559
+              <Phone size={14} />+36 30 889 7559
             </a>
           </div>
         </div>
+
+        {/* Right – animated savings panel */}
+        <div className="hero-savings-panel" style={{
+          background: '#e8c547',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          padding: '3rem 2rem', textAlign: 'center',
+          gap: '0.5rem',
+        }}>
+          <div style={{
+            fontSize: '12px', fontWeight: 700,
+            color: 'rgba(17,17,17,0.5)',
+            textTransform: 'uppercase', letterSpacing: '0.08em',
+          }}>Átlagos megtakarítás</div>
+
+          <div style={{
+            fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
+            fontWeight: 900, letterSpacing: '-0.05em',
+            color: '#111111', lineHeight: 1.1,
+          }}>
+            {displaySavings.toLocaleString('hu-HU')} Ft
+          </div>
+
+          <div style={{
+            fontSize: '13px', fontWeight: 500,
+            color: 'rgba(17,17,17,0.5)',
+          }}>vásárlásonként</div>
+
+          <div style={{
+            marginTop: '1.5rem',
+            background: 'rgba(17,17,17,0.08)',
+            borderRadius: '8px', padding: '1rem 1.25rem',
+            fontSize: '12px', color: 'rgba(17,17,17,0.6)',
+            lineHeight: 1.5, maxWidth: '220px',
+          }}>
+            Cube, Scott, Bulls, Giant, KTM kerékpárok bolti ár töredékéért
+          </div>
+        </div>
       </section>
 
-      {/* ── TRUST BAR ────────────────────────────── */}
-      <div className="aos" style={{
-        background: '#f9f9f9',
-        borderBottom: '1px solid rgba(0,0,0,0.07)',
-      }}>
+      {/* ── CATEGORY GRID ────────────────────────────────── */}
+      <section style={{ padding: '3rem 2rem', background: '#f9f9f9', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <h2 className="aos" style={{
+            fontSize: '15px', fontWeight: 700,
+            letterSpacing: '-0.02em', color: '#111111',
+            marginBottom: '1.25rem',
+          }}>Kategóriák</h2>
+
+          <div className="cat-grid">
+            {CATEGORIES.map(cat => (
+              <Link key={cat.label} href={cat.href} style={{
+                position: 'relative', overflow: 'hidden',
+                background: cat.bg,
+                borderRadius: '10px',
+                aspectRatio: '5/3',
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'flex-end',
+                padding: '1.1rem 1.25rem',
+                transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+              }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'scale(1.03)'
+                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.18)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'none'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+              >
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.05) 60%)',
+                }} />
+                <span style={{
+                  position: 'relative', zIndex: 1,
+                  fontSize: '1.05rem', fontWeight: 800,
+                  color: '#ffffff', letterSpacing: '-0.02em',
+                }}>{cat.label}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TRUST STATS ──────────────────────────────────── */}
+      <section style={{ background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{
           maxWidth: '1280px', margin: '0 auto',
-          display: 'flex', flexWrap: 'wrap',
+          display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
           padding: '0 2rem',
         }}>
           {[
-            { icon: <Shield size={14} />, text: '3 hónap garancia' },
-            { icon: <FileText size={14} />, text: 'Adásvételi szerződés' },
-            { icon: <RotateCcw size={14} />, text: 'Visszavétel garantált' },
-            { icon: <MapPin size={14} />, text: 'Kápolnásnyék' },
-            { icon: <Star size={14} />, text: '4.7 ★ Google' },
-          ].map((item, i, arr) => (
-            <div key={item.text} style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
-              padding: '1.1rem 1.75rem',
-              fontSize: '12px', fontWeight: 500,
-              color: 'rgba(17,17,17,0.55)',
-              borderRight: i < arr.length - 1 ? '1px solid rgba(0,0,0,0.07)' : 'none',
-              flex: '1 1 auto',
+            { num: '1000+', sub: 'eladás 2008 óta' },
+            { num: '3 hónap', sub: 'garancia minden bringára' },
+            { num: '4.7 ★', sub: 'Google értékelés' },
+          ].map((s, i) => (
+            <div key={s.sub} className="aos" style={{
+              textAlign: 'center',
+              padding: '2.5rem 1.5rem',
+              borderRight: i < 2 ? '1px solid rgba(0,0,0,0.07)' : 'none',
             }}>
-              <span style={{ color: '#e8c547', flexShrink: 0 }}>{item.icon}</span>
-              {item.text}
+              <div style={{
+                fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)',
+                fontWeight: 900, letterSpacing: '-0.04em',
+                color: '#111111', lineHeight: 1, marginBottom: '6px',
+              }}>{s.num}</div>
+              <div style={{
+                fontSize: '12px', fontWeight: 500,
+                color: 'rgba(17,17,17,0.4)',
+              }}>{s.sub}</div>
             </div>
           ))}
         </div>
-      </div>
-
-      {/* ── TRUST NUMBERS + QUOTES ──────────────── */}
-      <section style={{ background: '#ffffff', padding: '5rem 2rem', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-
-          {/* Big stats */}
-          <div className="aos" style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '2rem',
-            textAlign: 'center',
-            marginBottom: '4rem',
-            paddingBottom: '4rem',
-            borderBottom: '1px solid rgba(0,0,0,0.07)',
-          }}>
-            {[
-              { num: '47', label: 'elégedett vevő' },
-              { num: '3 hó', label: 'garancia minden bringára' },
-              { num: '2008', label: 'óta a piacon' },
-            ].map(s => (
-              <div key={s.label}>
-                <div style={{
-                  fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-                  fontWeight: 900, letterSpacing: '-0.05em',
-                  color: '#111111', lineHeight: 1, marginBottom: '8px',
-                }}>{s.num}</div>
-                <div style={{ fontSize: '13px', fontWeight: 500, color: 'rgba(17,17,17,0.4)' }}>{s.label}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Customer quotes */}
-          <div className="aos d1" style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '1.5rem',
-          }}>
-            {[
-              { quote: 'Nagyon kedves és segítőkész kiszolgálásban volt részem. Széles választék, jó minőségű kerékpárok, barátságos hangulat. Bátran ajánlom mindenkinek, aki bringát keres!', name: 'Dávid S.' },
-              { quote: 'Hat bicikli vásárlásán vagyok túl tőlük és évek óta semmi gond semelyikkel. Korrekt!', name: 'Adrián' },
-              { quote: 'Nagyon jó kis bolt. Szuper bringákkal, kedves, segítőkész eladóval.', name: 'Kollár Gábor' },
-            ].map((item, i) => (
-              <div key={i} style={{
-                background: '#f9f9f9',
-                border: '1px solid rgba(0,0,0,0.06)',
-                borderRadius: '12px',
-                padding: '1.5rem',
-              }}>
-                <div style={{ fontSize: '16px', color: '#e8c547', marginBottom: '12px', letterSpacing: '2px' }}>
-                  ★★★★★
-                </div>
-                <p style={{
-                  fontSize: '14px', lineHeight: 1.7,
-                  color: 'rgba(17,17,17,0.65)',
-                  marginBottom: '1.25rem',
-                  fontStyle: 'italic',
-                }}>„{item.quote}"</p>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: '#111111' }}>{item.name}</div>
-                <div style={{ fontSize: '12px', color: '#e8c547', marginTop: '2px', letterSpacing: '1px' }}>★★★★★</div>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
-      {/* ── PRODUCTS ─────────────────────────────── */}
-      <section id="termekek" style={{ padding: '4rem 2rem 5rem', background: '#ffffff' }}>
+      {/* ── PRODUCTS ─────────────────────────────────────── */}
+      <section id="termekek" style={{ padding: '4rem 2rem 5rem', background: '#f9f9f9' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
           <h2 className="aos" style={{
-            fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+            fontSize: 'clamp(1.5rem, 3vw, 2rem)',
             fontWeight: 800, letterSpacing: '-0.04em',
-            color: '#111111', marginBottom: '1.75rem',
+            color: '#111111', marginBottom: '2rem',
           }}>Elérhető kerékpárok</h2>
 
-          {/* Category filters */}
-          <div className="aos d1" style={{
-            display: 'flex', gap: '8px', flexWrap: 'wrap',
-            marginBottom: '2.25rem',
-          }}>
-            {CATS.map(c => (
-              <button key={c.key} onClick={() => setCat(c.key)} style={{
-                padding: '7px 16px',
-                fontSize: '12px', fontWeight: 600,
-                letterSpacing: '-0.01em',
-                borderRadius: '20px', border: '1.5px solid', cursor: 'pointer',
-                transition: 'all 0.15s',
-                ...(cat === c.key
-                  ? { background: '#111111', color: '#ffffff', borderColor: '#111111' }
-                  : { background: 'transparent', color: 'rgba(17,17,17,0.5)', borderColor: 'rgba(17,17,17,0.15)' }
-                ),
-              }}>{c.label}</button>
-            ))}
-          </div>
-
-          {/* Grid */}
           {loading ? (
-            <div style={{
-              textAlign: 'center', padding: '5rem',
-              color: 'rgba(17,17,17,0.3)', fontSize: '14px',
-            }}>Betöltés…</div>
+            <div style={{ textAlign: 'center', padding: '5rem', color: 'rgba(17,17,17,0.3)', fontSize: '14px' }}>
+              Betöltés…
+            </div>
           ) : bikes.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '5rem', color: 'rgba(17,17,17,0.4)' }}>
               <div style={{ fontSize: '40px', marginBottom: '1rem' }}>🚲</div>
-              <div style={{ fontSize: '16px', marginBottom: '1rem', fontWeight: 500 }}>
-                Ebben a kategóriában nincs elérhető kerékpár.
-              </div>
-              <button onClick={() => setCat('all')} style={{
-                background: 'none', border: 'none', cursor: 'pointer',
-                color: '#111111', fontSize: '14px', fontWeight: 600,
-                textDecoration: 'underline',
-              }}>← Összes kerékpár</button>
+              <div style={{ fontSize: '16px', fontWeight: 500 }}>Jelenleg nincs elérhető kerékpár.</div>
             </div>
           ) : (
             <>
               <div style={{
                 fontSize: '12px', color: 'rgba(17,17,17,0.4)',
-                marginBottom: '1.25rem', fontWeight: 500,
+                marginBottom: '1.5rem', fontWeight: 500,
               }}>{bikes.length} kerékpár elérhető</div>
               <div className="bikes-grid">
                 {bikes.map((bike, i) => (
@@ -309,94 +300,63 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── WHY US ───────────────────────────────── */}
-      <section style={{ background: '#f9f9f9', padding: '5rem 2rem', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
+      {/* ── REVIEWS ──────────────────────────────────────── */}
+      <section style={{ background: '#ffffff', padding: '5rem 2rem', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <h2 className="aos" style={{
-            fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
-            fontWeight: 800, letterSpacing: '-0.04em',
-            color: '#111111', marginBottom: '3rem',
-          }}>Miért minket válassz?</h2>
+          <div className="aos" style={{ marginBottom: '2.5rem' }}>
+            <div style={{
+              fontSize: '11px', fontWeight: 600,
+              letterSpacing: '0.08em', textTransform: 'uppercase',
+              color: 'rgba(17,17,17,0.35)', marginBottom: '8px',
+            }}>Vevői vélemények</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+              <span style={{
+                fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
+                fontWeight: 900, letterSpacing: '-0.04em',
+                color: '#111111',
+              }}>4.7</span>
+              <span style={{ fontSize: '22px', color: '#e8c547', letterSpacing: '2px' }}>★★★★★</span>
+              <a
+                href="https://www.google.com/maps/search/Bringabarát+Tesztbike+Kápolnásnyék"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: '13px', fontWeight: 500,
+                  color: 'rgba(17,17,17,0.4)',
+                  textDecoration: 'underline',
+                }}
+              >7 Google értékelés</a>
+            </div>
+          </div>
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-            gap: '2rem',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '1.25rem',
           }}>
-            {[
-              { title: '3 hónap garancia', desc: 'Minden kerékpárra. Rendeltetésszerű használat mellett javítjuk vagy visszaváltjuk.' },
-              { title: 'Adásvételi szerződés', desc: 'Alvázszámmal ellátott szerződés minden vásárláshoz. Biztonságos és átlátható.' },
-              { title: 'Outlet darabok', desc: '0 km-es, karcmentes bemutatódarabok bolti ár töredékéért. Csak kiállított – nem használt.' },
-              { title: 'Rugalmas időpont', desc: 'Kápolnásnyék – előre egyeztetett időpontban, neked megfelelően.' },
-              { title: 'Prémium márkák', desc: 'Cube, Scott, Bulls, Giant, KTM, Merida – csak megbízható, minőségi gyártók.' },
-              { title: 'Visszavételi garancia', desc: 'Ha nem felel meg, visszaváltjuk. Nincs kockázat a vásárlásnál.' },
-            ].map((item, i) => (
-              <div key={item.title} className={`aos d${Math.min(i + 1, 5)}`} style={{
+            {REVIEWS.map((r, i) => (
+              <div key={i} className={`aos d${i + 1}`} style={{
                 background: '#ffffff',
                 border: '1px solid rgba(0,0,0,0.07)',
-                borderRadius: '10px',
+                borderRadius: '12px',
                 padding: '1.5rem',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
               }}>
-                <div style={{
-                  width: '32px', height: '3px',
-                  background: '#e8c547', borderRadius: '2px',
-                  marginBottom: '1rem',
-                }} />
-                <div style={{
-                  fontSize: '14px', fontWeight: 700,
-                  color: '#111111', marginBottom: '8px',
-                  letterSpacing: '-0.02em',
-                }}>{item.title}</div>
-                <div style={{
-                  fontSize: '13px', fontWeight: 400, lineHeight: 1.65,
-                  color: 'rgba(17,17,17,0.5)',
-                }}>{item.desc}</div>
+                <div style={{ fontSize: '15px', color: '#e8c547', marginBottom: '12px', letterSpacing: '2px' }}>★★★★★</div>
+                <p style={{
+                  fontSize: '14px', lineHeight: 1.7,
+                  color: 'rgba(17,17,17,0.65)',
+                  marginBottom: '1.25rem',
+                  fontStyle: 'italic',
+                }}>„{r.text}"</p>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#111111' }}>{r.name}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── GOOGLE REVIEWS ───────────────────────── */}
-      <section className="aos" style={{
-        background: '#ffffff',
-        padding: '5rem 2rem',
-        borderTop: '1px solid rgba(0,0,0,0.07)',
-        textAlign: 'center',
-      }}>
-        <div style={{ maxWidth: '480px', margin: '0 auto' }}>
-          <div style={{
-            fontSize: '11px', fontWeight: 600,
-            letterSpacing: '0.1em', textTransform: 'uppercase',
-            color: 'rgba(17,17,17,0.35)', marginBottom: '1rem',
-          }}>Mit mondanak vevőink</div>
-
-          <div style={{
-            fontSize: 'clamp(4rem, 10vw, 7rem)',
-            fontWeight: 900, letterSpacing: '-0.06em',
-            color: '#111111', lineHeight: 1,
-          }}>4.7</div>
-
-          <div style={{ fontSize: '28px', color: '#e8c547', margin: '8px 0 12px', letterSpacing: '3px' }}>
-            ★★★★★
-          </div>
-
-          <a
-            href="https://www.google.com/maps/search/Bringabarát+Tesztbike+Kápolnásnyék"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontSize: '14px', fontWeight: 500,
-              color: 'rgba(17,17,17,0.45)',
-              textDecoration: 'underline',
-            }}
-          >
-            7 Google értékelés alapján – Olvasd el Googlen
-          </a>
-        </div>
-      </section>
-
-      {/* ── FOOTER ───────────────────────────────── */}
+      {/* ── FOOTER ───────────────────────────────────────── */}
       <footer style={{
         background: '#111111', color: '#ffffff',
         padding: 'clamp(2.5rem, 5vw, 4rem) 2rem',
@@ -428,12 +388,10 @@ export default function Home() {
           maxWidth: '1280px', margin: '0 auto',
           paddingTop: '1.5rem',
           fontSize: '12px', color: 'rgba(255,255,255,0.25)',
-        }}>
-          © 2025 SaleBikes · Bringabarát Tesztbike
-        </div>
+        }}>© 2025 SaleBikes · Bringabarát Tesztbike</div>
       </footer>
 
-      {/* ── STICKY MOBILE CTA ───────────────────── */}
+      {/* ── STICKY MOBILE CTA ────────────────────────────── */}
       <a href="tel:+36308897559" className="mobile-cta" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200,
         background: '#e8c547', color: '#111111',
