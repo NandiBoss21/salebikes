@@ -1,3 +1,5 @@
+'use client'
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Phone } from 'lucide-react'
@@ -7,126 +9,109 @@ function formatPrice(p: number) {
   return p.toLocaleString('hu-HU') + ' Ft'
 }
 
-function savings(original: number, sale: number) {
-  const diff = original - sale
-  if (diff >= 1000000) return `−${(diff/1000000).toFixed(1)}M Ft`
-  return `−${Math.round(diff/1000)}e Ft`
-}
-
 export default function BikeCard({ bike }: { bike: Bike }) {
+  const [hovered, setHovered] = useState(false)
   const img = bike.images?.[0]
-  const conditionLabel = bike.condition === 'outlet' ? 'Outlet · Új' : 'Használt'
-  const conditionStyle = bike.condition === 'outlet'
-    ? { background: '#e8c547', color: '#0a0a0a' }
-    : { background: 'rgba(240,237,232,0.15)', color: '#f0ede8' }
+  const pct = bike.original_price > bike.sale_price
+    ? Math.round((1 - bike.sale_price / bike.original_price) * 100)
+    : 0
 
   return (
     <div style={{
-      background: '#111111',
-      transition: 'background 0.15s',
-      position: 'relative',
+      background: '#ffffff',
       display: 'flex', flexDirection: 'column',
+      border: '1px solid rgba(0,0,0,0.06)',
+      transition: 'box-shadow 0.3s ease',
+      boxShadow: hovered ? '0 8px 32px rgba(0,0,0,0.10)' : '0 1px 4px rgba(0,0,0,0.04)',
     }}
-      onMouseEnter={e => (e.currentTarget.style.background = '#161616')}
-      onMouseLeave={e => (e.currentTarget.style.background = '#111111')}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <Link href={`/kerekpar/${bike.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-        {/* Image */}
-        <div style={{
-          width: '100%', aspectRatio: '4/3',
-          background: '#1a1a1a', position: 'relative',
-          overflow: 'hidden',
+      <Link href={`/kerekpar/${bike.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', flex: 1 }}>
+
+        {/* Image – 70% of card */}
+        <div className="bike-img-wrap" style={{
+          position: 'relative', overflow: 'hidden',
+          aspectRatio: '4/3',
+          background: '#f0f0ee', flexShrink: 0,
         }}>
           {img ? (
             <Image
               src={img}
               alt={`${bike.brand} ${bike.model}`}
               fill
+              className="bike-img"
               style={{ objectFit: 'cover' }}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
             <div style={{
-              width: '100%', height: '100%',
+              position: 'absolute', inset: 0,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: 'rgba(255,255,255,0.1)', fontSize: '48px',
+              fontSize: '56px', color: 'rgba(0,0,0,0.1)',
             }}>🚲</div>
           )}
 
+          {/* Condition badge */}
           <span style={{
             position: 'absolute', top: '12px', left: '12px',
             fontFamily: 'Barlow Condensed, sans-serif',
             fontWeight: 700, fontSize: '11px',
             letterSpacing: '0.1em', textTransform: 'uppercase',
-            padding: '3px 8px', borderRadius: '2px',
-            ...conditionStyle,
+            padding: '4px 10px', borderRadius: '2px',
+            background: bike.condition === 'outlet' ? '#e8c547' : '#0a0a0a',
+            color: bike.condition === 'outlet' ? '#0a0a0a' : '#ffffff',
           }}>
-            {conditionLabel}
+            {bike.condition === 'outlet' ? 'Outlet · Új' : 'Használt'}
           </span>
 
-          {bike.featured && (
+          {/* Discount badge */}
+          {pct > 0 && (
             <span style={{
               position: 'absolute', top: '12px', right: '12px',
-              background: '#c0392b', color: '#fff',
+              background: '#0a0a0a', color: '#e8c547',
               fontFamily: 'Barlow Condensed, sans-serif',
-              fontWeight: 700, fontSize: '11px',
-              letterSpacing: '0.1em', textTransform: 'uppercase',
-              padding: '3px 8px', borderRadius: '2px',
-            }}>Népszerű</span>
+              fontWeight: 700, fontSize: '13px',
+              padding: '4px 10px', borderRadius: '2px',
+            }}>−{pct}%</span>
           )}
         </div>
 
-        {/* Body */}
-        <div style={{ padding: '1.25rem 1.25rem 1rem' }}>
+        {/* Text – minimal */}
+        <div style={{ padding: '1rem 1.25rem 0.75rem' }}>
           <div style={{
-            fontSize: '11px', fontWeight: 600,
-            letterSpacing: '0.15em', textTransform: 'uppercase',
-            color: '#e8c547', marginBottom: '4px',
+            fontSize: '10px', fontWeight: 700,
+            letterSpacing: '0.18em', textTransform: 'uppercase',
+            color: '#e8c547', marginBottom: '3px',
           }}>{bike.brand}</div>
-
           <div style={{
             fontFamily: 'Barlow Condensed, sans-serif',
-            fontWeight: 700, fontSize: '1.15rem',
+            fontWeight: 700, fontSize: '1.1rem',
             textTransform: 'uppercase', letterSpacing: '0.02em',
-            marginBottom: '8px', lineHeight: 1.1,
+            lineHeight: 1.1, marginBottom: '0.75rem', color: '#0a0a0a',
           }}>{bike.model}</div>
-
-          {bike.specs?.length > 0 && (
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '1rem' }}>
-              {bike.specs.slice(0, 3).map((s, i) => (
-                <span key={i} style={{
-                  fontSize: '10px', fontWeight: 500,
-                  letterSpacing: '0.05em', padding: '3px 7px',
-                  border: '1px solid rgba(240,237,232,0.15)',
-                  borderRadius: '2px',
-                  color: 'rgba(240,237,232,0.5)',
-                  textTransform: 'uppercase',
-                }}>{s}</span>
-              ))}
-            </div>
-          )}
-
           <div style={{
             display: 'flex', alignItems: 'baseline',
             justifyContent: 'space-between',
-            paddingTop: '1rem',
-            borderTop: '1px solid rgba(255,255,255,0.07)',
+            borderTop: '1px solid rgba(0,0,0,0.07)', paddingTop: '0.75rem',
           }}>
             <div>
               <div style={{
-                fontSize: '12px',
-                color: 'rgba(240,237,232,0.35)',
-                textDecoration: 'line-through',
-              }}>Bolti ár: {formatPrice(bike.original_price)}</div>
+                fontSize: '11px', color: 'rgba(0,0,0,0.35)',
+                textDecoration: 'line-through', marginBottom: '1px',
+              }}>{formatPrice(bike.original_price)}</div>
               <div style={{
                 fontFamily: 'Barlow Condensed, sans-serif',
-                fontWeight: 700, fontSize: '1.4rem',
+                fontWeight: 700, fontSize: '1.3rem', color: '#0a0a0a',
               }}>{formatPrice(bike.sale_price)}</div>
             </div>
-            <div style={{
-              fontSize: '11px', fontWeight: 600,
-              color: '#e8c547', letterSpacing: '0.05em',
-            }}>{savings(bike.original_price, bike.sale_price)}</div>
+            {bike.featured && (
+              <span style={{
+                fontSize: '10px', fontWeight: 700,
+                letterSpacing: '0.1em', textTransform: 'uppercase',
+                color: '#c0392b',
+              }}>Népszerű</span>
+            )}
           </div>
         </div>
       </Link>
@@ -136,29 +121,18 @@ export default function BikeCard({ bike }: { bike: Bike }) {
         <a href="tel:+36308897559" style={{
           display: 'flex', alignItems: 'center',
           justifyContent: 'center', gap: '6px',
-          padding: '10px 14px',
-          background: 'rgba(232,197,71,0.08)',
-          border: '1px solid rgba(232,197,71,0.2)',
-          color: '#e8c547',
+          padding: '10px',
+          background: '#e8c547', color: '#0a0a0a',
           fontFamily: 'Barlow Condensed, sans-serif',
-          fontWeight: 600, fontSize: '13px',
-          letterSpacing: '0.08em', textTransform: 'uppercase',
-          width: '100%', cursor: 'pointer',
-          borderRadius: '2px', textDecoration: 'none',
-          transition: 'all 0.15s',
+          fontWeight: 700, fontSize: '12px',
+          letterSpacing: '0.1em', textTransform: 'uppercase',
+          textDecoration: 'none', borderRadius: '2px',
+          transition: 'background 0.2s',
         }}
-          onMouseEnter={e => {
-            const el = e.currentTarget as HTMLAnchorElement
-            el.style.background = '#e8c547'
-            el.style.color = '#0a0a0a'
-          }}
-          onMouseLeave={e => {
-            const el = e.currentTarget as HTMLAnchorElement
-            el.style.background = 'rgba(232,197,71,0.08)'
-            el.style.color = '#e8c547'
-          }}
+          onMouseEnter={e => (e.currentTarget.style.background = '#d4b23e')}
+          onMouseLeave={e => (e.currentTarget.style.background = '#e8c547')}
         >
-          <Phone size={14} />
+          <Phone size={13} />
           Érdeklődöm
         </a>
       </div>

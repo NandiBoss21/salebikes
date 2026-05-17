@@ -1,36 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
   --brand: #e8c547;
-  --dark: #0a0a0a;
-  --dark-2: #111111;
-  --dark-3: #1a1a1a;
+  --bg: #f8f8f6;
+  --bg2: #f0f0ee;
+  --ink: #0a0a0a;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
 
 body {
-  background: #0a0a0a;
-  color: #f0ede8;
+  background: var(--bg);
+  color: var(--ink);
   font-family: 'Barlow', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.font-condensed {
-  font-family: 'Barlow Condensed', sans-serif;
-}
+a { color: inherit; }
 
-.text-brand { color: #e8c547; }
-.bg-brand { background: #e8c547; }
-.border-brand { border-color: #e8c547; }
+/* Scroll-triggered animations */
+.aos {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.aos.in-view { opacity: 1; transform: none; }
+
+.d1 { transition-delay: 0.08s; }
+.d2 { transition-delay: 0.16s; }
+.d3 { transition-delay: 0.24s; }
+.d4 { transition-delay: 0.32s; }
+.d5 { transition-delay: 0.40s; }
+
+/* Bike card image hover zoom */
+.bike-img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.bike-img-wrap:hover .bike-img {
+  transform: scale(1.06) !important;
+}
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 3px; }
