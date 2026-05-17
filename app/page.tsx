@@ -1,3 +1,5 @@
+export const revalidate = 0
+
 import { supabase } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import BikeCard from '@/components/BikeCard'
