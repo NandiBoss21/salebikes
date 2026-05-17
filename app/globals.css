@@ -47,6 +47,12 @@ a { color: inherit; }
   transform: scale(1.06) !important;
 }
 
+/* Hero 3D bike – hidden on mobile */
+@media (max-width: 900px) {
+  .hero-bike { display: none !important; }
+  section[style*="gridTemplateColumns"] { grid-template-columns: 1fr !important; }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }

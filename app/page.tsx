@@ -1,11 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { supabase } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import BikeCard from '@/components/BikeCard'
 import { Phone, Shield, FileText, RotateCcw, MapPin, Star, ChevronDown } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
+
+const HeroBike3D = dynamic(() => import('@/components/HeroBike3D'), { ssr: false })
 
 const CATEGORIES = [
   { key: 'all', label: 'Összes' },
@@ -58,8 +61,6 @@ export default function Home() {
 
   useAos([])
   useAos([loading])
-
-  const heroImg = bikes.find(b => b.images?.length > 0)?.images?.[0]
 
   return (
     <>
@@ -162,39 +163,20 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Right – bike image */}
-        <div style={{
+        {/* Right – 3D bike */}
+        <div className="hero-bike" style={{
           position: 'relative',
-          background: '#e8c547',
+          background: '#111111',
           overflow: 'hidden',
         }}>
-          {heroImg && (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img
-              src={heroImg}
-              alt="Kiemelt kerékpár"
-              style={{
-                position: 'absolute', inset: 0,
-                width: '100%', height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center',
-              }}
-            />
-          )}
-          {/* Subtle gradient overlay on bottom */}
-          <div style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0,
-            height: '40%',
-            background: 'linear-gradient(to top, rgba(232,197,71,0.5) 0%, transparent 100%)',
-            pointerEvents: 'none',
-          }} />
+          <HeroBike3D />
           {/* Scroll hint */}
           <a href="#termekek" style={{
             position: 'absolute', bottom: '2rem', left: '50%',
             transform: 'translateX(-50%)',
             display: 'flex', flexDirection: 'column', alignItems: 'center',
             gap: '6px',
-            color: '#0a0a0a',
+            color: 'rgba(255,255,255,0.5)',
             textDecoration: 'none',
             fontSize: '11px', fontWeight: 700,
             letterSpacing: '0.15em', textTransform: 'uppercase',
