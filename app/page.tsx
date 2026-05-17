@@ -215,10 +215,10 @@ export default function Home() {
             gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
             gap: '1.5rem',
           }}>
-            {[
-              { quote: 'Kiváló állapotú Cube-ot vettem, teljesen 0 km-es volt, karcmentes. Az ár-érték arány egyszerűen verhetetlen.', name: 'Kovács Péter', city: 'Budapest' },
-              { quote: 'Gyors, rugalmas, becsületes – minden amit egy eladótól várhatsz. Ez már a harmadik bringám tőlük.', name: 'Nagy András', city: 'Győr' },
-              { quote: 'A garancia és az adásvételi szerződés meggyőzött. Teljesen biztonságos volt a vásárlás, ajánlom mindenkinek.', name: 'Szabó Erzsébet', city: 'Pécs' },
+            [
+              { quote: 'Nagyon kedves és segítőkész kiszolgálásban volt részem. Széles választék, jó minőségű kerékpárok, barátságos hangulat. Bátran ajánlom mindenkinek, aki bringát keres!', name: 'Dávid S.' },
+              { quote: 'Hat bicikli vásárlásán vagyok túl tőlük és évek óta semmi gond semelyikkel. Korrekt!', name: 'Adrián' },
+              { quote: 'Nagyon jó kis bolt. Szuper bringákkal, kedves, segítőkész eladóval.', name: 'Kollár Gábor' },
             ].map((item, i) => (
               <div key={i} style={{
                 background: '#f9f9f9',
@@ -236,7 +236,7 @@ export default function Home() {
                   fontStyle: 'italic',
                 }}>„{item.quote}"</p>
                 <div style={{ fontSize: '13px', fontWeight: 700, color: '#111111' }}>{item.name}</div>
-                <div style={{ fontSize: '12px', color: 'rgba(17,17,17,0.35)', marginTop: '2px' }}>{item.city}</div>
+                <div style={{ fontSize: '12px', color: '#e8c547', marginTop: '2px', letterSpacing: '1px' }}>★★★★★</div>
               </div>
             ))}
           </div>
