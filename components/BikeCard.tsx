@@ -30,7 +30,7 @@ export default function BikeCard({ bike }: { bike: Bike }) {
       onMouseEnter={e => (e.currentTarget.style.background = '#161616')}
       onMouseLeave={e => (e.currentTarget.style.background = '#111111')}
     >
-      <Link href={`/kerékpár/${bike.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+      <Link href={`/kerekpar/${bike.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
         {/* Image */}
         <div style={{
           width: '100%', aspectRatio: '4/3',
