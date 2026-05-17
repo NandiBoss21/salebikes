@@ -1,136 +1,132 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Menu, X, Phone } from 'lucide-react'
+import { Phone, Menu, X } from 'lucide-react'
 
-const categories = [
-  { label: 'Ebike', href: '/ebike' },
-  { label: 'MTB', href: '/mtb' },
+const NAV = [
+  { label: 'Ebike',    href: '/ebike' },
+  { label: 'MTB',      href: '/mtb' },
   { label: 'Trekking', href: '/trekking' },
-  { label: 'Gravel', href: '/gravel' },
-  { label: 'Gyerek', href: '/gyerek' },
-  { label: 'Rólunk', href: '/rolunk' },
+  { label: 'Gravel',   href: '/gravel' },
+  { label: 'Gyerek',   href: '/gyerek' },
+  { label: 'Rólunk',   href: '/rolunk' },
 ]
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    const fn = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', fn, { passive: true })
+    return () => window.removeEventListener('scroll', fn)
   }, [])
 
   return (
     <nav style={{
       position: 'sticky', top: 0, zIndex: 100,
       background: '#ffffff',
-      borderBottom: '1px solid rgba(0,0,0,0.07)',
-      boxShadow: scrolled ? '0 2px 24px rgba(0,0,0,0.07)' : 'none',
-      transition: 'box-shadow 0.3s ease',
+      borderBottom: '1px solid rgba(0,0,0,0.08)',
+      boxShadow: scrolled ? '0 2px 16px rgba(0,0,0,0.06)' : 'none',
+      transition: 'box-shadow 0.25s ease',
     }}>
       <div style={{
-        display: 'flex', alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '1rem 2rem',
-        maxWidth: '1400px', margin: '0 auto',
+        maxWidth: '1280px', margin: '0 auto',
+        padding: '0 2rem', height: '64px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
+
         {/* Logo */}
-        <Link href="/" style={{ textDecoration: 'none' }}>
-          <div style={{
-            fontFamily: 'Barlow Condensed, sans-serif',
-            fontWeight: 900, fontSize: '22px',
-            letterSpacing: '0.05em', textTransform: 'uppercase',
-            color: '#0a0a0a',
-          }}>
+        <Link href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
+          <span style={{ fontSize: '19px', fontWeight: 800, letterSpacing: '-0.03em', color: '#111111' }}>
             Sale<span style={{ color: '#e8c547' }}>Bikes</span>
-          </div>
+          </span>
         </Link>
 
         {/* Desktop nav */}
-        <ul style={{
-          display: 'flex', gap: '2rem', listStyle: 'none', alignItems: 'center',
-        }} className="desktop-nav">
-          {categories.map(c => (
-            <li key={c.label}>
-              <Link href={c.href} style={{
-                fontSize: '12px', fontWeight: 600,
-                letterSpacing: '0.12em', textTransform: 'uppercase',
-                color: 'rgba(10,10,10,0.5)', textDecoration: 'none',
-                transition: 'color 0.2s',
+        <ul className="desk-nav" style={{
+          display: 'flex', listStyle: 'none',
+          gap: '4px', margin: '0 1.5rem',
+        }}>
+          {NAV.map(item => (
+            <li key={item.label}>
+              <Link href={item.href} style={{
+                display: 'block', padding: '6px 14px',
+                fontSize: '13px', fontWeight: 500,
+                color: 'rgba(17,17,17,0.5)',
+                textDecoration: 'none',
+                borderRadius: '6px',
+                transition: 'color 0.15s, background 0.15s',
               }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#0a0a0a')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(10,10,10,0.5)')}
-              >{c.label}</Link>
+                onMouseEnter={e => {
+                  e.currentTarget.style.color = '#111111'
+                  e.currentTarget.style.background = '#f5f5f5'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.color = 'rgba(17,17,17,0.5)'
+                  e.currentTarget.style.background = 'transparent'
+                }}
+              >{item.label}</Link>
             </li>
           ))}
         </ul>
 
-        {/* CTA */}
-        <a href="tel:+36308897559" style={{
-          display: 'flex', alignItems: 'center', gap: '8px',
-          background: '#e8c547', color: '#0a0a0a',
-          padding: '10px 20px', borderRadius: '3px',
-          fontFamily: 'Barlow Condensed, sans-serif',
-          fontWeight: 700, fontSize: '14px',
-          letterSpacing: '0.08em', textTransform: 'uppercase',
-          textDecoration: 'none',
-        }} className="desktop-nav">
-          <Phone size={15} />
+        {/* Desktop CTA */}
+        <a href="tel:+36308897559" className="desk-nav" style={{
+          display: 'flex', alignItems: 'center', gap: '7px',
+          background: '#e8c547', color: '#111111',
+          padding: '9px 18px', borderRadius: '8px',
+          fontSize: '13px', fontWeight: 700,
+          letterSpacing: '-0.01em', textDecoration: 'none',
+          flexShrink: 0,
+          transition: 'background 0.15s',
+        }}
+          onMouseEnter={e => (e.currentTarget.style.background = '#d4b23e')}
+          onMouseLeave={e => (e.currentTarget.style.background = '#e8c547')}
+        >
+          <Phone size={14} />
           Hívj most
         </a>
 
-        {/* Mobile menu button */}
-        <button
-          onClick={() => setOpen(!open)}
-          style={{
-            display: 'none', background: 'none', border: 'none',
-            color: '#0a0a0a', cursor: 'pointer', padding: '4px',
-          }}
-          className="mobile-menu-btn"
-        >
-          {open ? <X size={24} /> : <Menu size={24} />}
+        {/* Mobile button */}
+        <button onClick={() => setOpen(o => !o)} className="mob-btn" style={{
+          display: 'none', alignItems: 'center', justifyContent: 'center',
+          background: 'none', border: 'none',
+          cursor: 'pointer', padding: '6px', color: '#111111',
+          borderRadius: '6px',
+        }}>
+          {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile dropdown */}
       {open && (
         <div style={{
-          background: '#ffffff',
           borderTop: '1px solid rgba(0,0,0,0.07)',
-          padding: '1rem 2rem 1.5rem',
+          background: '#ffffff',
+          padding: '0.75rem 2rem 1.5rem',
         }}>
-          {categories.map(c => (
-            <Link key={c.label} href={c.href} onClick={() => setOpen(false)} style={{
+          {NAV.map(item => (
+            <Link key={item.label} href={item.href} onClick={() => setOpen(false)} style={{
               display: 'block', padding: '13px 0',
               borderBottom: '1px solid rgba(0,0,0,0.05)',
-              fontSize: '14px', fontWeight: 600,
-              letterSpacing: '0.1em', textTransform: 'uppercase',
-              color: 'rgba(10,10,10,0.6)', textDecoration: 'none',
-            }}>{c.label}</Link>
+              fontSize: '15px', fontWeight: 500,
+              color: 'rgba(17,17,17,0.65)', textDecoration: 'none',
+            }}>{item.label}</Link>
           ))}
           <a href="tel:+36308897559" style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            gap: '8px', marginTop: '1.25rem',
-            background: '#e8c547', color: '#0a0a0a',
-            padding: '13px', textAlign: 'center',
-            fontFamily: 'Barlow Condensed, sans-serif',
-            fontWeight: 700, fontSize: '15px',
-            letterSpacing: '0.08em', textTransform: 'uppercase',
-            textDecoration: 'none', borderRadius: '3px',
+            gap: '8px', marginTop: '1rem',
+            background: '#e8c547', color: '#111111',
+            padding: '14px', borderRadius: '8px',
+            fontSize: '15px', fontWeight: 700,
+            textDecoration: 'none',
           }}>
-            <Phone size={16} /> +36 30 889 7559
+            <Phone size={16} />
+            +36 30 889 7559
           </a>
         </div>
       )}
-
-      <style>{`
-        @media (max-width: 900px) {
-          .desktop-nav { display: none !important; }
-          .mobile-menu-btn { display: block !important; }
-        }
-      `}</style>
     </nav>
   )
 }

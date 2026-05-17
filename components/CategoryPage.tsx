@@ -12,108 +12,88 @@ export default function CategoryPage({ category, label }: { category: string; la
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function fetchBikes() {
-      setLoading(true)
-      const { data } = await supabase
-        .from('bikes')
-        .select('*')
-        .eq('available', true)
-        .eq('category', category)
-        .order('featured', { ascending: false })
-        .order('created_at', { ascending: false })
-      setBikes((data || []) as Bike[])
-      setLoading(false)
-    }
-    fetchBikes()
+    supabase
+      .from('bikes')
+      .select('*')
+      .eq('available', true)
+      .eq('category', category)
+      .order('featured', { ascending: false })
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        setBikes((data || []) as Bike[])
+        setLoading(false)
+      })
   }, [category])
 
   return (
     <>
       <Navbar />
 
-      <section style={{ padding: '4rem 2rem 3.5rem' }}>
-        <div style={{
-          display: 'inline-block',
-          fontSize: '11px', fontWeight: 600,
-          letterSpacing: '0.2em', textTransform: 'uppercase',
-          color: '#e8c547',
-          border: '1px solid rgba(232,197,71,0.4)',
-          padding: '4px 12px', borderRadius: '2px',
-          marginBottom: '1.2rem',
-        }}>
-          Outlet · Bemutató · Használt
-        </div>
+      <section style={{ padding: 'clamp(3rem, 6vw, 5rem) 2rem', background: '#ffffff' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
-        <h1 style={{
-          fontFamily: 'Barlow Condensed, sans-serif',
-          fontWeight: 900,
-          fontSize: 'clamp(2.5rem, 8vw, 4.5rem)',
-          lineHeight: 0.95,
-          textTransform: 'uppercase',
-          letterSpacing: '-0.01em',
-          marginBottom: '2.5rem',
-        }}>
-          {label}<br />
-          <span style={{ color: '#e8c547' }}>kerékpárok</span>
-        </h1>
-
-        {loading ? (
-          <div style={{
-            textAlign: 'center', padding: '4rem',
-            color: 'rgba(240,237,232,0.3)', fontSize: '15px',
-          }}>
-            Kerékpárok betöltése…
-          </div>
-        ) : bikes.length === 0 ? (
-          <div style={{
-            textAlign: 'center', padding: '4rem',
-            color: 'rgba(240,237,232,0.4)',
-          }}>
-            <div style={{ fontSize: '48px', marginBottom: '1rem' }}>🚲</div>
-            <div style={{ fontSize: '18px' }}>Ebben a kategóriában nincs elérhető kerékpár.</div>
-            <a href="/" style={{
-              color: '#e8c547', marginTop: '1rem', display: 'inline-block',
-              textDecoration: 'none',
-            }}>← Összes kerékpár</a>
-          </div>
-        ) : (
-          <>
+          {/* Header */}
+          <div style={{ marginBottom: '2.5rem' }}>
             <div style={{
-              fontSize: '13px', color: 'rgba(240,237,232,0.4)',
-              marginBottom: '1.5rem',
-            }}>{bikes.length} kerékpár elérhető</div>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: '1.5px',
-              background: 'rgba(255,255,255,0.06)',
+              fontSize: '11px', fontWeight: 600,
+              letterSpacing: '0.08em', textTransform: 'uppercase',
+              color: 'rgba(17,17,17,0.4)', marginBottom: '0.75rem',
             }}>
-              {bikes.map(bike => (
-                <BikeCard key={bike.id} bike={bike} />
-              ))}
+              Outlet · Bemutató · Használt
             </div>
-          </>
-        )}
+            <h1 style={{
+              fontSize: 'clamp(2rem, 6vw, 4rem)',
+              fontWeight: 900, letterSpacing: '-0.04em',
+              color: '#111111', lineHeight: 1.05,
+            }}>
+              {label}{' '}
+              <span style={{ color: '#e8c547' }}>kerékpárok</span>
+            </h1>
+          </div>
+
+          {/* Content */}
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '5rem', color: 'rgba(17,17,17,0.3)', fontSize: '14px' }}>
+              Betöltés…
+            </div>
+          ) : bikes.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '5rem', color: 'rgba(17,17,17,0.4)' }}>
+              <div style={{ fontSize: '40px', marginBottom: '1rem' }}>🚲</div>
+              <div style={{ fontSize: '16px', marginBottom: '1rem', fontWeight: 500 }}>
+                Ebben a kategóriában nincs elérhető kerékpár.
+              </div>
+              <a href="/" style={{
+                color: '#111111', fontWeight: 600, fontSize: '14px',
+                textDecoration: 'underline',
+              }}>← Összes kerékpár</a>
+            </div>
+          ) : (
+            <>
+              <div style={{
+                fontSize: '12px', color: 'rgba(17,17,17,0.4)',
+                marginBottom: '1.25rem', fontWeight: 500,
+              }}>{bikes.length} kerékpár elérhető</div>
+              <div className="bikes-grid">
+                {bikes.map(bike => (
+                  <BikeCard key={bike.id} bike={bike} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </section>
 
-      <a href="tel:+36308897559" style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0,
-        background: '#e8c547', color: '#0a0a0a',
-        textAlign: 'center', padding: '16px',
-        fontFamily: 'Barlow Condensed, sans-serif',
-        fontWeight: 700, fontSize: '16px',
-        letterSpacing: '0.1em', textTransform: 'uppercase',
-        display: 'flex', alignItems: 'center',
-        justifyContent: 'center', gap: '12px',
-        textDecoration: 'none', zIndex: 200,
+      {/* Sticky mobile CTA */}
+      <a href="tel:+36308897559" className="mobile-cta" style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200,
+        background: '#e8c547', color: '#111111',
+        alignItems: 'center', justifyContent: 'center',
+        gap: '10px', padding: '16px',
+        fontSize: '15px', fontWeight: 700,
+        letterSpacing: '-0.01em', textDecoration: 'none',
       }}>
-        <Phone size={18} />
-        Hívj most és egyeztessünk időpontot
-        <span style={{
-          background: '#0a0a0a', color: '#e8c547',
-          fontSize: '13px', padding: '3px 10px',
-          borderRadius: '20px', fontWeight: 700,
-        }}>+36 30 889 7559</span>
+        <Phone size={17} />
+        Hívj most · +36 30 889 7559
       </a>
     </>
   )

@@ -1,17 +1,16 @@
 'use client'
-import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
 
-function formatPrice(p: number) {
-  return p.toLocaleString('hu-HU') + ' Ft'
+function fmt(n: number) {
+  return n.toLocaleString('hu-HU') + ' Ft'
 }
 
 export default function BikeCard({ bike }: { bike: Bike }) {
-  const [hovered, setHovered] = useState(false)
   const img = bike.images?.[0]
+  const savings = bike.original_price - bike.sale_price
   const pct = bike.original_price > bike.sale_price
     ? Math.round((1 - bike.sale_price / bike.original_price) * 100)
     : 0
@@ -19,115 +18,128 @@ export default function BikeCard({ bike }: { bike: Bike }) {
   return (
     <div style={{
       background: '#ffffff',
+      border: '1px solid rgba(0,0,0,0.07)',
+      borderRadius: '10px',
+      overflow: 'hidden',
       display: 'flex', flexDirection: 'column',
-      border: '1px solid rgba(0,0,0,0.06)',
-      transition: 'box-shadow 0.3s ease',
-      boxShadow: hovered ? '0 8px 32px rgba(0,0,0,0.10)' : '0 1px 4px rgba(0,0,0,0.04)',
+      transition: 'box-shadow 0.2s ease, transform 0.2s ease',
     }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 28px rgba(0,0,0,0.10)'
+        ;(e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLDivElement).style.boxShadow = 'none'
+        ;(e.currentTarget as HTMLDivElement).style.transform = 'none'
+      }}
     >
-      <Link href={`/kerekpar/${bike.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', flex: 1 }}>
+      <Link href={`/kerekpar/${bike.id}`} style={{ textDecoration: 'none', color: 'inherit', flex: 1, display: 'flex', flexDirection: 'column' }}>
 
-        {/* Image – 70% of card */}
-        <div className="bike-img-wrap" style={{
+        {/* Image — 65% of card visual weight */}
+        <div className="card-img-wrap" style={{
           position: 'relative', overflow: 'hidden',
-          aspectRatio: '4/3',
-          background: '#f0f0ee', flexShrink: 0,
+          aspectRatio: '3/2',
+          background: '#f5f5f5', flexShrink: 0,
         }}>
           {img ? (
             <Image
               src={img}
               alt={`${bike.brand} ${bike.model}`}
               fill
-              className="bike-img"
+              className="card-img"
               style={{ objectFit: 'cover' }}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           ) : (
             <div style={{
               position: 'absolute', inset: 0,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '56px', color: 'rgba(0,0,0,0.1)',
+              fontSize: '48px', color: 'rgba(0,0,0,0.12)',
             }}>🚲</div>
           )}
 
-          {/* Condition badge */}
+          {/* Condition badge — top left */}
           <span style={{
-            position: 'absolute', top: '12px', left: '12px',
-            fontFamily: 'Barlow Condensed, sans-serif',
-            fontWeight: 700, fontSize: '11px',
-            letterSpacing: '0.1em', textTransform: 'uppercase',
-            padding: '4px 10px', borderRadius: '2px',
-            background: bike.condition === 'outlet' ? '#e8c547' : '#0a0a0a',
-            color: bike.condition === 'outlet' ? '#0a0a0a' : '#ffffff',
+            position: 'absolute', top: 10, left: 10,
+            fontSize: '10px', fontWeight: 700,
+            letterSpacing: '0.04em', textTransform: 'uppercase',
+            padding: '4px 10px', borderRadius: '5px',
+            background: bike.condition === 'outlet' ? '#e8c547' : '#111111',
+            color: bike.condition === 'outlet' ? '#111111' : '#ffffff',
           }}>
-            {bike.condition === 'outlet' ? 'Outlet · Új' : 'Használt'}
+            {bike.condition === 'outlet' ? 'Outlet' : 'Használt'}
           </span>
 
-          {/* Discount badge */}
+          {/* Discount badge — top right */}
           {pct > 0 && (
             <span style={{
-              position: 'absolute', top: '12px', right: '12px',
-              background: '#0a0a0a', color: '#e8c547',
-              fontFamily: 'Barlow Condensed, sans-serif',
-              fontWeight: 700, fontSize: '13px',
-              padding: '4px 10px', borderRadius: '2px',
-            }}>−{pct}%</span>
+              position: 'absolute', top: 10, right: 10,
+              fontSize: '11px', fontWeight: 800,
+              padding: '4px 10px', borderRadius: '5px',
+              background: '#111111', color: '#e8c547',
+              letterSpacing: '-0.01em',
+            }}>
+              −{pct}%
+            </span>
           )}
         </div>
 
-        {/* Text – minimal */}
-        <div style={{ padding: '1rem 1.25rem 0.75rem' }}>
+        {/* Info */}
+        <div style={{ padding: '1rem 1rem 0.75rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
           <div style={{
             fontSize: '10px', fontWeight: 700,
-            letterSpacing: '0.18em', textTransform: 'uppercase',
-            color: '#e8c547', marginBottom: '3px',
+            color: '#e8c547', letterSpacing: '0.06em',
+            textTransform: 'uppercase', marginBottom: '4px',
           }}>{bike.brand}</div>
+
           <div style={{
-            fontFamily: 'Barlow Condensed, sans-serif',
-            fontWeight: 700, fontSize: '1.1rem',
-            textTransform: 'uppercase', letterSpacing: '0.02em',
-            lineHeight: 1.1, marginBottom: '0.75rem', color: '#0a0a0a',
+            fontSize: '15px', fontWeight: 700,
+            color: '#111111', lineHeight: 1.3,
+            letterSpacing: '-0.02em',
+            marginBottom: 'auto',
           }}>{bike.model}</div>
+
+          {/* Price row */}
           <div style={{
-            display: 'flex', alignItems: 'baseline',
-            justifyContent: 'space-between',
-            borderTop: '1px solid rgba(0,0,0,0.07)', paddingTop: '0.75rem',
+            marginTop: '0.875rem',
+            paddingTop: '0.875rem',
+            borderTop: '1px solid rgba(0,0,0,0.07)',
           }}>
-            <div>
+            <div style={{
+              fontSize: '11px', color: 'rgba(17,17,17,0.35)',
+              textDecoration: 'line-through', marginBottom: '3px',
+              letterSpacing: '-0.01em',
+            }}>{fmt(bike.original_price)}</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
               <div style={{
-                fontSize: '11px', color: 'rgba(0,0,0,0.35)',
-                textDecoration: 'line-through', marginBottom: '1px',
-              }}>{formatPrice(bike.original_price)}</div>
-              <div style={{
-                fontFamily: 'Barlow Condensed, sans-serif',
-                fontWeight: 700, fontSize: '1.3rem', color: '#0a0a0a',
-              }}>{formatPrice(bike.sale_price)}</div>
+                fontSize: '21px', fontWeight: 800,
+                color: '#111111', letterSpacing: '-0.04em', lineHeight: 1,
+              }}>{fmt(bike.sale_price)}</div>
+              {savings > 0 && (
+                <div style={{
+                  fontSize: '11px', fontWeight: 700,
+                  color: '#111111', background: '#e8c547',
+                  padding: '4px 9px', borderRadius: '5px',
+                  letterSpacing: '-0.01em', whiteSpace: 'nowrap', flexShrink: 0,
+                }}>
+                  −{savings.toLocaleString('hu-HU')} Ft
+                </div>
+              )}
             </div>
-            {bike.featured && (
-              <span style={{
-                fontSize: '10px', fontWeight: 700,
-                letterSpacing: '0.1em', textTransform: 'uppercase',
-                color: '#c0392b',
-              }}>Népszerű</span>
-            )}
           </div>
         </div>
       </Link>
 
       {/* CTA */}
-      <div style={{ padding: '0 1.25rem 1.25rem' }}>
+      <div style={{ padding: '0 1rem 1rem' }}>
         <a href="tel:+36308897559" style={{
-          display: 'flex', alignItems: 'center',
-          justifyContent: 'center', gap: '6px',
-          padding: '10px',
-          background: '#e8c547', color: '#0a0a0a',
-          fontFamily: 'Barlow Condensed, sans-serif',
-          fontWeight: 700, fontSize: '12px',
-          letterSpacing: '0.1em', textTransform: 'uppercase',
-          textDecoration: 'none', borderRadius: '2px',
-          transition: 'background 0.2s',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          gap: '6px', padding: '11px',
+          background: '#e8c547', color: '#111111',
+          borderRadius: '7px', textDecoration: 'none',
+          fontSize: '13px', fontWeight: 700,
+          letterSpacing: '-0.01em',
+          transition: 'background 0.15s',
         }}
           onMouseEnter={e => (e.currentTarget.style.background = '#d4b23e')}
           onMouseLeave={e => (e.currentTarget.style.background = '#e8c547')}
