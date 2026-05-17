@@ -80,6 +80,10 @@ a { color: inherit; }
   .bike-detail-wrap { padding: 1.5rem 1rem 7rem; }
 }
 
+/* ── Details tooltip ─────────────────────────── */
+details summary::-webkit-details-marker { display: none; }
+details summary { user-select: none; }
+
 /* ── Scrollbar ────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: #fff; }

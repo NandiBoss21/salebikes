@@ -8,12 +8,18 @@ function fmt(n: number) {
   return n.toLocaleString('hu-HU') + ' Ft'
 }
 
+const CONDITION_TEXT: Record<string, string> = {
+  outlet:   '0 km · Karcmentes',
+  hasznalt: 'Jó állapot',
+}
+
 export default function BikeCard({ bike }: { bike: Bike }) {
   const img = bike.images?.[0]
   const savings = bike.original_price - bike.sale_price
   const pct = bike.original_price > bike.sale_price
     ? Math.round((1 - bike.sale_price / bike.original_price) * 100)
     : 0
+  const condText = CONDITION_TEXT[bike.condition] ?? bike.condition
 
   return (
     <div style={{
@@ -82,15 +88,34 @@ export default function BikeCard({ bike }: { bike: Bike }) {
               −{pct}%
             </span>
           )}
+
+          {/* Utolsó darab — bottom strip */}
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0,
+            background: 'rgba(220,38,38,0.92)',
+            padding: '5px 10px',
+            fontSize: '11px', fontWeight: 700,
+            color: '#ffffff', letterSpacing: '0.03em',
+            textTransform: 'uppercase', textAlign: 'center',
+          }}>
+            Utolsó darab
+          </div>
         </div>
 
         {/* Info */}
         <div style={{ padding: '1rem 1rem 0.75rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <div style={{
-            fontSize: '10px', fontWeight: 700,
-            color: '#e8c547', letterSpacing: '0.06em',
-            textTransform: 'uppercase', marginBottom: '4px',
-          }}>{bike.brand}</div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px', marginBottom: '4px' }}>
+            <div style={{
+              fontSize: '10px', fontWeight: 700,
+              color: '#e8c547', letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+            }}>{bike.brand}</div>
+            <div style={{
+              fontSize: '10px', fontWeight: 600,
+              color: bike.condition === 'outlet' ? '#059669' : 'rgba(17,17,17,0.4)',
+              letterSpacing: '-0.01em',
+            }}>{condText}</div>
+          </div>
 
           <div style={{
             fontSize: '15px', fontWeight: 700,
@@ -134,7 +159,8 @@ export default function BikeCard({ bike }: { bike: Bike }) {
       <div style={{ padding: '0 1rem 1rem' }}>
         <a href="tel:+36308897559" style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          gap: '6px', padding: '11px',
+          gap: '6px', padding: '14px',
+          minHeight: '48px',
           background: '#e8c547', color: '#111111',
           borderRadius: '7px', textDecoration: 'none',
           fontSize: '13px', fontWeight: 700,

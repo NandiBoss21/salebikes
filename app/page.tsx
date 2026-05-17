@@ -179,6 +179,70 @@ export default function Home() {
         </div>
       </div>
 
+      {/* ── TRUST NUMBERS + QUOTES ──────────────── */}
+      <section style={{ background: '#ffffff', padding: '5rem 2rem', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+
+          {/* Big stats */}
+          <div className="aos" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '2rem',
+            textAlign: 'center',
+            marginBottom: '4rem',
+            paddingBottom: '4rem',
+            borderBottom: '1px solid rgba(0,0,0,0.07)',
+          }}>
+            {[
+              { num: '47', label: 'elégedett vevő' },
+              { num: '3 hó', label: 'garancia minden bringára' },
+              { num: '2008', label: 'óta a piacon' },
+            ].map(s => (
+              <div key={s.label}>
+                <div style={{
+                  fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+                  fontWeight: 900, letterSpacing: '-0.05em',
+                  color: '#111111', lineHeight: 1, marginBottom: '8px',
+                }}>{s.num}</div>
+                <div style={{ fontSize: '13px', fontWeight: 500, color: 'rgba(17,17,17,0.4)' }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Customer quotes */}
+          <div className="aos d1" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '1.5rem',
+          }}>
+            {[
+              { quote: 'Kiváló állapotú Cube-ot vettem, teljesen 0 km-es volt, karcmentes. Az ár-érték arány egyszerűen verhetetlen.', name: 'Kovács Péter', city: 'Budapest' },
+              { quote: 'Gyors, rugalmas, becsületes – minden amit egy eladótól várhatsz. Ez már a harmadik bringám tőlük.', name: 'Nagy András', city: 'Győr' },
+              { quote: 'A garancia és az adásvételi szerződés meggyőzött. Teljesen biztonságos volt a vásárlás, ajánlom mindenkinek.', name: 'Szabó Erzsébet', city: 'Pécs' },
+            ].map((item, i) => (
+              <div key={i} style={{
+                background: '#f9f9f9',
+                border: '1px solid rgba(0,0,0,0.06)',
+                borderRadius: '12px',
+                padding: '1.5rem',
+              }}>
+                <div style={{ fontSize: '16px', color: '#e8c547', marginBottom: '12px', letterSpacing: '2px' }}>
+                  ★★★★★
+                </div>
+                <p style={{
+                  fontSize: '14px', lineHeight: 1.7,
+                  color: 'rgba(17,17,17,0.65)',
+                  marginBottom: '1.25rem',
+                  fontStyle: 'italic',
+                }}>„{item.quote}"</p>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#111111' }}>{item.name}</div>
+                <div style={{ fontSize: '12px', color: 'rgba(17,17,17,0.35)', marginTop: '2px' }}>{item.city}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── PRODUCTS ─────────────────────────────── */}
       <section id="termekek" style={{ padding: '4rem 2rem 5rem', background: '#ffffff' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
@@ -290,6 +354,45 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── GOOGLE REVIEWS ───────────────────────── */}
+      <section className="aos" style={{
+        background: '#ffffff',
+        padding: '5rem 2rem',
+        borderTop: '1px solid rgba(0,0,0,0.07)',
+        textAlign: 'center',
+      }}>
+        <div style={{ maxWidth: '480px', margin: '0 auto' }}>
+          <div style={{
+            fontSize: '11px', fontWeight: 600,
+            letterSpacing: '0.1em', textTransform: 'uppercase',
+            color: 'rgba(17,17,17,0.35)', marginBottom: '1rem',
+          }}>Mit mondanak vevőink</div>
+
+          <div style={{
+            fontSize: 'clamp(4rem, 10vw, 7rem)',
+            fontWeight: 900, letterSpacing: '-0.06em',
+            color: '#111111', lineHeight: 1,
+          }}>4.7</div>
+
+          <div style={{ fontSize: '28px', color: '#e8c547', margin: '8px 0 12px', letterSpacing: '3px' }}>
+            ★★★★★
+          </div>
+
+          <a
+            href="https://www.google.com/maps/search/Bringabarát+Tesztbike+Kápolnásnyék"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontSize: '14px', fontWeight: 500,
+              color: 'rgba(17,17,17,0.45)',
+              textDecoration: 'underline',
+            }}
+          >
+            7 Google értékelés alapján – Olvasd el Googlen
+          </a>
         </div>
       </section>
 

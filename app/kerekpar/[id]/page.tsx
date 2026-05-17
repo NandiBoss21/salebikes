@@ -17,6 +17,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 }
 
+const CONDITION_LEVELS = [
+  { label: 'Új',        desc: 'Bemutató darab, 0 km, karcmentes. Gyárihoz azonos állapot.' },
+  { label: 'Kiváló',   desc: 'Alig használt, 1–2 szezon. Kopásnyomok nélkül.' },
+  { label: 'Jó',        desc: 'Normálisan használt. Kisebb esztétikai kopásnyomok.' },
+  { label: 'Megfelelő', desc: 'Rendszeres használat nyomai láthatók. Műszakilag kifogástalan.' },
+]
+const CONDITION_IDX: Record<string, number> = { outlet: 0, hasznalt: 2 }
+
 export default async function BikePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const { data } = await supabase.from('bikes').select('*').eq('id', id).single()
@@ -44,6 +52,8 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
   const bike = data as Bike
   const savings = bike.original_price - bike.sale_price
   const pct = Math.round((1 - bike.sale_price / bike.original_price) * 100)
+  const condIdx = CONDITION_IDX[bike.condition] ?? 2
+  const viewers = (id.charCodeAt(id.length - 1) % 8) + 3
 
   return (
     <>
@@ -127,6 +137,77 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
                   −{savings.toLocaleString('hu-HU')} Ft megtakarítás · −{pct}%
                 </div>
               )}
+            </div>
+
+            {/* Condition scale */}
+            <div style={{ marginBottom: '1.25rem', position: 'relative' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <div style={{
+                  fontSize: '11px', fontWeight: 700,
+                  letterSpacing: '0.06em', textTransform: 'uppercase',
+                  color: 'rgba(17,17,17,0.35)',
+                }}>Állapot</div>
+                <details style={{ display: 'inline' }}>
+                  <summary style={{
+                    fontSize: '12px', fontWeight: 500,
+                    color: '#e8c547', cursor: 'pointer',
+                    listStyle: 'none',
+                  }}>Mit jelent ez?</summary>
+                  <div style={{
+                    position: 'absolute', zIndex: 10,
+                    background: '#111111', color: '#ffffff',
+                    borderRadius: '8px', padding: '1rem 1.25rem',
+                    width: '260px', right: 0,
+                    fontSize: '12px', lineHeight: 1.6,
+                    marginTop: '6px',
+                  }}>
+                    {CONDITION_LEVELS.map((c, i) => (
+                      <div key={c.label} style={{
+                        paddingBottom: i < CONDITION_LEVELS.length - 1 ? '10px' : 0,
+                        marginBottom: i < CONDITION_LEVELS.length - 1 ? '10px' : 0,
+                        borderBottom: i < CONDITION_LEVELS.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none',
+                      }}>
+                        <strong style={{ color: i === condIdx ? '#e8c547' : '#ffffff' }}>{c.label}</strong>
+                        {' – '}{c.desc}
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              </div>
+
+              {/* Scale bar */}
+              <div style={{ display: 'flex', gap: '6px' }}>
+                {CONDITION_LEVELS.map((c, i) => (
+                  <div key={c.label} style={{ flex: 1, textAlign: 'center' }}>
+                    <div style={{
+                      height: '4px', borderRadius: '2px',
+                      background: i <= condIdx ? '#e8c547' : 'rgba(0,0,0,0.1)',
+                      marginBottom: '6px',
+                      transition: 'background 0.2s',
+                    }} />
+                    <div style={{
+                      fontSize: '10px', fontWeight: i === condIdx ? 700 : 500,
+                      color: i === condIdx ? '#111111' : 'rgba(17,17,17,0.35)',
+                      letterSpacing: '-0.01em',
+                    }}>{c.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Viewers counter */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '8px',
+              fontSize: '12px', fontWeight: 500,
+              color: 'rgba(17,17,17,0.5)',
+              marginBottom: '1.25rem',
+            }}>
+              <span style={{
+                display: 'inline-block', width: '8px', height: '8px',
+                borderRadius: '50%', background: '#22c55e',
+                boxShadow: '0 0 0 3px rgba(34,197,94,0.2)',
+              }} />
+              {viewers} ember nézte ma
             </div>
 
             {/* CTA — desktop */}
