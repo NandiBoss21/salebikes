@@ -4,11 +4,11 @@ import Link from 'next/link'
 import { Menu, X, Phone } from 'lucide-react'
 
 const categories = [
-  { label: 'Ebike', href: '/?kategoria=ebike' },
-  { label: 'MTB', href: '/?kategoria=mtb' },
-  { label: 'Trekking', href: '/?kategoria=trekking' },
-  { label: 'Gravel', href: '/?kategoria=gravel' },
-  { label: 'Gyerek', href: '/?kategoria=gyerek' },
+  { label: 'Ebike', href: '/ebike' },
+  { label: 'MTB', href: '/mtb' },
+  { label: 'Trekking', href: '/trekking' },
+  { label: 'Gravel', href: '/gravel' },
+  { label: 'Gyerek', href: '/gyerek' },
   { label: 'Rólunk', href: '/rolunk' },
 ]
 
