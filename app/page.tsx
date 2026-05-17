@@ -48,9 +48,9 @@ export default function Home() {
   useAos([])
   useAos([loading])
 
-  const avgSavings = bikes.length
+  const avgSavings = !loading && bikes.length > 0
     ? Math.round(bikes.reduce((s, b) => s + (b.original_price - b.sale_price), 0) / bikes.length / 1000) * 1000
-    : 180000
+    : null
 
   return (
     <>
@@ -59,7 +59,7 @@ export default function Home() {
       {/* ── HERO ─────────────────────────────────── */}
       <section style={{
         background: '#ffffff',
-        padding: 'clamp(5rem, 10vw, 9rem) 2rem clamp(4rem, 8vw, 7rem)',
+        padding: 'clamp(2rem, 4vw, 3.5rem) 2rem clamp(3rem, 6vw, 5rem)',
         borderBottom: '1px solid rgba(0,0,0,0.07)',
       }}>
         <div style={{ maxWidth: '860px', margin: '0 auto' }}>
@@ -93,25 +93,28 @@ export default function Home() {
             fontSize: 'clamp(15px, 2.5vw, 18px)',
             fontWeight: 400, lineHeight: 1.65,
             color: 'rgba(17,17,17,0.5)',
-            maxWidth: '560px', marginBottom: '1rem',
+            maxWidth: '560px',
+            marginBottom: avgSavings ? '1rem' : '2.5rem',
           }}>
             Cube, Scott, Bulls, Giant, KTM – outlet és használt bringák
-            3 hónap garanciával. Átlagos megtakarítás:
+            3 hónap garanciával{avgSavings ? '. Átlagos megtakarítás:' : '.'}
           </p>
 
-          <div className="aos d2" style={{
-            fontSize: 'clamp(1.5rem, 4vw, 2.25rem)',
-            fontWeight: 800, letterSpacing: '-0.04em',
-            color: '#111111', marginBottom: '2.5rem',
-          }}>
-            <span style={{
-              background: '#e8c547', padding: '2px 12px',
-              borderRadius: '6px',
+          {avgSavings && (
+            <div className="aos d2" style={{
+              fontSize: 'clamp(1.5rem, 4vw, 2.25rem)',
+              fontWeight: 800, letterSpacing: '-0.04em',
+              color: '#111111', marginBottom: '2.5rem',
             }}>
-              {avgSavings.toLocaleString('hu-HU')} Ft
-            </span>
-            {' '}vásárlásonként
-          </div>
+              <span style={{
+                background: '#e8c547', padding: '2px 12px',
+                borderRadius: '6px',
+              }}>
+                {avgSavings.toLocaleString('hu-HU')} Ft
+              </span>
+              {' '}vásárlásonként
+            </div>
+          )}
 
           <div className="aos d3" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <a href="#termekek" style={{
