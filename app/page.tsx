@@ -145,7 +145,7 @@ export default function Home() {
 
       {/* ── HERO ──────────────────────────────────────────────── */}
       <section className="hero-split" style={{
-        backgroundImage: 'url(/image/hero-bg.png)',
+        backgroundImage: 'url(/hero-bg.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}>
