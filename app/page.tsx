@@ -240,7 +240,7 @@ export default function Home() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
             style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}
           >
-            <a href="#termekek" style={{
+            <a href="/osszes-kerekpar" style={{
               background: '#ffffff', color: '#111111',
               padding: '14px 26px', borderRadius: '6px',
               fontSize: '13.5px', fontWeight: 700,
