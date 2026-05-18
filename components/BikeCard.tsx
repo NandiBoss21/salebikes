@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
 import { motion } from 'framer-motion'
+import { supabase } from '@/lib/supabase'
 
 function fmt(n: number) {
   return n.toLocaleString('hu-HU') + ' Ft'
@@ -165,7 +166,9 @@ export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: numb
 
         {/* CTA */}
         <div style={{ padding: '0 1rem 1rem' }}>
-          <a href="tel:+36308897559" style={{
+          <a href="tel:+36308897559"
+            onClick={() => supabase.from('inquiries').insert({ bike_id: bike.id, bike_name: `${bike.brand} ${bike.model}`, source: 'bike_card' }).then(() => {})}
+            style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             gap: '6px', padding: '14px',
             minHeight: '48px',

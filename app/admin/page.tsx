@@ -1,8 +1,8 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Bike } from '@/lib/supabase'
-import { Plus, Trash2, Edit, Eye, EyeOff, Star, Upload, X, LogOut, Check, ShoppingBag } from 'lucide-react'
+import { Plus, Trash2, Edit, Eye, EyeOff, Star, Upload, X, LogOut, Check, ShoppingBag, BarChart2, Search } from 'lucide-react'
 
 const CATEGORIES = [
   { key: 'ebike', label: 'Ebike' },
@@ -25,6 +25,21 @@ const empty: Partial<Bike> = {
   size: '', year: new Date().getFullYear(), color: '',
 }
 
+type PageViewRow = { created_at: string; bike_id: string | null; referrer: string | null }
+type InquiryRow = { id: string; created_at: string; bike_name: string; source: string }
+
+function normalizeReferrer(ref: string | null): string {
+  if (!ref) return 'Közvetlen'
+  try {
+    const host = new URL(ref).hostname.replace('www.', '')
+    if (host.includes('google')) return 'Google'
+    if (host.includes('facebook') || host.includes('fb.com')) return 'Facebook'
+    if (host.includes('instagram')) return 'Instagram'
+    if (host.includes('bringapiac')) return 'Bringapiac'
+    return host
+  } catch { return 'Közvetlen' }
+}
+
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false)
   const [pw, setPw] = useState('')
@@ -35,13 +50,25 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false)
   const [specInput, setSpecInput] = useState('')
   const [toast, setToast] = useState('')
-  const [view, setView] = useState<'list' | 'form'>('list')
+  const [view, setView] = useState<'list' | 'form' | 'stats'>('list')
   const [dragIdx, setDragIdx] = useState<number | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => {
-    if (authed) loadBikes()
-  }, [authed])
+  // Agent 4 — Search / Filter / Sort
+  const [search, setSearch] = useState('')
+  const [filterCat, setFilterCat] = useState('')
+  const [sortBy, setSortBy] = useState('newest')
+
+  // Agent 5 — Bulk
+  const [selected, setSelected] = useState<string[]>([])
+
+  // Agent 6 — Stats
+  const [pageViews, setPageViews] = useState<PageViewRow[]>([])
+  const [inquiries, setInquiries] = useState<InquiryRow[]>([])
+  const [statsLoading, setStatsLoading] = useState(false)
+
+  useEffect(() => { if (authed) loadBikes() }, [authed])
 
   function showToast(msg: string) {
     setToast(msg)
@@ -51,6 +78,59 @@ export default function AdminPage() {
   async function loadBikes() {
     const { data } = await supabase.from('bikes').select('*').order('created_at', { ascending: false })
     setBikes((data || []) as Bike[])
+  }
+
+  async function loadStats() {
+    setStatsLoading(true)
+    try {
+      const [viewsRes, inqRes] = await Promise.all([
+        supabase.from('page_views').select('created_at,bike_id,referrer').order('created_at', { ascending: false }).limit(2000),
+        supabase.from('inquiries').select('id,created_at,bike_name,source').order('created_at', { ascending: false }).limit(200),
+      ])
+      setPageViews((viewsRes.data || []) as PageViewRow[])
+      setInquiries((inqRes.data || []) as InquiryRow[])
+    } catch {
+      showToast('Statisztikák betöltése sikertelen')
+    }
+    setStatsLoading(false)
+  }
+
+  // Filtered + sorted bikes
+  const filteredBikes = useMemo(() => {
+    let result = [...bikes]
+    if (search) {
+      const q = search.toLowerCase()
+      result = result.filter(b =>
+        b.brand.toLowerCase().includes(q) || b.model.toLowerCase().includes(q)
+      )
+    }
+    if (filterCat) result = result.filter(b => b.category === filterCat)
+    if (sortBy === 'oldest') result.sort((a, b) => a.created_at.localeCompare(b.created_at))
+    else if (sortBy === 'price_asc') result.sort((a, b) => a.sale_price - b.sale_price)
+    else if (sortBy === 'price_desc') result.sort((a, b) => b.sale_price - a.sale_price)
+    else result.sort((a, b) => b.created_at.localeCompare(a.created_at))
+    return result
+  }, [bikes, search, filterCat, sortBy])
+
+  // Bulk helpers
+  function toggleSelect(id: string) {
+    setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+  }
+  function selectAll() {
+    setSelected(selected.length === filteredBikes.length ? [] : filteredBikes.map(b => b.id))
+  }
+  async function bulkHide() {
+    await supabase.from('bikes').update({ available: false }).in('id', selected)
+    setSelected([]); loadBikes(); showToast(`${selected.length} kerékpár elrejtve`)
+  }
+  async function bulkShow() {
+    await supabase.from('bikes').update({ available: true }).in('id', selected)
+    setSelected([]); loadBikes(); showToast(`${selected.length} kerékpár megjelenítve`)
+  }
+  async function bulkDelete() {
+    if (!confirm(`Biztosan törlöd ezt a(z) ${selected.length} kerékpárt?`)) return
+    await supabase.from('bikes').delete().in('id', selected)
+    setSelected([]); loadBikes(); showToast(`${selected.length} kerékpár törölve`)
   }
 
   async function compressImage(file: File): Promise<Blob> {
@@ -95,10 +175,7 @@ export default function AdminPage() {
   }
 
   async function save() {
-    if (!form.brand || !form.model || !form.sale_price) {
-      showToast('Márka, modell és ár kötelező!')
-      return
-    }
+    if (!form.brand || !form.model || !form.sale_price) { showToast('Márka, modell és ár kötelező!'); return }
     setSaving(true)
     if (editing) {
       await supabase.from('bikes').update(form).eq('id', editing)
@@ -107,18 +184,13 @@ export default function AdminPage() {
       await supabase.from('bikes').insert(form)
       showToast('Kerékpár hozzáadva')
     }
-    setSaving(false)
-    setForm({ ...empty })
-    setEditing(null)
-    setView('list')
-    loadBikes()
+    setSaving(false); setForm({ ...empty }); setEditing(null); setView('list'); loadBikes()
   }
 
   async function deleteBike(id: string) {
     if (!confirm('Biztosan törlöd ezt a kerékpárt?')) return
     await supabase.from('bikes').delete().eq('id', id)
-    showToast('Kerékpár törölve')
-    loadBikes()
+    showToast('Kerékpár törölve'); loadBikes()
   }
 
   async function toggleField(id: string, field: 'available' | 'featured', val: boolean) {
@@ -131,155 +203,120 @@ export default function AdminPage() {
     loadBikes()
   }
 
-  function editBike(bike: Bike) {
-    setForm({ ...bike })
-    setEditing(bike.id)
-    setView('form')
-    window.scrollTo(0, 0)
-  }
-
-  function newBike() {
-    setForm({ ...empty })
-    setEditing(null)
-    setView('form')
-    window.scrollTo(0, 0)
-  }
-
-  function addSpec() {
-    if (!specInput.trim()) return
-    setForm(f => ({ ...f, specs: [...(f.specs || []), specInput.trim()] }))
-    setSpecInput('')
-  }
-
-  function removeSpec(i: number) {
-    setForm(f => ({ ...f, specs: f.specs?.filter((_, idx) => idx !== i) }))
-  }
-
-  function removeImage(i: number) {
-    setForm(f => ({ ...f, images: f.images?.filter((_, idx) => idx !== i) }))
-  }
+  function editBike(bike: Bike) { setForm({ ...bike }); setEditing(bike.id); setView('form'); window.scrollTo(0, 0) }
+  function newBike() { setForm({ ...empty }); setEditing(null); setView('form'); window.scrollTo(0, 0) }
+  function addSpec() { if (!specInput.trim()) return; setForm(f => ({ ...f, specs: [...(f.specs || []), specInput.trim()] })); setSpecInput('') }
+  function removeSpec(i: number) { setForm(f => ({ ...f, specs: f.specs?.filter((_, idx) => idx !== i) })) }
+  function removeImage(i: number) { setForm(f => ({ ...f, images: f.images?.filter((_, idx) => idx !== i) })) }
 
   function onDragStart(i: number) { setDragIdx(i) }
   function onDragOver(e: React.DragEvent, i: number) {
     e.preventDefault()
     if (dragIdx === null || dragIdx === i) return
     setForm(f => {
-      const imgs = [...(f.images || [])]
-      const [moved] = imgs.splice(dragIdx, 1)
-      imgs.splice(i, 0, moved)
-      setDragIdx(i)
-      return { ...f, images: imgs }
+      const imgs = [...(f.images || [])]; const [moved] = imgs.splice(dragIdx, 1); imgs.splice(i, 0, moved)
+      setDragIdx(i); return { ...f, images: imgs }
     })
   }
   function onDragEnd() { setDragIdx(null) }
 
-  // Stats
+  // Stats computed
+  const now = new Date()
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
+  const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  const todayViews = pageViews.filter(v => v.created_at >= todayStart).length
+  const weekViews = pageViews.filter(v => v.created_at >= weekStart).length
+
+  const topBikes = Object.entries(
+    pageViews.filter(v => v.bike_id).reduce((acc, v) => {
+      acc[v.bike_id!] = (acc[v.bike_id!] || 0) + 1; return acc
+    }, {} as Record<string, number>)
+  ).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([bikeId, count]) => ({
+    bikeId, count, bike: bikes.find(b => b.id === bikeId),
+  }))
+
+  const referrers = Object.entries(
+    pageViews.reduce((acc, v) => {
+      const key = normalizeReferrer(v.referrer)
+      acc[key] = (acc[key] || 0) + 1; return acc
+    }, {} as Record<string, number>)
+  ).sort((a, b) => b[1] - a[1])
+
+  // Admin stats (top bar)
   const totalBikes = bikes.length
   const availableBikes = bikes.filter(b => b.available && !b.sold).length
   const soldBikes = bikes.filter(b => b.sold).length
   const avgSavings = bikes.length > 0
-    ? Math.round(bikes.reduce((sum, b) => sum + Math.max(0, b.original_price - b.sale_price), 0) / bikes.length)
-    : 0
+    ? Math.round(bikes.reduce((sum, b) => sum + Math.max(0, b.original_price - b.sale_price), 0) / bikes.length) : 0
 
+  // ─── Login screen ───────────────────────────────────────────────────
   if (!authed) {
     return (
-      <div style={{
-        minHeight: '100vh', background: '#fafaf8',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: 'Inter, system-ui, sans-serif',
-      }}>
-        <div style={{
-          background: '#ffffff', border: '1px solid #E8E4DC',
-          borderRadius: '12px', padding: '2.5rem', width: '360px',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
-        }}>
-          <div style={{
-            fontWeight: 900, fontSize: '22px',
-            letterSpacing: '-0.04em',
-            marginBottom: '1.75rem', textAlign: 'center', color: '#111111',
-          }}>
+      <div style={{ minHeight: '100vh', background: '#fafaf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '2.5rem', width: '360px', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+          <div style={{ fontWeight: 900, fontSize: '22px', letterSpacing: '-0.04em', marginBottom: '1.75rem', textAlign: 'center', color: '#111111' }}>
             Bringabarát <span style={{ color: '#e8c547' }}>Admin</span>
           </div>
-
           <label style={labelStyle}>Jelszó</label>
-          <input
-            type="password"
-            value={pw}
-            onChange={e => setPw(e.target.value)}
+          <input type="password" value={pw} onChange={e => setPw(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && pw === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'salebikes2024') && setAuthed(true)}
-            style={inputStyle}
-            placeholder="••••••••"
-          />
-          <button
-            onClick={() => pw === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'salebikes2024') && setAuthed(true)}
-            style={{
-              width: '100%', padding: '13px',
-              background: '#111111', color: '#ffffff',
-              border: 'none', borderRadius: '8px', cursor: 'pointer',
-              fontWeight: 700, fontSize: '14px', letterSpacing: '-0.01em',
-              marginTop: '0.75rem',
-            }}
-          >Belépés</button>
+            style={inputStyle} placeholder="••••••••" />
+          <button onClick={() => pw === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'salebikes2024') && setAuthed(true)}
+            style={{ width: '100%', padding: '13px', background: '#111111', color: '#ffffff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '14px', letterSpacing: '-0.01em', marginTop: '0.75rem' }}>
+            Belépés
+          </button>
         </div>
       </div>
     )
   }
 
+  // ─── Main layout ─────────────────────────────────────────────────────
   return (
-    <div style={{
-      minHeight: '100vh', background: '#fafaf8', paddingBottom: '4rem',
-      fontFamily: 'Inter, system-ui, sans-serif', color: '#111111',
-    }}>
+    <div style={{ minHeight: '100vh', background: '#fafaf8', paddingBottom: '4rem', fontFamily: 'Inter, system-ui, sans-serif', color: '#111111' }}>
       {/* Toast */}
       {toast && (
-        <div style={{
-          position: 'fixed', top: '1rem', right: '1rem',
-          background: '#111111', color: '#ffffff',
-          padding: '12px 20px', borderRadius: '8px',
-          fontWeight: 600, fontSize: '14px', zIndex: 999,
-          boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
-        }}>{toast}</div>
+        <div style={{ position: 'fixed', top: '1rem', right: '1rem', background: '#111111', color: '#ffffff', padding: '12px 20px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', zIndex: 999, boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>{toast}</div>
       )}
 
-      {/* Admin nav */}
-      <div style={{
-        background: '#ffffff', borderBottom: '1px solid #E8E4DC',
-        padding: '1rem 2rem', display: 'flex',
-        alignItems: 'center', justifyContent: 'space-between',
-        position: 'sticky', top: 0, zIndex: 100,
-      }}>
+      {/* Nav */}
+      <div style={{ background: '#ffffff', borderBottom: '1px solid #E8E4DC', padding: '0 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100, height: '60px' }}>
         <div style={{ fontWeight: 900, fontSize: '18px', letterSpacing: '-0.04em', color: '#111111' }}>
           Bringabarát <span style={{ color: '#e8c547' }}>·</span>{' '}
           <span style={{ fontSize: '13px', fontWeight: 500, color: 'rgba(17,17,17,0.4)', letterSpacing: 0 }}>Admin</span>
         </div>
+
+        {/* Tab buttons */}
+        <div style={{ display: 'flex', gap: '4px' }}>
+          {[
+            { label: 'Kerékpárok', val: 'list' as const },
+            { label: 'Statisztikák', val: 'stats' as const, icon: <BarChart2 size={14} /> },
+          ].map(tab => (
+            <button key={tab.val} onClick={() => { if (tab.val === 'stats') { setView('stats'); loadStats() } else setView('list') }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '5px',
+                padding: '7px 14px', borderRadius: '7px', border: 'none', cursor: 'pointer',
+                fontWeight: 600, fontSize: '13px',
+                background: view === tab.val ? '#111111' : 'transparent',
+                color: view === tab.val ? '#ffffff' : 'rgba(17,17,17,0.5)',
+                transition: 'all 0.15s',
+              }}>
+              {tab.icon}{tab.label}
+            </button>
+          ))}
+        </div>
+
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          {view === 'list' ? (
-            <button onClick={newBike} style={{
-              display: 'flex', alignItems: 'center', gap: '6px',
-              background: '#111111', color: '#ffffff',
-              border: 'none', padding: '10px 18px', borderRadius: '8px',
-              fontWeight: 700, fontSize: '13px', cursor: 'pointer',
-              letterSpacing: '-0.01em',
-            }}>
+          {view === 'list' && (
+            <button onClick={newBike} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#111111', color: '#ffffff', border: 'none', padding: '9px 16px', borderRadius: '8px', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
               <Plus size={15} /> Új kerékpár
             </button>
-          ) : (
-            <button onClick={() => { setView('list'); setEditing(null); setForm({ ...empty }) }} style={{
-              display: 'flex', alignItems: 'center', gap: '6px',
-              background: 'transparent', color: '#111111',
-              border: '1px solid #E8E4DC', padding: '10px 18px',
-              borderRadius: '8px', cursor: 'pointer',
-              fontWeight: 600, fontSize: '13px',
-            }}>
+          )}
+          {view === 'form' && (
+            <button onClick={() => { setView('list'); setEditing(null); setForm({ ...empty }) }} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', color: '#111111', border: '1px solid #E8E4DC', padding: '9px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '13px' }}>
               ← Vissza
             </button>
           )}
-          <button onClick={() => setAuthed(false)} style={{
-            background: 'none', border: 'none',
-            color: 'rgba(17,17,17,0.4)', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: '5px',
-            fontSize: '13px', padding: '8px',
-          }}>
+          <button onClick={() => setAuthed(false)} style={{ background: 'none', border: 'none', color: 'rgba(17,17,17,0.4)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px', padding: '8px' }}>
             <LogOut size={15} /> Kilépés
           </button>
         </div>
@@ -287,46 +324,109 @@ export default function AdminPage() {
 
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
 
-        {/* Stats bar — list view only */}
-        {view === 'list' && (
-          <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '1rem', marginBottom: '2rem',
-          }}>
-            {[
-              { label: 'Összes', value: totalBikes, unit: 'db' },
-              { label: 'Elérhető', value: availableBikes, unit: 'db' },
-              { label: 'Eladott', value: soldBikes, unit: 'db' },
-              { label: 'Átl. megtakarítás', value: avgSavings.toLocaleString('hu-HU'), unit: 'Ft' },
-            ].map(stat => (
-              <div key={stat.label} style={{
-                background: '#ffffff', border: '1px solid #E8E4DC',
-                borderRadius: '12px', padding: '1.25rem 1.5rem',
-              }}>
-                <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(17,17,17,0.4)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '6px' }}>
-                  {stat.label}
+        {/* ── STATS VIEW ─────────────────────────────────────────── */}
+        {view === 'stats' && (
+          <div>
+            <h2 style={{ fontWeight: 800, fontSize: '1.5rem', letterSpacing: '-0.04em', marginBottom: '1.5rem' }}>Statisztikák</h2>
+
+            {statsLoading ? (
+              <div style={{ textAlign: 'center', padding: '4rem', color: 'rgba(17,17,17,0.3)' }}>Betöltés…</div>
+            ) : (
+              <>
+                {/* Page view summary */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+                  {[
+                    { label: 'Mai oldalnézet', value: todayViews },
+                    { label: 'Heti oldalnézet', value: weekViews },
+                    { label: 'Összes oldalnézet', value: pageViews.length },
+                  ].map(s => (
+                    <div key={s.label} style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
+                      <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(17,17,17,0.4)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '6px' }}>{s.label}</div>
+                      <div style={{ fontSize: '28px', fontWeight: 800, letterSpacing: '-0.04em' }}>{s.value}</div>
+                    </div>
+                  ))}
                 </div>
-                <div style={{ fontSize: '26px', fontWeight: 800, letterSpacing: '-0.04em', color: '#111111', lineHeight: 1 }}>
-                  {stat.value} <span style={{ fontSize: '14px', fontWeight: 500, color: 'rgba(17,17,17,0.4)' }}>{stat.unit}</span>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+                  {/* Top 5 bikes */}
+                  <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.25rem' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(17,17,17,0.4)', marginBottom: '1rem' }}>Top 5 megtekintett kerékpár</div>
+                    {topBikes.length === 0 ? (
+                      <div style={{ fontSize: '13px', color: 'rgba(17,17,17,0.35)', padding: '1rem 0' }}>Még nincs adat</div>
+                    ) : topBikes.map((item, i) => (
+                      <div key={item.bikeId} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 0', borderBottom: i < topBikes.length - 1 ? '1px solid #f0ede8' : 'none' }}>
+                        <div style={{ fontWeight: 800, fontSize: '16px', color: '#e8c547', width: '20px', textAlign: 'center' }}>{i + 1}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: '13px', fontWeight: 600, color: '#111111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {item.bike ? `${item.bike.brand} ${item.bike.model}` : item.bikeId.slice(0, 8) + '…'}
+                          </div>
+                        </div>
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#111111', background: '#f5f5f5', padding: '3px 10px', borderRadius: '6px' }}>{item.count} nézet</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Referrers */}
+                  <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.25rem' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(17,17,17,0.4)', marginBottom: '1rem' }}>Honnan jönnek</div>
+                    {referrers.length === 0 ? (
+                      <div style={{ fontSize: '13px', color: 'rgba(17,17,17,0.35)', padding: '1rem 0' }}>Még nincs adat</div>
+                    ) : referrers.map(([ref, count], i) => {
+                      const pct = pageViews.length > 0 ? Math.round(count / pageViews.length * 100) : 0
+                      return (
+                        <div key={ref} style={{ marginBottom: i < referrers.length - 1 ? '12px' : 0 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', fontWeight: 500, marginBottom: '4px' }}>
+                            <span>{ref}</span><span style={{ fontWeight: 700 }}>{count} ({pct}%)</span>
+                          </div>
+                          <div style={{ height: '4px', borderRadius: '2px', background: '#f0ede8', overflow: 'hidden' }}>
+                            <div style={{ height: '100%', width: `${pct}%`, background: '#e8c547', borderRadius: '2px', transition: 'width 0.5s ease' }} />
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+
+                {/* Inquiries list */}
+                <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.25rem' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(17,17,17,0.4)', marginBottom: '1rem' }}>
+                    Érdeklődők ({inquiries.length})
+                  </div>
+                  {inquiries.length === 0 ? (
+                    <div style={{ fontSize: '13px', color: 'rgba(17,17,17,0.35)', padding: '1rem 0' }}>Még nincs érdeklődő rögzítve</div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                      {inquiries.map((inq, i) => {
+                        const d = new Date(inq.created_at)
+                        const dateStr = d.toLocaleDateString('hu-HU', { month: 'short', day: 'numeric' })
+                        const timeStr = d.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' })
+                        return (
+                          <div key={inq.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 0', borderBottom: i < inquiries.length - 1 ? '1px solid #f0ede8' : 'none' }}>
+                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} />
+                            <div style={{ flex: 1, fontSize: '13px', fontWeight: 600, color: '#111111' }}>{inq.bike_name || '—'}</div>
+                            <div style={{ fontSize: '11px', color: 'rgba(17,17,17,0.4)', background: '#f5f5f5', padding: '3px 8px', borderRadius: '5px' }}>{inq.source}</div>
+                            <div style={{ fontSize: '12px', color: 'rgba(17,17,17,0.45)', flexShrink: 0 }}>{dateStr} {timeStr}</div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         )}
 
-        {/* FORM VIEW */}
+        {/* ── FORM VIEW ──────────────────────────────────────────── */}
         {view === 'form' && (
           <div>
-            <h2 style={{
-              fontWeight: 800, fontSize: '1.6rem',
-              letterSpacing: '-0.04em', marginBottom: '2rem', color: '#111111',
-            }}>{editing ? 'Kerékpár szerkesztése' : 'Új kerékpár hozzáadása'}</h2>
+            <h2 style={{ fontWeight: 800, fontSize: '1.6rem', letterSpacing: '-0.04em', marginBottom: '2rem' }}>
+              {editing ? 'Kerékpár szerkesztése' : 'Új kerékpár hozzáadása'}
+            </h2>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-
               {/* LEFT */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-
                 <div>
                   <label style={labelStyle}>Márka</label>
                   <select value={form.brand} onChange={e => setForm(f => ({ ...f, brand: e.target.value }))} style={inputStyle}>
@@ -334,12 +434,10 @@ export default function AdminPage() {
                     {BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
                   </select>
                 </div>
-
                 <div>
                   <label style={labelStyle}>Modell neve *</label>
                   <input value={form.model} onChange={e => setForm(f => ({ ...f, model: e.target.value }))} style={inputStyle} placeholder='pl. Hyde Race 28"' />
                 </div>
-
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
                     <label style={labelStyle}>Kategória</label>
@@ -355,7 +453,6 @@ export default function AdminPage() {
                     </select>
                   </div>
                 </div>
-
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
                     <label style={labelStyle}>Bolti ár (Ft) *</label>
@@ -366,106 +463,42 @@ export default function AdminPage() {
                     <input type="number" value={form.sale_price || ''} onChange={e => setForm(f => ({ ...f, sale_price: parseInt(e.target.value) || 0 }))} style={inputStyle} placeholder="320000" />
                   </div>
                 </div>
-
                 {form.original_price && form.sale_price && form.original_price > form.sale_price && (
-                  <div style={{
-                    background: 'rgba(232,197,71,0.08)', border: '1px solid rgba(232,197,71,0.3)',
-                    borderRadius: '8px', padding: '10px 14px',
-                    fontSize: '13px', color: '#111111', fontWeight: 600,
-                  }}>
+                  <div style={{ background: 'rgba(232,197,71,0.08)', border: '1px solid rgba(232,197,71,0.3)', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', fontWeight: 600 }}>
                     Megtakarítás: {(form.original_price - form.sale_price).toLocaleString('hu-HU')} Ft
-                    <span style={{ color: 'rgba(17,17,17,0.5)', fontWeight: 400 }}> ({Math.round((1 - form.sale_price / form.original_price) * 100)}% kedvezmény)</span>
+                    <span style={{ color: 'rgba(17,17,17,0.5)', fontWeight: 400 }}> ({Math.round((1 - form.sale_price / form.original_price) * 100)}%)</span>
                   </div>
                 )}
-
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-                  <div>
-                    <label style={labelStyle}>Méret</label>
-                    <input value={form.size || ''} onChange={e => setForm(f => ({ ...f, size: e.target.value }))} style={inputStyle} placeholder="L, 54cm..." />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Év</label>
-                    <input type="number" value={form.year || ''} onChange={e => setForm(f => ({ ...f, year: parseInt(e.target.value) }))} style={inputStyle} placeholder="2024" />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Szín</label>
-                    <input value={form.color || ''} onChange={e => setForm(f => ({ ...f, color: e.target.value }))} style={inputStyle} placeholder="Fekete" />
-                  </div>
+                  <div><label style={labelStyle}>Méret</label><input value={form.size || ''} onChange={e => setForm(f => ({ ...f, size: e.target.value }))} style={inputStyle} placeholder="L, 54cm..." /></div>
+                  <div><label style={labelStyle}>Év</label><input type="number" value={form.year || ''} onChange={e => setForm(f => ({ ...f, year: parseInt(e.target.value) }))} style={inputStyle} placeholder="2024" /></div>
+                  <div><label style={labelStyle}>Szín</label><input value={form.color || ''} onChange={e => setForm(f => ({ ...f, color: e.target.value }))} style={inputStyle} placeholder="Fekete" /></div>
                 </div>
-
                 <div>
                   <label style={labelStyle}>Leírás</label>
-                  <textarea
-                    value={form.description || ''}
-                    onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                    rows={4}
-                    style={{ ...inputStyle, resize: 'vertical', minHeight: '100px' }}
-                    placeholder="Rövid leírás a kerékpárról..."
-                  />
+                  <textarea value={form.description || ''} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={4} style={{ ...inputStyle, resize: 'vertical', minHeight: '100px' }} placeholder="Rövid leírás..." />
                 </div>
-
-                {/* Specs */}
                 <div>
                   <label style={labelStyle}>Komponensek / Specifikációk</label>
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                    <input
-                      value={specInput}
-                      onChange={e => setSpecInput(e.target.value)}
-                      onKeyDown={e => e.key === 'Enter' && addSpec()}
-                      style={{ ...inputStyle, flex: 1 }}
-                      placeholder="pl. Shimano XT, Gates szíj, Bosch CX..."
-                    />
-                    <button onClick={addSpec} style={{
-                      background: '#111111', color: '#ffffff',
-                      border: 'none', padding: '0 16px', borderRadius: '8px',
-                      cursor: 'pointer', fontWeight: 700, fontSize: '18px',
-                    }}>+</button>
+                    <input value={specInput} onChange={e => setSpecInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && addSpec()} style={{ ...inputStyle, flex: 1 }} placeholder="pl. Shimano XT..." />
+                    <button onClick={addSpec} style={{ background: '#111111', color: '#ffffff', border: 'none', padding: '0 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '18px' }}>+</button>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                     {form.specs?.map((sp, i) => (
-                      <span key={i} style={{
-                        display: 'flex', alignItems: 'center', gap: '4px',
-                        fontSize: '12px', padding: '5px 10px',
-                        background: '#f5f5f5', border: '1px solid #E8E4DC',
-                        borderRadius: '6px', color: '#111111',
-                      }}>
+                      <span key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', padding: '5px 10px', background: '#f5f5f5', border: '1px solid #E8E4DC', borderRadius: '6px' }}>
                         {sp}
-                        <button onClick={() => removeSpec(i)} style={{
-                          background: 'none', border: 'none',
-                          cursor: 'pointer', color: 'rgba(17,17,17,0.4)', padding: '0 2px',
-                          display: 'flex', alignItems: 'center',
-                        }}><X size={10} /></button>
+                        <button onClick={() => removeSpec(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(17,17,17,0.4)', padding: '0 2px', display: 'flex', alignItems: 'center' }}><X size={10} /></button>
                       </span>
                     ))}
                   </div>
                 </div>
-
-                {/* Toggles */}
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {[
-                    { label: 'Elérhető', field: 'available' as keyof Bike },
-                    { label: 'Kiemelt', field: 'featured' as keyof Bike },
-                    { label: 'Eladott', field: 'sold' as keyof Bike },
-                  ].map(({ label, field }) => (
-                    <button
-                      key={field}
-                      onClick={() => setForm(f => ({ ...f, [field]: !f[field] }))}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '7px',
-                        padding: '10px 16px', borderRadius: '8px', cursor: 'pointer',
-                        fontWeight: 600, fontSize: '13px',
-                        border: '1px solid',
-                        transition: 'all 0.15s',
-                        ...(form[field]
-                          ? field === 'sold'
-                            ? { background: 'rgba(220,38,38,0.08)', borderColor: '#dc2626', color: '#dc2626' }
-                            : { background: 'rgba(232,197,71,0.1)', borderColor: '#e8c547', color: '#111111' }
-                          : { background: '#ffffff', borderColor: '#E8E4DC', color: 'rgba(17,17,17,0.4)' }
-                        ),
-                      }}
-                    >
-                      <Check size={13} /> {label}
-                    </button>
+                  {[{ label: 'Elérhető', field: 'available' as keyof Bike }, { label: 'Kiemelt', field: 'featured' as keyof Bike }, { label: 'Eladott', field: 'sold' as keyof Bike }].map(({ label, field }) => (
+                    <button key={field} onClick={() => setForm(f => ({ ...f, [field]: !f[field] }))} style={{
+                      display: 'flex', alignItems: 'center', gap: '7px', padding: '10px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '13px', border: '1px solid', transition: 'all 0.15s',
+                      ...(form[field] ? field === 'sold' ? { background: 'rgba(220,38,38,0.08)', borderColor: '#dc2626', color: '#dc2626' } : { background: 'rgba(232,197,71,0.1)', borderColor: '#e8c547', color: '#111111' } : { background: '#ffffff', borderColor: '#E8E4DC', color: 'rgba(17,17,17,0.4)' }),
+                    }}><Check size={13} /> {label}</button>
                   ))}
                 </div>
               </div>
@@ -473,224 +506,161 @@ export default function AdminPage() {
               {/* RIGHT – Images */}
               <div>
                 <label style={labelStyle}>Képek</label>
-
-                <div
-                  onClick={() => fileRef.current?.click()}
-                  style={{
-                    border: '2px dashed #E8E4DC',
-                    borderRadius: '12px', padding: '2rem',
-                    textAlign: 'center', cursor: 'pointer',
-                    marginBottom: '1rem',
-                    background: '#ffffff',
-                    transition: 'border-color 0.15s',
-                  }}
+                <div onClick={() => fileRef.current?.click()} style={{ border: '2px dashed #E8E4DC', borderRadius: '12px', padding: '2rem', textAlign: 'center', cursor: 'pointer', marginBottom: '1rem', background: '#ffffff', transition: 'border-color 0.15s' }}
                   onMouseEnter={e => (e.currentTarget.style.borderColor = '#111111')}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = '#E8E4DC')}
-                >
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = '#E8E4DC')}>
                   <Upload size={28} style={{ color: '#111111', margin: '0 auto 10px', display: 'block' }} />
-                  <div style={{ fontSize: '14px', color: '#111111', fontWeight: 500, marginBottom: '4px' }}>
-                    {uploading ? 'Feltöltés...' : 'Kattints a képek feltöltéséhez'}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'rgba(17,17,17,0.4)' }}>
-                    JPG, PNG · Húzással átrendezhető a sorrend
-                  </div>
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={e => e.target.files && uploadImages(e.target.files)}
-                  />
+                  <div style={{ fontSize: '14px', fontWeight: 500, marginBottom: '4px' }}>{uploading ? 'Feltöltés...' : 'Kattints a képek feltöltéséhez'}</div>
+                  <div style={{ fontSize: '12px', color: 'rgba(17,17,17,0.4)' }}>JPG, PNG · Húzással átrendezhető</div>
+                  <input ref={fileRef} type="file" multiple accept="image/*" style={{ display: 'none' }} onChange={e => e.target.files && uploadImages(e.target.files)} />
                 </div>
-
-                {/* Image grid — drag & drop */}
-                <div style={{
-                  display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '8px',
-                }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
                   {form.images?.map((url, i) => (
-                    <div
-                      key={url}
-                      draggable
-                      onDragStart={() => onDragStart(i)}
-                      onDragOver={e => onDragOver(e, i)}
-                      onDragEnd={onDragEnd}
-                      style={{
-                        position: 'relative', aspectRatio: '4/3',
-                        cursor: 'grab', borderRadius: '8px', overflow: 'hidden',
-                        border: dragIdx === i ? '2px solid #e8c547' : '2px solid transparent',
-                        transition: 'border-color 0.15s, opacity 0.15s',
-                        opacity: dragIdx !== null && dragIdx !== i ? 0.7 : 1,
-                      }}
-                    >
-                      <img src={url} alt="" style={{
-                        width: '100%', height: '100%', objectFit: 'cover',
-                      }} />
-                      {i === 0 && (
-                        <span style={{
-                          position: 'absolute', top: '7px', left: '7px',
-                          background: '#e8c547', color: '#111111',
-                          fontSize: '10px', fontWeight: 700,
-                          padding: '3px 8px', borderRadius: '5px',
-                          textTransform: 'uppercase', letterSpacing: '0.04em',
-                        }}>Főkép</span>
-                      )}
-                      <button
-                        onClick={() => removeImage(i)}
-                        style={{
-                          position: 'absolute', top: '7px', right: '7px',
-                          background: 'rgba(0,0,0,0.6)', color: '#fff',
-                          border: 'none', borderRadius: '50%',
-                          width: '24px', height: '24px',
-                          cursor: 'pointer', display: 'flex',
-                          alignItems: 'center', justifyContent: 'center',
-                        }}
-                      ><X size={12} /></button>
+                    <div key={url} draggable onDragStart={() => onDragStart(i)} onDragOver={e => onDragOver(e, i)} onDragEnd={onDragEnd}
+                      style={{ position: 'relative', aspectRatio: '4/3', cursor: 'grab', borderRadius: '8px', overflow: 'hidden', border: dragIdx === i ? '2px solid #e8c547' : '2px solid transparent', opacity: dragIdx !== null && dragIdx !== i ? 0.7 : 1 }}>
+                      <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      {i === 0 && <span style={{ position: 'absolute', top: '7px', left: '7px', background: '#e8c547', color: '#111111', fontSize: '10px', fontWeight: 700, padding: '3px 8px', borderRadius: '5px', textTransform: 'uppercase' }}>Főkép</span>}
+                      <button onClick={() => removeImage(i)} style={{ position: 'absolute', top: '7px', right: '7px', background: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: '24px', height: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={12} /></button>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Save button */}
             <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
-              <button onClick={save} disabled={saving} style={{
-                background: '#111111', color: '#ffffff',
-                border: 'none', padding: '14px 32px', borderRadius: '8px',
-                fontWeight: 700, fontSize: '14px', letterSpacing: '-0.01em',
-                cursor: saving ? 'not-allowed' : 'pointer',
-                opacity: saving ? 0.6 : 1,
-              }}>
+              <button onClick={save} disabled={saving} style={{ background: '#111111', color: '#ffffff', border: 'none', padding: '14px 32px', borderRadius: '8px', fontWeight: 700, fontSize: '14px', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1 }}>
                 {saving ? 'Mentés...' : editing ? 'Módosítások mentése' : 'Kerékpár hozzáadása'}
               </button>
-              <button onClick={() => { setView('list'); setEditing(null); setForm({ ...empty }) }} style={{
-                background: 'transparent', color: '#111111',
-                border: '1px solid #E8E4DC', padding: '14px 24px', borderRadius: '8px',
-                fontWeight: 600, fontSize: '14px', cursor: 'pointer',
-              }}>
-                Mégse
-              </button>
+              <button onClick={() => { setView('list'); setEditing(null); setForm({ ...empty }) }} style={{ background: 'transparent', color: '#111111', border: '1px solid #E8E4DC', padding: '14px 24px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>Mégse</button>
             </div>
           </div>
         )}
 
-        {/* LIST VIEW */}
+        {/* ── LIST VIEW ──────────────────────────────────────────── */}
         {view === 'list' && (
           <div>
-            <div style={{
-              display: 'flex', alignItems: 'center',
-              justifyContent: 'space-between', marginBottom: '1.25rem',
-            }}>
-              <h2 style={{
-                fontWeight: 800, fontSize: '1.5rem',
-                letterSpacing: '-0.04em', color: '#111111',
-              }}>Kerékpárok <span style={{ color: 'rgba(17,17,17,0.3)', fontWeight: 500 }}>({bikes.length})</span></h2>
+            {/* Stats bar */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.75rem' }}>
+              {[
+                { label: 'Összes', value: totalBikes, unit: 'db' },
+                { label: 'Elérhető', value: availableBikes, unit: 'db' },
+                { label: 'Eladott', value: soldBikes, unit: 'db' },
+                { label: 'Átl. megtakarítás', value: avgSavings.toLocaleString('hu-HU'), unit: 'Ft' },
+              ].map(s => (
+                <div key={s.label} style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1rem 1.25rem' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(17,17,17,0.4)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '5px' }}>{s.label}</div>
+                  <div style={{ fontSize: '24px', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 }}>{s.value} <span style={{ fontSize: '13px', fontWeight: 500, color: 'rgba(17,17,17,0.4)' }}>{s.unit}</span></div>
+                </div>
+              ))}
             </div>
 
-            {bikes.length === 0 ? (
-              <div style={{
-                textAlign: 'center', padding: '5rem',
-                background: '#ffffff', border: '1px solid #E8E4DC',
-                borderRadius: '12px',
-              }}>
+            {/* Search / Filter / Sort toolbar */}
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ position: 'relative', flex: '1', minWidth: '200px' }}>
+                <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(17,17,17,0.35)' }} />
+                <input
+                  value={search} onChange={e => setSearch(e.target.value)}
+                  placeholder="Keresés márka / modell..."
+                  style={{ ...inputStyle, paddingLeft: '36px' }}
+                />
+              </div>
+              <select value={filterCat} onChange={e => setFilterCat(e.target.value)} style={{ ...inputStyle, width: 'auto', minWidth: '160px' }}>
+                <option value="">Összes kategória</option>
+                {CATEGORIES.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
+              </select>
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ ...inputStyle, width: 'auto', minWidth: '160px' }}>
+                <option value="newest">Legújabb</option>
+                <option value="oldest">Legrégebbi</option>
+                <option value="price_asc">Ár: növekvő</option>
+                <option value="price_desc">Ár: csökkenő</option>
+              </select>
+            </div>
+
+            {/* Bulk action bar */}
+            {selected.length > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#111111', color: '#ffffff', padding: '12px 16px', borderRadius: '10px', marginBottom: '1rem' }}>
+                <span style={{ fontSize: '13px', fontWeight: 600, flex: 1 }}>{selected.length} kijelölve</span>
+                <button onClick={bulkShow} style={{ background: '#ffffff', color: '#111111', border: 'none', padding: '7px 14px', borderRadius: '6px', fontWeight: 600, fontSize: '12px', cursor: 'pointer' }}>Megjelenítés</button>
+                <button onClick={bulkHide} style={{ background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: 'none', padding: '7px 14px', borderRadius: '6px', fontWeight: 600, fontSize: '12px', cursor: 'pointer' }}>Elrejtés</button>
+                <button onClick={bulkDelete} style={{ background: '#dc2626', color: '#ffffff', border: 'none', padding: '7px 14px', borderRadius: '6px', fontWeight: 600, fontSize: '12px', cursor: 'pointer' }}>Törlés</button>
+                <button onClick={() => setSelected([])} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', padding: '4px' }}><X size={16} /></button>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <h2 style={{ fontWeight: 800, fontSize: '1.4rem', letterSpacing: '-0.04em' }}>
+                Kerékpárok <span style={{ color: 'rgba(17,17,17,0.3)', fontWeight: 500 }}>({filteredBikes.length})</span>
+              </h2>
+            </div>
+
+            {filteredBikes.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '5rem', background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px' }}>
                 <div style={{ fontSize: '48px', marginBottom: '1rem' }}>🚲</div>
-                <div style={{ fontSize: '15px', color: 'rgba(17,17,17,0.5)', marginBottom: '1.5rem' }}>Még nincs kerékpár feltöltve.</div>
-                <button onClick={newBike} style={{
-                  background: '#111111', color: '#ffffff',
-                  border: 'none', padding: '12px 24px', borderRadius: '8px',
-                  cursor: 'pointer', fontWeight: 700, fontSize: '14px',
-                }}>+ Első kerékpár hozzáadása</button>
+                <div style={{ fontSize: '15px', color: 'rgba(17,17,17,0.5)', marginBottom: '1.5rem' }}>
+                  {bikes.length === 0 ? 'Még nincs kerékpár feltöltve.' : 'Nincs találat a szűrési feltételekre.'}
+                </div>
+                {bikes.length === 0 && (
+                  <button onClick={newBike} style={{ background: '#111111', color: '#ffffff', border: 'none', padding: '12px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '14px' }}>
+                    + Első kerékpár hozzáadása
+                  </button>
+                )}
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {bikes.map(bike => (
-                  <div key={bike.id} style={{
-                    background: '#ffffff', border: '1px solid #E8E4DC',
-                    borderRadius: '12px', padding: '1rem 1.25rem',
-                    display: 'flex', alignItems: 'center', gap: '1rem',
-                    opacity: bike.sold ? 0.6 : 1,
-                    transition: 'opacity 0.2s',
-                  }}>
-                    {/* Thumb */}
-                    <div style={{
-                      width: '72px', height: '54px', flexShrink: 0,
-                      background: '#f5f5f5', borderRadius: '8px', overflow: 'hidden',
-                      position: 'relative',
-                    }}>
-                      {bike.images?.[0] && (
-                        <img src={bike.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      )}
-                      {bike.sold && (
-                        <div style={{
-                          position: 'absolute', inset: 0, background: 'rgba(220,38,38,0.75)',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: '8px', fontWeight: 800, color: '#fff',
-                          letterSpacing: '0.06em', textTransform: 'uppercase',
-                        }}>ELADVA</div>
-                      )}
-                    </div>
+              <>
+                {/* Header checkbox row */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '8px 1.25rem', marginBottom: '4px' }}>
+                  <input type="checkbox" checked={selected.length === filteredBikes.length && filteredBikes.length > 0} onChange={selectAll}
+                    style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: '#111111' }} />
+                  <span style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(17,17,17,0.4)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Összes kijelölése</span>
+                </div>
 
-                    {/* Info */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: '10px', fontWeight: 700, color: '#e8c547', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '2px' }}>{bike.brand}</div>
-                      <div style={{
-                        fontWeight: 700, fontSize: '0.95rem',
-                        color: '#111111', whiteSpace: 'nowrap',
-                        overflow: 'hidden', textOverflow: 'ellipsis',
-                        textDecoration: bike.sold ? 'line-through' : 'none',
-                        letterSpacing: '-0.02em',
-                      }}>{bike.model}</div>
-                      <div style={{ fontSize: '11px', color: 'rgba(17,17,17,0.4)', marginTop: '2px' }}>
-                        {bike.condition === 'outlet' ? 'Outlet' : 'Használt'} · {CATEGORIES.find(c => c.key === bike.category)?.label}
-                        {bike.sold && <span style={{ color: '#dc2626', fontWeight: 600, marginLeft: '6px' }}>· ELADVA</span>}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {filteredBikes.map(bike => (
+                    <div key={bike.id} style={{ background: '#ffffff', border: `1px solid ${selected.includes(bike.id) ? '#111111' : '#E8E4DC'}`, borderRadius: '12px', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', opacity: bike.sold ? 0.6 : 1, transition: 'border-color 0.15s, opacity 0.2s' }}>
+                      {/* Checkbox */}
+                      <input type="checkbox" checked={selected.includes(bike.id)} onChange={() => toggleSelect(bike.id)}
+                        style={{ width: '16px', height: '16px', cursor: 'pointer', flexShrink: 0, accentColor: '#111111' }} />
+
+                      {/* Thumb */}
+                      <div style={{ width: '72px', height: '54px', flexShrink: 0, background: '#f5f5f5', borderRadius: '8px', overflow: 'hidden', position: 'relative' }}>
+                        {bike.images?.[0] && <img src={bike.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                        {bike.sold && <div style={{ position: 'absolute', inset: 0, background: 'rgba(220,38,38,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', fontWeight: 800, color: '#fff', letterSpacing: '0.06em', textTransform: 'uppercase' }}>ELADVA</div>}
+                      </div>
+
+                      {/* Info */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: '10px', fontWeight: 700, color: '#e8c547', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '2px' }}>{bike.brand}</div>
+                        <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111111', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textDecoration: bike.sold ? 'line-through' : 'none', letterSpacing: '-0.02em' }}>{bike.model}</div>
+                        <div style={{ fontSize: '11px', color: 'rgba(17,17,17,0.4)', marginTop: '2px' }}>
+                          {bike.condition === 'outlet' ? 'Outlet' : 'Használt'} · {CATEGORIES.find(c => c.key === bike.category)?.label}
+                          {bike.sold && <span style={{ color: '#dc2626', fontWeight: 600, marginLeft: '6px' }}>· ELADVA</span>}
+                        </div>
+                      </div>
+
+                      {/* Price */}
+                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                        <div style={{ fontSize: '11px', color: 'rgba(17,17,17,0.35)', textDecoration: 'line-through', marginBottom: '2px' }}>{bike.original_price.toLocaleString('hu-HU')} Ft</div>
+                        <div style={{ fontWeight: 800, fontSize: '1rem', letterSpacing: '-0.03em' }}>{bike.sale_price.toLocaleString('hu-HU')} Ft</div>
+                      </div>
+
+                      {/* Actions */}
+                      <div style={{ display: 'flex', gap: '2px', flexShrink: 0 }}>
+                        <button onClick={() => toggleField(bike.id, 'available', bike.available)} title={bike.available ? 'Elrejtés' : 'Megjelenítés'} style={iconBtn(bike.available ? '#059669' : 'rgba(17,17,17,0.25)')}>
+                          {bike.available ? <Eye size={16} /> : <EyeOff size={16} />}
+                        </button>
+                        <button onClick={() => toggleField(bike.id, 'featured', bike.featured)} title={bike.featured ? 'Kiemelt törlés' : 'Kiemelés'} style={iconBtn(bike.featured ? '#e8c547' : 'rgba(17,17,17,0.25)')}>
+                          <Star size={16} fill={bike.featured ? '#e8c547' : 'none'} />
+                        </button>
+                        <button onClick={() => toggleSold(bike.id, !!bike.sold)} title={bike.sold ? 'Eladott visszavon' : 'Eladottnak jelöl'} style={iconBtn(bike.sold ? '#dc2626' : 'rgba(17,17,17,0.25)')}>
+                          <ShoppingBag size={16} />
+                        </button>
+                        <button onClick={() => editBike(bike)} title="Szerkesztés" style={iconBtn('rgba(17,17,17,0.5)')}><Edit size={16} /></button>
+                        <button onClick={() => deleteBike(bike.id)} title="Törlés" style={iconBtn('#dc2626')}><Trash2 size={16} /></button>
                       </div>
                     </div>
-
-                    {/* Price */}
-                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                      <div style={{ fontSize: '11px', color: 'rgba(17,17,17,0.35)', textDecoration: 'line-through', marginBottom: '2px' }}>
-                        {bike.original_price.toLocaleString('hu-HU')} Ft
-                      </div>
-                      <div style={{
-                        fontWeight: 800, fontSize: '1rem',
-                        color: '#111111', letterSpacing: '-0.03em',
-                      }}>{bike.sale_price.toLocaleString('hu-HU')} Ft</div>
-                    </div>
-
-                    {/* Actions */}
-                    <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
-                      <button
-                        onClick={() => toggleField(bike.id, 'available', bike.available)}
-                        title={bike.available ? 'Elrejtés' : 'Megjelenítés'}
-                        style={iconBtn(bike.available ? '#059669' : 'rgba(17,17,17,0.25)')}
-                      >
-                        {bike.available ? <Eye size={16} /> : <EyeOff size={16} />}
-                      </button>
-                      <button
-                        onClick={() => toggleField(bike.id, 'featured', bike.featured)}
-                        title={bike.featured ? 'Kiemelt törlés' : 'Kiemelés'}
-                        style={iconBtn(bike.featured ? '#e8c547' : 'rgba(17,17,17,0.25)')}
-                      >
-                        <Star size={16} fill={bike.featured ? '#e8c547' : 'none'} />
-                      </button>
-                      <button
-                        onClick={() => toggleSold(bike.id, !!bike.sold)}
-                        title={bike.sold ? 'Eladott jelölés visszavon' : 'Eladottnak jelöl'}
-                        style={iconBtn(bike.sold ? '#dc2626' : 'rgba(17,17,17,0.25)')}
-                      >
-                        <ShoppingBag size={16} />
-                      </button>
-                      <button onClick={() => editBike(bike)} title="Szerkesztés" style={iconBtn('rgba(17,17,17,0.5)')}>
-                        <Edit size={16} />
-                      </button>
-                      <button onClick={() => deleteBike(bike.id)} title="Törlés" style={iconBtn('#dc2626')}>
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         )}
@@ -700,29 +670,19 @@ export default function AdminPage() {
 }
 
 const labelStyle: React.CSSProperties = {
-  display: 'block',
-  fontSize: '11px', fontWeight: 600,
+  display: 'block', fontSize: '11px', fontWeight: 600,
   letterSpacing: '0.08em', textTransform: 'uppercase',
-  color: 'rgba(17,17,17,0.45)',
-  marginBottom: '6px',
+  color: 'rgba(17,17,17,0.45)', marginBottom: '6px',
 }
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '10px 12px',
-  background: '#ffffff',
-  border: '1px solid #E8E4DC',
+  background: '#ffffff', border: '1px solid #E8E4DC',
   borderRadius: '8px', color: '#111111',
   fontSize: '14px', outline: 'none',
   fontFamily: 'Inter, system-ui, sans-serif',
-  marginBottom: '0',
 }
 
 function iconBtn(color: string): React.CSSProperties {
-  return {
-    background: 'none', border: 'none',
-    color, cursor: 'pointer', padding: '7px',
-    display: 'flex', alignItems: 'center',
-    borderRadius: '6px',
-    transition: 'background 0.12s',
-  }
+  return { background: 'none', border: 'none', color, cursor: 'pointer', padding: '7px', display: 'flex', alignItems: 'center', borderRadius: '6px' }
 }

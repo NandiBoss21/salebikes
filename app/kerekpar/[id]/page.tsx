@@ -1,7 +1,9 @@
 import { supabase } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import BikeGallery from '@/components/BikeGallery'
-import { Phone, CheckCircle, ChevronLeft } from 'lucide-react'
+import TrackPageView from '@/components/TrackPageView'
+import { InquiryButtonDesktop, InquiryButtonMobile } from '@/components/InquiryButton'
+import { CheckCircle, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import type { Bike } from '@/lib/supabase'
 import type { Metadata } from 'next'
@@ -81,6 +83,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
   return (
     <>
       <Navbar />
+      <TrackPageView path={`/kerekpar/${id}`} bikeId={id} />
 
       <div className="bike-detail-wrap" style={{
         background: pageBg,
@@ -236,18 +239,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
             </div>
 
             {/* CTA — desktop */}
-            <a href="tel:+36308897559" className="bike-cta-btn hide-mobile" style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              gap: '10px', width: '100%', padding: '16px',
-              color: '#111111',
-              borderRadius: '9px', textDecoration: 'none',
-              fontSize: '16px', fontWeight: 800,
-              letterSpacing: '-0.02em',
-              marginBottom: '1.5rem',
-            }}>
-              <Phone size={18} />
-              Érdeklődöm – +36 30 889 7559
-            </a>
+            <InquiryButtonDesktop bikeId={bike.id} bikeName={`${bike.brand} ${bike.model}`} />
 
             {/* Specs */}
             {bike.specs?.length > 0 && (
@@ -337,17 +329,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
       </div>
 
       {/* Sticky CTA — mobile only */}
-      <a href="tel:+36308897559" className="mobile-cta" style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200,
-        background: '#e8c547', color: '#111111',
-        alignItems: 'center', justifyContent: 'center',
-        gap: '10px', padding: '16px',
-        fontSize: '15px', fontWeight: 800,
-        letterSpacing: '-0.01em', textDecoration: 'none',
-      }}>
-        <Phone size={17} />
-        Érdeklődöm – +36 30 889 7559
-      </a>
+      <InquiryButtonMobile bikeId={bike.id} bikeName={`${bike.brand} ${bike.model}`} />
     </>
   )
 }

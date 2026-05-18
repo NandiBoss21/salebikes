@@ -10,6 +10,7 @@ import type { Bike } from '@/lib/supabase'
 import { motion } from 'framer-motion'
 import AnimatedSection from '@/components/AnimatedSection'
 import { useCountUp } from '@/hooks/useCountUp'
+import { usePageView } from '@/hooks/usePageView'
 
 const CATEGORIES = [
   { label: 'Ebike',       href: '/ebike',       image: '/image/category-ebike.png' },
@@ -99,6 +100,7 @@ function useAos(deps: unknown[]) {
 
 
 export default function Home() {
+  usePageView('/')
   const [bikes, setBikes] = useState<Bike[]>([])
   const [latestBikes, setLatestBikes] = useState<Bike[]>([])
   const [loading, setLoading] = useState(true)
