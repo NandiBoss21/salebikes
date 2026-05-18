@@ -25,14 +25,25 @@ const CONDITION_LEVELS = [
 ]
 const CONDITION_IDX: Record<string, number> = { outlet: 0, hasznalt: 2 }
 
-function getBikeColorScheme(color?: string | null) {
-  if (!color) return { bg: '#fafaf8', isDark: false }
+// Subtle tinted background based on bike color — max ~5% color, never darker than #e8e8e8
+function getBikeBackground(color?: string | null): string {
+  if (!color) return '#fafaf8'
   const c = color.toLowerCase()
-  if (/fekete|black|sötét|charcoal|grafite|grafit/.test(c)) return { bg: '#1a1a1a', isDark: true }
-  if (/zöld|green|olive|khaki|forest|lime/.test(c))          return { bg: '#f0f4f0', isDark: false }
-  if (/kék|blue|navy|cobalt|teal|türkiz/.test(c))            return { bg: '#f0f2f8', isDark: false }
-  if (/piros|red|bordó|narancs|orange|coral|rose|pink/.test(c)) return { bg: '#fdf0f0', isDark: false }
-  return { bg: '#fafaf8', isDark: false }
+  if (/fekete|black|sötét|charcoal|grafite|grafit/.test(c)) return '#f0f0f0'
+  if (/zöld|green|olive|khaki|forest|lime/.test(c))          return '#f2f5f2'
+  if (/kék|blue|navy|cobalt|teal|türkiz/.test(c))            return '#f2f3f8'
+  if (/piros|red|bordó|narancs|orange|coral|rose|pink/.test(c)) return '#fdf2f2'
+  return '#fafaf8'
+}
+
+// Strip lines that contain boilerplate already shown elsewhere on the page
+const STRIP_KEYWORDS = ['Bolti ár', 'salebikes.hu', 'Kápolnásnyék', '+36']
+function cleanDescription(text: string): string {
+  return text
+    .split('\n')
+    .filter(line => !STRIP_KEYWORDS.some(kw => line.includes(kw)))
+    .join('\n')
+    .trim()
 }
 
 export default async function BikePage({ params }: { params: Promise<{ id: string }> }) {
@@ -64,34 +75,15 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
   const pct = Math.round((1 - bike.sale_price / bike.original_price) * 100)
   const condIdx = CONDITION_IDX[bike.condition] ?? 2
   const viewers = (id.charCodeAt(id.length - 1) % 8) + 3
-
-  const scheme = getBikeColorScheme(bike.color)
-  const isDark = scheme.isDark
-
-  // Color tokens — adapt to dark/light scheme
-  const t1  = isDark ? '#ffffff'                    : '#111111'
-  const t2  = isDark ? 'rgba(255,255,255,0.55)'     : 'rgba(17,17,17,0.55)'
-  const t3  = isDark ? 'rgba(255,255,255,0.4)'      : 'rgba(17,17,17,0.4)'
-  const t4  = isDark ? 'rgba(255,255,255,0.35)'     : 'rgba(17,17,17,0.35)'
-  const t5  = isDark ? 'rgba(255,255,255,0.5)'      : 'rgba(17,17,17,0.5)'
-  const t6  = isDark ? 'rgba(255,255,255,0.45)'     : 'rgba(17,17,17,0.45)'
-  const t7  = isDark ? 'rgba(255,255,255,0.75)'     : 'rgba(17,17,17,0.75)'
-  const bd  = isDark ? 'rgba(255,255,255,0.10)'     : 'rgba(0,0,0,0.07)'
-  const bd2 = isDark ? 'rgba(255,255,255,0.08)'     : 'rgba(0,0,0,0.06)'
-  const bd3 = isDark ? 'rgba(255,255,255,0.15)'     : 'rgba(0,0,0,0.10)'
-  const cardBg  = isDark ? 'rgba(255,255,255,0.08)' : '#f5f3ef'
-  const tbEven  = isDark ? 'rgba(255,255,255,0.04)' : '#ffffff'
-  const tbOdd   = isDark ? 'rgba(255,255,255,0.08)' : '#fafaf8'
-  const guarBg  = isDark ? 'rgba(255,255,255,0.06)' : '#fafaf8'
-  const specClr = isDark ? 'rgba(255,255,255,0.7)'  : 'rgba(17,17,17,0.7)'
-  const inactiveBar = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)'
+  const pageBg = getBikeBackground(bike.color)
+  const cleanDesc = bike.description ? cleanDescription(bike.description) : ''
 
   return (
     <>
       <Navbar />
 
       <div className="bike-detail-wrap" style={{
-        background: scheme.bg,
+        background: pageBg,
         transition: 'background 0.6s ease',
       }}>
 
@@ -99,7 +91,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
         <Link href="/" style={{
           display: 'inline-flex', alignItems: 'center', gap: '6px',
           fontSize: '13px', fontWeight: 500,
-          color: t6, textDecoration: 'none',
+          color: 'rgba(17,17,17,0.45)', textDecoration: 'none',
           marginBottom: '2rem',
           transition: 'color 0.15s',
         }}>
@@ -126,7 +118,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
                 fontSize: '10px', fontWeight: 700,
                 textTransform: 'uppercase', letterSpacing: '0.05em',
                 padding: '3px 9px', borderRadius: '4px',
-                background: bike.condition === 'outlet' ? '#e8c547' : '#333333',
+                background: bike.condition === 'outlet' ? '#e8c547' : '#111111',
                 color: bike.condition === 'outlet' ? '#111111' : '#ffffff',
               }}>
                 {bike.condition === 'outlet' ? 'Outlet' : 'Használt'}
@@ -136,20 +128,20 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
             <h1 style={{
               fontSize: 'clamp(1.75rem, 4vw, 2.75rem)',
               fontWeight: 800, letterSpacing: '-0.04em',
-              color: t1, lineHeight: 1.1,
+              color: '#111111', lineHeight: 1.1,
               marginBottom: '1.75rem',
             }}>{bike.model}</h1>
 
             {/* Price block */}
             <div style={{
-              background: cardBg,
-              border: `1px solid ${bd}`,
+              background: '#f5f3ef',
+              border: '1px solid rgba(0,0,0,0.07)',
               borderRadius: '10px',
               padding: '1.5rem',
               marginBottom: '1.75rem',
             }}>
               <div style={{
-                fontSize: '13px', color: t3,
+                fontSize: '13px', color: 'rgba(17,17,17,0.4)',
                 textDecoration: 'line-through', marginBottom: '6px',
                 letterSpacing: '-0.01em',
               }}>
@@ -158,7 +150,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
               <div style={{
                 fontSize: 'clamp(2rem, 5vw, 3rem)',
                 fontWeight: 900, letterSpacing: '-0.05em',
-                color: t1, lineHeight: 1, marginBottom: '12px',
+                color: '#111111', lineHeight: 1, marginBottom: '12px',
               }}>{bike.sale_price.toLocaleString('hu-HU')} Ft</div>
               {savings > 0 && (
                 <div style={{
@@ -179,7 +171,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
                 <div style={{
                   fontSize: '11px', fontWeight: 700,
                   letterSpacing: '0.06em', textTransform: 'uppercase',
-                  color: t4,
+                  color: 'rgba(17,17,17,0.35)',
                 }}>Állapot</div>
                 <details style={{ display: 'inline' }}>
                   <summary style={{
@@ -214,13 +206,13 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
                   <div key={c.label} style={{ flex: 1, textAlign: 'center' }}>
                     <div style={{
                       height: '4px', borderRadius: '2px',
-                      background: i <= condIdx ? '#e8c547' : inactiveBar,
+                      background: i <= condIdx ? '#e8c547' : 'rgba(0,0,0,0.1)',
                       marginBottom: '6px',
                       transition: 'background 0.2s',
                     }} />
                     <div style={{
                       fontSize: '10px', fontWeight: i === condIdx ? 700 : 500,
-                      color: i === condIdx ? t1 : t4,
+                      color: i === condIdx ? '#111111' : 'rgba(17,17,17,0.35)',
                       letterSpacing: '-0.01em',
                     }}>{c.label}</div>
                   </div>
@@ -232,7 +224,8 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
             <div style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               fontSize: '12px', fontWeight: 500,
-              color: t5, marginBottom: '1.5rem',
+              color: 'rgba(17,17,17,0.5)',
+              marginBottom: '1.5rem',
             }}>
               <span style={{
                 display: 'inline-block', width: '8px', height: '8px',
@@ -262,15 +255,15 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
                 <div style={{
                   fontSize: '11px', fontWeight: 700,
                   letterSpacing: '0.06em', textTransform: 'uppercase',
-                  color: t4, marginBottom: '10px',
+                  color: 'rgba(17,17,17,0.35)', marginBottom: '10px',
                 }}>Komponensek</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {bike.specs.map((s, i) => (
                     <span key={i} style={{
                       fontSize: '12px', fontWeight: 500,
                       padding: '5px 11px',
-                      border: `1px solid ${bd3}`,
-                      borderRadius: '5px', color: specClr,
+                      border: '1px solid rgba(0,0,0,0.10)',
+                      borderRadius: '5px', color: 'rgba(17,17,17,0.7)',
                     }}>{s}</span>
                   ))}
                 </div>
@@ -280,7 +273,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
             {/* Details table */}
             {(bike.size || bike.year || bike.color) && (
               <div style={{
-                border: `1px solid ${bd}`,
+                border: '1px solid rgba(0,0,0,0.07)',
                 borderRadius: '10px', overflow: 'hidden',
                 marginBottom: '2.25rem',
               }}>
@@ -293,29 +286,31 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
                     display: 'flex', justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '12px 16px',
-                    borderBottom: i < arr.length - 1 ? `1px solid ${bd2}` : 'none',
-                    background: i % 2 === 0 ? tbEven : tbOdd,
+                    borderBottom: i < arr.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
+                    background: i % 2 === 0 ? '#ffffff' : '#fafaf8',
                   }}>
-                    <span style={{ fontSize: '13px', color: t5, fontWeight: 500 }}>{row.label}</span>
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: t1 }}>{row.val}</span>
+                    <span style={{ fontSize: '13px', color: 'rgba(17,17,17,0.45)', fontWeight: 500 }}>{row.label}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600 }}>{row.val}</span>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Description */}
-            {bike.description && (
+            {/* Description — boilerplate lines filtered, newlines preserved */}
+            {cleanDesc && (
               <p style={{
                 fontSize: '14px', lineHeight: 1.8,
-                color: t2, marginBottom: '2rem',
-              }}>{bike.description}</p>
+                color: 'rgba(17,17,17,0.55)',
+                marginBottom: '2rem',
+                whiteSpace: 'pre-line',
+              }}>{cleanDesc}</p>
             )}
 
             {/* Guarantee list */}
             <div style={{
-              border: `1px solid ${bd}`,
+              border: '1px solid rgba(0,0,0,0.07)',
               borderRadius: '12px', padding: '0.25rem 1.5rem',
-              background: guarBg,
+              background: '#fafaf8',
             }}>
               {[
                 '3 hónap garancia rendeltetésszerű használat mellett',
@@ -325,9 +320,10 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
                 <div key={i} style={{
                   display: 'flex', alignItems: 'center', gap: '12px',
                   padding: '16px 0',
-                  borderBottom: i < 2 ? `1px solid ${bd2}` : 'none',
+                  borderBottom: i < 2 ? '1px solid rgba(0,0,0,0.06)' : 'none',
                   fontSize: '14px', fontWeight: 500,
-                  color: t7, lineHeight: 1.4,
+                  color: 'rgba(17,17,17,0.75)',
+                  lineHeight: 1.4,
                 }}>
                   <span style={{ color: '#22c55e', flexShrink: 0 }}>
                     <CheckCircle size={18} />
