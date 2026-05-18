@@ -278,7 +278,7 @@ export default function Home() {
 
       {/* ── CATEGORY GRID ──────────────────────────────────────── */}
       <section style={{
-        padding: '0 clamp(1.5rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem)',
+        padding: '3rem clamp(1.5rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem)',
         background: '#111111',
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}>
@@ -289,9 +289,9 @@ export default function Home() {
             marginBottom: '1.75rem',
           }}>
             <span style={{
-              fontSize: '10px', fontWeight: 800,
+              fontSize: '14px', fontWeight: 700,
               letterSpacing: '0.12em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.35)',
+              color: '#ffffff',
             }}>Kategóriák</span>
             <span style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }} />
           </div>
