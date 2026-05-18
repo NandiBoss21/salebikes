@@ -163,7 +163,7 @@ export default function Home() {
           </div>
 
           <h1 className="aos d1" style={{
-            fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)',
+            fontSize: 'clamp(1.9rem, 5.5vw, 4.2rem)',
             fontWeight: 900, letterSpacing: '-0.045em',
             lineHeight: 1.02, color: '#ffffff',
             marginBottom: '1.75rem',
@@ -246,7 +246,7 @@ export default function Home() {
           {[
             { num: '1000+', label: 'Eladás 2006 óta' },
             { num: '180 000 Ft', label: 'Átlag megtakarítás' },
-            { num: '4.9★', label: 'Google értékelés' },
+            { num: '4.9 ★', label: 'Google értékelés' },
             { num: 'Garancia', label: 'Minden kerékpárra' },
           ].map((stat, i) => (
             <div key={stat.label} style={{

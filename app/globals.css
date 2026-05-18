@@ -99,7 +99,14 @@ a { color: inherit; }
 /* ── Hero stat bar responsive ───────────────────── */
 @media (max-width: 600px) {
   .hero-stat-bar { flex-wrap: wrap; }
-  .hero-stat-bar > div { flex: 0 0 50%; border-top: 1px solid rgba(255,255,255,0.2); }
+  .hero-stat-bar > div {
+    flex: 0 0 50%;
+    border-left: none !important;
+    border-top: 1px solid rgba(255,255,255,0.2);
+  }
+  .hero-stat-bar > div:nth-child(odd) {
+    border-right: 1px solid rgba(255,255,255,0.2);
+  }
 }
 
 /* ── Sticky mobile CTA ──────────────────────────── */
