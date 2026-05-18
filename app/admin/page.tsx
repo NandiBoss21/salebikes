@@ -12,6 +12,8 @@ const CATEGORIES = [
   { key: 'gyerek', label: 'Gyerek' },
   { key: 'orszaguti', label: 'Országúti / Verseny' },
   { key: 'kemping', label: 'Kemping' },
+  { key: 'alkatreszek', label: 'Alkatrészek' },
+  { key: 'ruhazat', label: 'Ruházat' },
 ]
 
 const BRANDS = ['Cube', 'Scott', 'Bulls', 'Giant', 'KTM', 'Merida', 'Corratec', 'Genesis', 'Focus', 'Brennabor', 'Hercules', 'Kalkhoff', 'Egyéb']
