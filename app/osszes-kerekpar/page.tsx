@@ -286,11 +286,17 @@ export default function OsszesKerekparPage() {
               }}>Szűrők törlése</button>
             </div>
           ) : (
-            <div className="bikes-grid">
-              {filtered.map(bike => (
-                <BikeCard key={bike.id} bike={bike} />
-              ))}
-            </div>
+            <>
+              <div style={{
+                fontSize: '12px', color: 'rgba(17,17,17,0.4)',
+                marginBottom: '1.25rem', fontWeight: 500,
+              }}>{filtered.length} kerékpár elérhető</div>
+              <div className="bikes-grid">
+                {filtered.map(bike => (
+                  <BikeCard key={bike.id} bike={bike} />
+                ))}
+              </div>
+            </>
           )}
         </div>
       </section>
