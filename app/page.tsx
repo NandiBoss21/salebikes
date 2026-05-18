@@ -289,7 +289,7 @@ export default function Home() {
         }}>
           {[
             {
-              label: 'Eladás 2006 óta',
+              label: 'Eladás 2008 óta',
               numEl: <span ref={ref1000} style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.03em', lineHeight: 1.2 }}>{count1000}+</span>,
             },
             {

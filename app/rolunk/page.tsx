@@ -4,11 +4,11 @@ import { Phone, Mail, MapPin, Wrench, Zap, Package, Star } from 'lucide-react'
 
 export const metadata = {
   title: 'Rólunk | SaleBikes – Bringabarát',
-  description: 'Családi vállalkozás 2006 óta. Prémium használt kerékpárok, veterán felújítás, Bosch ebike szakszerviz. Kápolnásnyék.',
+  description: 'Családi vállalkozás 2008 óta. Prémium használt kerékpárok, veterán felújítás, Bosch ebike szakszerviz. Kápolnásnyék.',
 }
 
 const STATS = [
-  { num: '2006', label: 'óta működünk' },
+  { num: '2008', label: 'óta működünk' },
   { num: '1000+', label: 'eladott kerékpár' },
   { num: '4.9★', label: 'Google értékelés' },
 ]
@@ -66,7 +66,7 @@ export default function RolunkPage() {
             fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
             fontWeight: 500, color: 'rgba(255,255,255,0.45)',
             letterSpacing: '-0.01em',
-          }}>Családi vállalkozás 2006 óta</p>
+          }}>Családi vállalkozás 2008 óta</p>
         </div>
       </section>
 
@@ -104,7 +104,7 @@ export default function RolunkPage() {
                 color: 'rgba(17,17,17,0.6)',
                 maxWidth: '520px',
               }}>
-                2006 óta foglalkozunk kerékpárok, alkatrészek értékesítésével és veterán kerékpárok felújításával. Ami kis műhelyként indult, mára egy megbízható, online is elérhető kerékpár üzletté nőtte ki magát.
+                2008 óta foglalkozunk kerékpárok, alkatrészek értékesítésével és veterán kerékpárok felújításával. Ami kis műhelyként indult, mára egy megbízható, online is elérhető kerékpár üzletté nőtte ki magát.
               </p>
             </div>
 
