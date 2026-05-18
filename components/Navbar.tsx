@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Phone, Menu, X, ChevronDown } from 'lucide-react'
 
@@ -12,8 +12,11 @@ const NAV_PRIMARY = [
 const NAV_DROPDOWN = [
   { label: 'Gravel',    href: '/gravel' },
   { label: 'Gyerek',   href: '/gyerek' },
-  { label: 'Országúti',href: '/orszaguti' },
+  { label: 'Országúti', href: '/orszaguti' },
   { label: 'Kemping',  href: '/kemping' },
+]
+
+const NAV_EXTRA = [
   { label: 'Alkatrészek', href: '/alkatreszek' },
   { label: 'Ruházat',     href: '/ruhazat' },
 ]
@@ -26,8 +29,9 @@ const NAV_RIGHT = [
 
 const NAV_MOBILE = [
   ...NAV_PRIMARY,
-  ...NAV_DROPDOWN,
   { label: 'Összes kerékpár', href: '/' },
+  ...NAV_DROPDOWN,
+  ...NAV_EXTRA,
   ...NAV_RIGHT,
 ]
 
@@ -35,6 +39,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const [dropOpen, setDropOpen] = useState(false)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 50)
@@ -42,6 +47,15 @@ export default function Navbar() {
     window.addEventListener('scroll', fn, { passive: true })
     return () => window.removeEventListener('scroll', fn)
   }, [])
+
+  function openDrop() {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    setDropOpen(true)
+  }
+
+  function closeDrop() {
+    closeTimer.current = setTimeout(() => setDropOpen(false), 150)
+  }
 
   const textColor = scrolled ? 'rgba(17,17,17,0.5)' : 'rgba(255,255,255,0.85)'
   const hoverColor = scrolled ? '#111111' : '#ffffff'
@@ -91,8 +105,9 @@ export default function Navbar() {
         {/* Desktop left nav */}
         <ul className="desk-nav" style={{
           display: 'flex', listStyle: 'none',
-          gap: '2.5rem', flex: 1,
+          gap: '0.25rem', flex: 1, alignItems: 'center',
         }}>
+          {/* Primary links */}
           {NAV_PRIMARY.map(item => (
             <li key={item.label}>
               <Link href={item.href} style={linkStyle}
@@ -111,8 +126,8 @@ export default function Navbar() {
           {/* Összes kerékpár dropdown */}
           <li
             style={{ position: 'relative' }}
-            onMouseEnter={() => setDropOpen(true)}
-            onMouseLeave={() => setDropOpen(false)}
+            onMouseEnter={openDrop}
+            onMouseLeave={closeDrop}
           >
             <button style={{
               ...linkStyle,
@@ -128,50 +143,76 @@ export default function Navbar() {
               }} />
             </button>
 
-            {dropOpen && (
-              <div style={{
-                position: 'absolute', top: 'calc(100% + 4px)', left: 0,
+            {/* Dropdown panel — always rendered for CSS transitions */}
+            <div
+              onMouseEnter={openDrop}
+              onMouseLeave={closeDrop}
+              style={{
+                position: 'absolute', top: 'calc(100% + 8px)', left: 0,
                 background: '#ffffff',
-                border: '1px solid rgba(0,0,0,0.08)',
-                borderRadius: '10px',
+                border: '1px solid rgba(0,0,0,0.07)',
+                borderRadius: '12px',
                 padding: '6px',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.10)',
-                minWidth: '160px', zIndex: 200,
-              }}>
-                <Link href="/" style={{
-                  display: 'block', padding: '8px 12px 12px',
-                  fontSize: '13px', fontWeight: 600,
-                  color: '#111111', textDecoration: 'none',
-                  borderRadius: '6px', marginBottom: '6px',
-                  borderBottom: '1px solid rgba(0,0,0,0.06)',
-                }}>Összes kerékpár</Link>
-                {NAV_DROPDOWN.map(item => (
-                  <Link key={item.label} href={item.href}
-                    onClick={() => setDropOpen(false)}
-                    style={{
-                      display: 'block', padding: '8px 12px',
-                      fontSize: '13px', fontWeight: 500,
-                      color: 'rgba(17,17,17,0.65)',
-                      textDecoration: 'none', borderRadius: '6px',
-                      transition: 'background 0.1s, color 0.1s',
-                    }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.background = '#f5f5f5'
-                      e.currentTarget.style.color = '#111111'
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.background = 'transparent'
-                      e.currentTarget.style.color = 'rgba(17,17,17,0.65)'
-                    }}
-                  >{item.label}</Link>
-                ))}
-              </div>
-            )}
+                boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                minWidth: '172px', zIndex: 200,
+                opacity: dropOpen ? 1 : 0,
+                transform: dropOpen ? 'translateY(0)' : 'translateY(-8px)',
+                pointerEvents: dropOpen ? 'auto' : 'none',
+                transition: 'opacity 0.2s ease, transform 0.2s ease',
+              }}
+            >
+              <Link href="/" onClick={() => setDropOpen(false)} style={{
+                display: 'block', padding: '9px 16px 11px',
+                fontSize: '13px', fontWeight: 600,
+                color: '#111111', textDecoration: 'none',
+                borderRadius: '7px', marginBottom: '4px',
+                borderBottom: '1px solid rgba(0,0,0,0.06)',
+              }}>Összes kerékpár</Link>
+
+              {NAV_DROPDOWN.map(item => (
+                <Link key={item.label} href={item.href}
+                  onClick={() => setDropOpen(false)}
+                  style={{
+                    display: 'block', padding: '10px 16px',
+                    fontSize: '13px', fontWeight: 500,
+                    color: 'rgba(17,17,17,0.65)',
+                    textDecoration: 'none', borderRadius: '7px',
+                    transition: 'background 0.15s, color 0.15s, box-shadow 0.15s',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = '#fafaf8'
+                    e.currentTarget.style.color = '#111111'
+                    e.currentTarget.style.boxShadow = 'inset 3px 0 0 #e8c547'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'transparent'
+                    e.currentTarget.style.color = 'rgba(17,17,17,0.65)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}
+                >{item.label}</Link>
+              ))}
+            </div>
           </li>
+
+          {/* Alkatrészek + Ruházat as direct links */}
+          {NAV_EXTRA.map(item => (
+            <li key={item.label}>
+              <Link href={item.href} style={linkStyle}
+                onMouseEnter={e => {
+                  e.currentTarget.style.color = hoverColor
+                  e.currentTarget.style.background = hoverBg
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.color = textColor
+                  e.currentTarget.style.background = 'transparent'
+                }}
+              >{item.label}</Link>
+            </li>
+          ))}
         </ul>
 
         {/* Desktop right nav + CTA */}
-        <div className="desk-nav" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', flexShrink: 0 }}>
+        <div className="desk-nav" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexShrink: 0 }}>
           {NAV_RIGHT.map(item => (
             <Link key={item.label} href={item.href} style={linkStyle}
               onMouseEnter={e => {
@@ -191,7 +232,7 @@ export default function Navbar() {
             padding: '9px 18px', borderRadius: '8px',
             fontSize: '13px', fontWeight: 700,
             letterSpacing: '-0.01em', textDecoration: 'none',
-            marginLeft: '6px',
+            marginLeft: '10px',
             transition: 'background 0.15s',
           }}
             onMouseEnter={e => (e.currentTarget.style.background = '#d4b23e')}
