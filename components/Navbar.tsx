@@ -29,10 +29,12 @@ export default function Navbar() {
   return (
     <nav style={{
       position: 'sticky', top: 0, zIndex: 100,
-      background: '#ffffff',
-      borderBottom: scrolled ? '1px solid rgba(0,0,0,0.08)' : 'none',
-      boxShadow: scrolled ? '0 2px 16px rgba(0,0,0,0.06)' : 'none',
-      transition: 'box-shadow 0.25s ease, border-color 0.25s ease',
+      background: scrolled ? 'rgba(255,255,255,0.85)' : '#ffffff',
+      backdropFilter: scrolled ? 'blur(12px)' : 'none',
+      WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
+      borderBottom: scrolled ? '1px solid rgba(0,0,0,0.07)' : 'none',
+      boxShadow: scrolled ? '0 1px 20px rgba(0,0,0,0.06)' : 'none',
+      transition: 'background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease',
     }}>
       <div style={{
         maxWidth: '1360px', margin: '0 auto',

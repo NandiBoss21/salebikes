@@ -2,11 +2,16 @@
 
 :root {
   --yellow: #e8c547;
+  --accent: #E8C547;
   --dark: #111111;
+  --black: #111111;
   --muted: rgba(17,17,17,0.45);
-  --border: rgba(0,0,0,0.08);
-  --bg-primary: #fafaf8;
-  --bg-secondary: #f5f3ef;
+  --text-secondary: #6B6B6B;
+  --border: #E8E4DC;
+  --card-bg: #FFFFFF;
+  --bg-primary: #FAFAF8;
+  --bg-secondary: #F2F0EB;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,9 +31,9 @@ a { color: inherit; }
 /* ── Scroll animations ──────────────────────────── */
 .aos {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(40px);
+  transition: opacity 0.7s var(--ease-out-expo),
+              transform 0.7s var(--ease-out-expo);
 }
 .aos.in-view { opacity: 1; transform: none; }
 .d1 { transition-delay: 0.05s; }
@@ -43,8 +48,8 @@ a { color: inherit; }
 
 /* ── Category card hover ────────────────────────── */
 .cat-card {
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              box-shadow 0.3s ease;
+  transition: transform 0.3s var(--ease-out-expo),
+              box-shadow 0.3s var(--ease-out-expo);
 }
 .cat-card:hover {
   transform: scale(1.03);

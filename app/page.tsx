@@ -86,7 +86,7 @@ export default function Home() {
         <div style={{
           padding: 'clamp(3.5rem, 7vw, 6rem) clamp(2rem, 5vw, 5.5rem)',
           display: 'flex', flexDirection: 'column', justifyContent: 'center',
-          background: '#ffffff',
+          background: '#FAFAF8',
         }}>
           <div className="aos" style={{
             fontSize: '10.5px', fontWeight: 700,
@@ -287,7 +287,7 @@ export default function Home() {
       </section>
 
       {/* ── TRUST STATS ────────────────────────────────────────── */}
-      <section style={{ background: '#f5f3ef', borderBottom: '1px solid rgba(17,17,17,0.08)' }}>
+      <section style={{ background: '#F2F0EB', borderBottom: '1px solid rgba(17,17,17,0.08)' }}>
         <div style={{
           maxWidth: '1360px', margin: '0 auto',
           display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
@@ -368,9 +368,7 @@ export default function Home() {
           ) : (
             <div className="bikes-grid">
               {bikes.map((bike, i) => (
-                <div key={bike.id} className={`aos d${Math.min((i % 3) + 1, 5)}`}>
-                  <BikeCard bike={bike} />
-                </div>
+                <BikeCard key={bike.id} bike={bike} delay={(i % 3) * 0.08} />
               ))}
             </div>
           )}
@@ -379,7 +377,7 @@ export default function Home() {
 
       {/* ── REVIEWS ────────────────────────────────────────────── */}
       <section style={{
-        background: '#f5f3ef',
+        background: '#F2F0EB',
         padding: 'clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)',
         borderTop: '1px solid rgba(17,17,17,0.08)',
       }}>
