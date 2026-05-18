@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const bike = data as Bike
   return {
     title: `${bike.brand} ${bike.model} – ${bike.sale_price.toLocaleString('hu-HU')} Ft | SaleBikes`,
-    description: `${bike.brand} ${bike.model} ${bike.condition === 'outlet' ? 'outlet' : 'használt'} kerékpár ${bike.sale_price.toLocaleString('hu-HU')} Ft-ért. Bolti ár: ${bike.original_price.toLocaleString('hu-HU')} Ft. 3 hónap garancia, adásvételi szerződés.`,
+    description: `${bike.brand} ${bike.model} ${bike.condition === 'outlet' ? 'outlet' : 'használt'} kerékpár ${bike.sale_price.toLocaleString('hu-HU')} Ft-ért. Bolti ár: ${bike.original_price.toLocaleString('hu-HU')} Ft. Garancia, adásvételi szerződés.`,
   }
 }
 
@@ -313,7 +313,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
               background: '#fafaf8',
             }}>
               {[
-                '3 hónap garancia rendeltetésszerű használat mellett',
+                'Garancia rendeltetésszerű használat mellett',
                 'Adásvételi szerződés alvázszámmal',
                 'Visszavétel ha nem felel meg az elvárásoknak',
               ].map((text, i) => (

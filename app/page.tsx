@@ -196,7 +196,7 @@ export default function Home() {
               display: 'inline-block', width: '3px', height: '3px',
               borderRadius: '50%', background: 'rgba(255,255,255,0.3)', flexShrink: 0,
             }} />
-            <span>3 hónap garancia</span>
+            <span>Garancia</span>
           </div>
 
           <div className="aos d3" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
@@ -366,7 +366,7 @@ export default function Home() {
         }}>
           {[
             { num: '1000+', label: 'eladás 2008 óta', desc: 'Kerékpár gazdát cserélt' },
-            { num: '3 hónap', label: 'garancia', desc: 'Minden bringára, kivétel nélkül' },
+            { num: 'Garancia', label: 'minden bringára', desc: 'Minden bringára, kivétel nélkül' },
             { num: '4.7 ★', label: 'Google értékelés', desc: 'Valódi vásárlói visszajelzések' },
           ].map((s, i) => (
             <div key={s.label} className="aos" style={{
@@ -489,26 +489,6 @@ export default function Home() {
       }}>
         <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
 
-          <div className="aos" style={{
-            display: 'flex', alignItems: 'center',
-            justifyContent: 'space-between', flexWrap: 'wrap',
-            gap: '12px', marginBottom: '2.25rem',
-          }}>
-            <h2 style={{
-              fontSize: 'clamp(1.4rem, 3vw, 2.1rem)',
-              fontWeight: 900, letterSpacing: '-0.045em',
-              color: '#111111',
-            }}>Elérhető kerékpárok</h2>
-            {!loading && bikes.length > 0 && (
-              <span style={{
-                fontSize: '12px', fontWeight: 600,
-                color: 'rgba(17,17,17,0.35)',
-                background: 'rgba(17,17,17,0.05)',
-                padding: '6px 14px', borderRadius: '20px',
-              }}>{bikes.length} db elérhető</span>
-            )}
-          </div>
-
           {loading ? (
             <div style={{
               textAlign: 'center', padding: '6rem 2rem',
@@ -535,7 +515,7 @@ export default function Home() {
       </section>
 
       {/* ── MÉRETTÁBLÁZAT ──────────────────────────────────────── */}
-      <section style={{
+      <section id="merettablazat" style={{
         background: '#FAFAF8',
         padding: 'clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)',
         borderTop: '1px solid rgba(17,17,17,0.07)',

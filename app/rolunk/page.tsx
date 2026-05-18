@@ -43,7 +43,7 @@ export default function RolunkPage() {
             color: 'rgba(17,17,17,0.6)',
             maxWidth: '620px',
           }}>
-            Készletünk outlet (kiállított, 0 km-es) és gondosan válogatott használt kerékpárokból áll, mindegyik 3 hónap garanciával és adásvételi szerződéssel. Személyes megtekintés, próbaút, rugalmas időpontok – nálunk nincs nyomás, csak bringaszeretet.
+            Készletünk outlet (kiállított, 0 km-es) és gondosan válogatott használt kerékpárokból áll, mindegyik garanciával és adásvételi szerződéssel. Személyes megtekintés, próbaút, rugalmas időpontok – nálunk nincs nyomás, csak bringaszeretet.
           </p>
         </div>
       </section>
@@ -63,7 +63,7 @@ export default function RolunkPage() {
             gap: '1.5rem',
           }}>
             {[
-              { icon: <Shield size={18} />, title: '3 hónap garancia', desc: 'Minden kerékpárra. Rendeltetésszerű használat mellett javítjuk vagy visszaváltjuk.' },
+              { icon: <Shield size={18} />, title: 'Garancia', desc: 'Minden kerékpárra. Rendeltetésszerű használat mellett javítjuk vagy visszaváltjuk.' },
               { icon: <FileText size={18} />, title: 'Adásvételi szerződés', desc: 'Alvázszámmal ellátott szerződés minden vásárláshoz. Biztonságos, átlátható.' },
               { icon: <RotateCcw size={18} />, title: 'Visszavételi garancia', desc: 'Ha nem felel meg, visszaváltjuk. Nincs kockázat a vásárlásnál.' },
               { icon: <Star size={18} />, title: '4.7 ★ Google értékelés', desc: 'Vevőink elégedettsége mindennél fontosabb számunkra.' },
