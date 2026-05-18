@@ -14,6 +14,8 @@ const NAV_DROPDOWN = [
   { label: 'Gyerek',   href: '/gyerek' },
   { label: 'Országúti',href: '/orszaguti' },
   { label: 'Kemping',  href: '/kemping' },
+  { label: 'Alkatrészek', href: '/alkatreszek' },
+  { label: 'Ruházat',     href: '/ruhazat' },
 ]
 
 const NAV_RIGHT = [
