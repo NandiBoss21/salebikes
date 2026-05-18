@@ -76,8 +76,15 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
   const savings = bike.original_price - bike.sale_price
   const pct = Math.round((1 - bike.sale_price / bike.original_price) * 100)
   const condIdx = CONDITION_IDX[bike.condition] ?? 2
-  const viewers = (id.charCodeAt(id.length - 1) % 8) + 3
   const pageBg = getBikeBackground(bike.color)
+
+  const todayStart = new Date()
+  todayStart.setHours(0, 0, 0, 0)
+  const { count: viewers } = await supabase
+    .from('page_views')
+    .select('*', { count: 'exact', head: true })
+    .eq('bike_id', id)
+    .gte('created_at', todayStart.toISOString())
   const cleanDesc = bike.description ? cleanDescription(bike.description) : ''
 
   return (
@@ -223,20 +230,22 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
               </div>
             </div>
 
-            {/* Viewers counter */}
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
-              fontSize: '12px', fontWeight: 500,
-              color: 'rgba(17,17,17,0.5)',
-              marginBottom: '1.5rem',
-            }}>
-              <span style={{
-                display: 'inline-block', width: '8px', height: '8px',
-                borderRadius: '50%', background: '#22c55e',
-                boxShadow: '0 0 0 3px rgba(34,197,94,0.2)',
-              }} />
-              {viewers} ember nézte ma
-            </div>
+            {/* Viewers counter — only shown when > 0 */}
+            {viewers != null && viewers > 0 && (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                fontSize: '12px', fontWeight: 500,
+                color: 'rgba(17,17,17,0.5)',
+                marginBottom: '1.5rem',
+              }}>
+                <span style={{
+                  display: 'inline-block', width: '8px', height: '8px',
+                  borderRadius: '50%', background: '#22c55e',
+                  boxShadow: '0 0 0 3px rgba(34,197,94,0.2)',
+                }} />
+                {viewers} ember nézte ma
+              </div>
+            )}
 
             {/* CTA — desktop */}
             <InquiryButtonDesktop bikeId={bike.id} bikeName={`${bike.brand} ${bike.model}`} />
