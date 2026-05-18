@@ -81,12 +81,19 @@ a { color: inherit; }
 }
 
 .cat-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 12px;
 }
+.cat-grid > * {
+  flex: 0 0 calc(25% - 9px);
+  min-width: 0;
+}
 @media (max-width: 900px) {
-  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .cat-grid > * {
+    flex: 0 0 calc(50% - 6px);
+  }
 }
 
 /* ── Hero split layout ──────────────────────────── */

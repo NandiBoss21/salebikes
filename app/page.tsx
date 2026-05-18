@@ -462,17 +462,6 @@ export default function Home() {
                   color: '#111111', lineHeight: 1.1,
                 }}>Legújabban feltöltött</h2>
               </div>
-              <a href="#termekek" style={{
-                fontSize: '13px', fontWeight: 600,
-                color: 'rgba(17,17,17,0.45)', textDecoration: 'none',
-                display: 'flex', alignItems: 'center', gap: '4px',
-                transition: 'color 0.15s',
-              }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#111111')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(17,17,17,0.45)')}
-              >
-                Összes kerékpár →
-              </a>
             </div>
             <div className="bikes-grid">
               {latestBikes.map((bike, i) => (
@@ -482,38 +471,6 @@ export default function Home() {
           </div>
         </section>
       )}
-
-      {/* ── PRODUCTS ───────────────────────────────────────────── */}
-      <section id="termekek" style={{
-        padding: 'clamp(1.75rem, 3vw, 2.5rem) clamp(1.5rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem)',
-        background: '#fafaf8',
-      }}>
-        <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
-
-          {loading ? (
-            <div style={{
-              textAlign: 'center', padding: '6rem 2rem',
-              color: 'rgba(17,17,17,0.25)', fontSize: '13px',
-              letterSpacing: '0.04em',
-            }}>
-              Betöltés…
-            </div>
-          ) : bikes.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '6rem 2rem' }}>
-              <div style={{ fontSize: '48px', marginBottom: '1rem', opacity: 0.25 }}>🚲</div>
-              <div style={{ fontSize: '15px', fontWeight: 500, color: 'rgba(17,17,17,0.4)' }}>
-                Jelenleg nincs elérhető kerékpár.
-              </div>
-            </div>
-          ) : (
-            <div className="bikes-grid">
-              {bikes.map((bike, i) => (
-                <BikeCard key={bike.id} bike={bike} delay={(i % 3) * 0.08} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
 
       {/* ── MÉRETTÁBLÁZAT ──────────────────────────────────────── */}
       <section id="merettablazat" style={{
