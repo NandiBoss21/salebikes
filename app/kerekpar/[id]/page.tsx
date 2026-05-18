@@ -113,7 +113,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
 
             {/* Price block */}
             <div style={{
-              background: '#f9f9f9',
+              background: 'var(--bg-secondary)',
               border: '1px solid rgba(0,0,0,0.07)',
               borderRadius: '10px',
               padding: '1.5rem',
@@ -267,7 +267,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
                     alignItems: 'center',
                     padding: '12px 16px',
                     borderBottom: i < arr.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                    background: i % 2 === 0 ? '#ffffff' : '#fafafa',
+                    background: i % 2 === 0 ? '#ffffff' : 'var(--bg-primary)',
                   }}>
                     <span style={{ fontSize: '13px', color: 'rgba(17,17,17,0.45)', fontWeight: 500 }}>{row.label}</span>
                     <span style={{ fontSize: '13px', fontWeight: 600 }}>{row.val}</span>
@@ -289,7 +289,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
             <div style={{
               border: '1px solid rgba(0,0,0,0.07)',
               borderRadius: '12px', padding: '0.25rem 1.5rem',
-              background: '#fafaf8',
+              background: 'var(--bg-primary)',
             }}>
               {[
                 '3 hónap garancia rendeltetésszerű használat mellett',

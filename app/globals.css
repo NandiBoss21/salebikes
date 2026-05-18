@@ -5,13 +5,15 @@
   --dark: #111111;
   --muted: rgba(17,17,17,0.45);
   --border: rgba(0,0,0,0.08);
+  --bg-primary: #fafaf8;
+  --bg-secondary: #f5f3ef;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
-  background: #fafaf8;
+  background: var(--bg-primary);
   color: #111111;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;

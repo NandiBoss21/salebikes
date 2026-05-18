@@ -29,7 +29,7 @@ export default function CategoryPage({ category, label }: { category: string; la
     <>
       <Navbar />
 
-      <section style={{ padding: 'clamp(3rem, 6vw, 5rem) 2rem', background: '#ffffff' }}>
+      <section style={{ padding: 'clamp(3rem, 6vw, 5rem) 2rem', background: 'var(--bg-primary)' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
           {/* Header */}

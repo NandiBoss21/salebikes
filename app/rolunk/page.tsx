@@ -12,7 +12,7 @@ export default function RolunkPage() {
       <Navbar />
 
       {/* Hero */}
-      <section style={{ padding: 'clamp(4rem, 8vw, 7rem) 2rem 3rem', background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+      <section style={{ padding: 'clamp(4rem, 8vw, 7rem) 2rem 3rem', background: 'var(--bg-primary)', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{ maxWidth: '720px', margin: '0 auto' }}>
           <div style={{
             fontSize: '11px', fontWeight: 600,
@@ -49,7 +49,7 @@ export default function RolunkPage() {
       </section>
 
       {/* Amit nálunk kapsz */}
-      <section style={{ background: '#f9f9f9', padding: '4rem 2rem', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+      <section style={{ background: 'var(--bg-secondary)', padding: '4rem 2rem', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <h2 style={{
             fontSize: 'clamp(1.5rem, 3vw, 2rem)',
@@ -91,7 +91,7 @@ export default function RolunkPage() {
       </section>
 
       {/* Elérhetőség */}
-      <section style={{ padding: '4rem 2rem', background: '#ffffff' }}>
+      <section style={{ padding: '4rem 2rem', background: 'var(--bg-primary)' }}>
         <div style={{ maxWidth: '720px', margin: '0 auto' }}>
           <h2 style={{
             fontSize: 'clamp(1.5rem, 3vw, 2rem)',
