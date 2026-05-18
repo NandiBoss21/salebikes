@@ -48,12 +48,23 @@ a { color: inherit; }
 
 /* ── Category card hover ────────────────────────── */
 .cat-card {
-  transition: transform 0.3s var(--ease-out-expo),
-              box-shadow 0.3s var(--ease-out-expo);
+  transition: box-shadow 0.3s var(--ease-out-expo);
 }
 .cat-card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+.cat-card-img {
+  transition: transform 0.55s var(--ease-out-expo);
+}
+.cat-card:hover .cat-card-img {
+  transform: scale(1.07);
+}
+.cat-card-overlay {
+  background: rgba(0, 0, 0, 0.45);
+  transition: background 0.3s ease;
+}
+.cat-card:hover .cat-card-overlay {
+  background: rgba(0, 0, 0, 0.30);
 }
 
 /* ── Responsive grids ───────────────────────────── */

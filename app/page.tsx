@@ -9,14 +9,15 @@ import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
 
 const CATEGORIES = [
-  { label: 'Ebike',       href: '/ebike',       gradient: 'linear-gradient(145deg, #0d1f3c 0%, #1a3a6b 45%, #0a1628 100%)' },
-  { label: 'MTB',         href: '/mtb',         gradient: 'linear-gradient(145deg, #0a1a0d 0%, #18351e 45%, #0a1510 100%)' },
-  { label: 'Trekking',    href: '/trekking',    gradient: 'linear-gradient(145deg, #0f1a2e 0%, #1a2d4a 45%, #0c1525 100%)' },
-  { label: 'Gravel',      href: '/gravel',      gradient: 'linear-gradient(145deg, #1c1200 0%, #302000 45%, #151000 100%)' },
-  { label: 'Gyerek',      href: '/gyerek',      gradient: 'linear-gradient(145deg, #1a0a2e 0%, #2d1357 45%, #110828 100%)' },
-  { label: 'Országúti',   href: '/orszaguti',   gradient: 'linear-gradient(145deg, #0a0f1a 0%, #1a2236 45%, #080d18 100%)' },
-  { label: 'Kemping',     href: '/kemping',     gradient: 'linear-gradient(145deg, #0d1a0a 0%, #1a2e14 45%, #0a1508 100%)' },
-  { label: 'Alkatrészek', href: '/alkatreszek', gradient: 'linear-gradient(145deg, #1a1a1a 0%, #2e2e2e 45%, #111111 100%)' },
+  { label: 'Ebike',       href: '/ebike',       image: '/image/category-ebike.png' },
+  { label: 'MTB',         href: '/mtb',         image: '/image/category-mtb.png' },
+  { label: 'Trekking',    href: '/trekking',    image: '/image/category-trekking.png' },
+  { label: 'Gravel',      href: '/gravel',      image: '/image/category-gravel.png' },
+  { label: 'Gyerek',      href: '/gyerek',      image: '/image/category-gyerek.png' },
+  { label: 'Országúti',   href: '/orszaguti',   image: '/image/category-orszaguti.png' },
+  { label: 'Kemping',     href: '/kemping',     image: '/image/category-kemping.png' },
+  { label: 'Alkatrészek', href: '/alkatreszek', image: '/image/category-alkatreszek.png' },
+  { label: 'Ruházat',     href: '/ruhazat',     image: '/image/category-ruhazat.png' },
 ]
 
 const BRANDS = ['Focus', 'Shimano', 'Campagnolo', 'Fox', 'Giant', 'Conway', 'Scott', 'Bulls', 'Cannondale', 'Corratec', 'Cube', 'Genesis', 'Merida', 'KTM']
@@ -144,7 +145,7 @@ export default function Home() {
 
       {/* ── HERO ──────────────────────────────────────────────── */}
       <section className="hero-split" style={{
-        backgroundImage: 'url(/hero-bg.png)',
+        backgroundImage: 'url(/image/hero-bg.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}>
@@ -326,7 +327,7 @@ export default function Home() {
                 className={`cat-card aos d${Math.min(i + 1, 5)}`}
                 style={{
                   position: 'relative', overflow: 'hidden',
-                  background: cat.gradient,
+                  background: '#111',
                   borderRadius: '8px',
                   aspectRatio: '4/3',
                   textDecoration: 'none',
@@ -335,21 +336,21 @@ export default function Home() {
                   padding: '1.25rem 1.5rem',
                 }}
               >
-                <div style={{
+                <div className="cat-card-img" style={{
                   position: 'absolute', inset: 0,
-                  background: 'radial-gradient(ellipse at 25% 25%, rgba(255,255,255,0.04) 0%, transparent 70%)',
-                  pointerEvents: 'none',
+                  backgroundImage: `url(${cat.image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
                 }} />
-                <div style={{
+                <div className="cat-card-overlay" style={{
                   position: 'absolute', inset: 0,
-                  background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.08) 55%, transparent 100%)',
-                  pointerEvents: 'none',
                 }} />
                 <span style={{
                   position: 'relative', zIndex: 1,
                   fontSize: '1.15rem', fontWeight: 800,
                   color: '#ffffff', letterSpacing: '-0.025em',
                   lineHeight: 1.1,
+                  textShadow: '0 1px 4px rgba(0,0,0,0.5)',
                 }}>{cat.label}</span>
               </Link>
             ))}
