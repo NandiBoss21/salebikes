@@ -26,47 +26,87 @@ export default function CategoryPage({ category, label }: { category: string; la
       })
   }, [category])
 
+  const heroImage = `/image/category-${category}.png`
+
   return (
     <>
       <Navbar />
 
-      <section style={{ padding: 'clamp(3rem, 6vw, 5rem) 2rem', background: 'var(--bg-primary)' }}>
+      {/* Hero */}
+      <section style={{
+        position: 'relative',
+        height: 'clamp(260px, 35vw, 360px)',
+        background: '#111111',
+        overflow: 'hidden',
+        display: 'flex', alignItems: 'flex-end',
+      }}>
+        {/* Background image */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: `url(${heroImage})`,
+          backgroundSize: 'cover', backgroundPosition: 'center',
+        }} />
+        {/* Dark overlay */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(to top, rgba(17,17,17,0.85) 0%, rgba(17,17,17,0.45) 50%, rgba(17,17,17,0.2) 100%)',
+        }} />
+
+        {/* Text */}
+        <div style={{ position: 'relative', zIndex: 1, padding: 'clamp(1.5rem, 4vw, 2.5rem) 2rem', maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
+          <div style={{
+            fontSize: '11px', fontWeight: 600,
+            letterSpacing: '0.1em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.5)', marginBottom: '0.5rem',
+          }}>
+            Outlet · Bemutató · Használt
+          </div>
+          <h1 style={{
+            fontSize: 'clamp(2.2rem, 7vw, 4.5rem)',
+            fontWeight: 900, letterSpacing: '-0.04em',
+            color: '#ffffff', lineHeight: 1.05, margin: 0,
+          }}>
+            {label}{' '}
+            <span style={{ color: '#e8c547' }}>kerékpárok</span>
+          </h1>
+        </div>
+      </section>
+
+      {/* Content */}
+      <section style={{ padding: 'clamp(2.5rem, 5vw, 4rem) 2rem', background: '#fafaf8', minHeight: '40vh' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
-          {/* Header */}
-          <div style={{ marginBottom: '2.5rem' }}>
-            <div style={{
-              fontSize: '11px', fontWeight: 600,
-              letterSpacing: '0.08em', textTransform: 'uppercase',
-              color: 'rgba(17,17,17,0.4)', marginBottom: '0.75rem',
-            }}>
-              Outlet · Bemutató · Használt
-            </div>
-            <h1 style={{
-              fontSize: 'clamp(2rem, 6vw, 4rem)',
-              fontWeight: 900, letterSpacing: '-0.04em',
-              color: '#111111', lineHeight: 1.05,
-            }}>
-              {label}{' '}
-              <span style={{ color: '#e8c547' }}>kerékpárok</span>
-            </h1>
-          </div>
-
-          {/* Content */}
           {loading ? (
             <div style={{ textAlign: 'center', padding: '5rem', color: 'rgba(17,17,17,0.3)', fontSize: '14px' }}>
               Betöltés…
             </div>
           ) : bikes.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '5rem', color: 'rgba(17,17,17,0.4)' }}>
-              <div style={{ fontSize: '40px', marginBottom: '1rem' }}>🚲</div>
-              <div style={{ fontSize: '16px', marginBottom: '1rem', fontWeight: 500 }}>
-                Ebben a kategóriában nincs elérhető kerékpár.
+            <div style={{ textAlign: 'center', padding: '5rem 2rem', color: 'rgba(17,17,17,0.45)' }}>
+              <div style={{ fontSize: '40px', marginBottom: '1.25rem' }}>🚲</div>
+              <div style={{ fontSize: '17px', fontWeight: 700, color: '#111111', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>
+                Hamarosan érkeznek kerékpárok ebben a kategóriában.
               </div>
-              <a href="/" style={{
-                color: '#111111', fontWeight: 600, fontSize: '14px',
-                textDecoration: 'underline',
-              }}>← Összes kerékpár</a>
+              <div style={{ fontSize: '14px', marginBottom: '1.75rem', color: 'rgba(17,17,17,0.45)' }}>
+                Értesülj elsőként az új feltöltésekről — hívj minket!
+              </div>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <a href="tel:+36308897559" style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '7px',
+                  background: '#111111', color: '#ffffff',
+                  padding: '13px 24px', borderRadius: '8px',
+                  fontWeight: 700, fontSize: '14px', textDecoration: 'none',
+                  letterSpacing: '-0.01em',
+                }}>
+                  <Phone size={15} /> +36 30 889 7559
+                </a>
+                <a href="/" style={{
+                  display: 'inline-flex', alignItems: 'center',
+                  background: 'transparent', color: '#111111',
+                  border: '1px solid #E8E4DC',
+                  padding: '13px 24px', borderRadius: '8px',
+                  fontWeight: 600, fontSize: '14px', textDecoration: 'none',
+                }}>← Összes kerékpár</a>
+              </div>
             </div>
           ) : (
             <>

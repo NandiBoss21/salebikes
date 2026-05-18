@@ -10,7 +10,7 @@ export type Bike = {
   created_at: string
   brand: string
   model: string
-  category: 'ebike' | 'mtb' | 'trekking' | 'gravel' | 'gyerek' | 'orszaguti' | 'kemping'
+  category: 'ebike' | 'mtb' | 'trekking' | 'gravel' | 'gyerek' | 'orszaguti' | 'kemping' | 'alkatreszek' | 'ruhazat'
   condition: 'outlet' | 'hasznalt'
   original_price: number
   sale_price: number
