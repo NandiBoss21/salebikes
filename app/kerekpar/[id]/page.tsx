@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import BikeGallery from '@/components/BikeGallery'
-import { Phone, Shield, FileText, RotateCcw, ChevronLeft } from 'lucide-react'
+import { Phone, CheckCircle, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import type { Bike } from '@/lib/supabase'
 import type { Metadata } from 'next'
@@ -50,6 +50,11 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
   }
 
   const bike = data as Bike
+  const rawDesc = bike.description ?? ''
+  const cleanDescription = rawDesc.includes('Bolti ár')
+    ? rawDesc.split('Bolti ár')[0].trim()
+    : rawDesc
+
   const savings = bike.original_price - bike.sale_price
   const pct = Math.round((1 - bike.sale_price / bike.original_price) * 100)
   const condIdx = CONDITION_IDX[bike.condition] ?? 2
@@ -112,7 +117,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
               border: '1px solid rgba(0,0,0,0.07)',
               borderRadius: '10px',
               padding: '1.5rem',
-              marginBottom: '1.25rem',
+              marginBottom: '1.75rem',
             }}>
               <div style={{
                 fontSize: '13px', color: 'rgba(17,17,17,0.4)',
@@ -140,7 +145,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
             </div>
 
             {/* Condition scale */}
-            <div style={{ marginBottom: '1.25rem', position: 'relative' }}>
+            <div style={{ marginBottom: '1.75rem', position: 'relative' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                 <div style={{
                   fontSize: '11px', fontWeight: 700,
@@ -200,7 +205,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
               display: 'flex', alignItems: 'center', gap: '8px',
               fontSize: '12px', fontWeight: 500,
               color: 'rgba(17,17,17,0.5)',
-              marginBottom: '1.25rem',
+              marginBottom: '1.5rem',
             }}>
               <span style={{
                 display: 'inline-block', width: '8px', height: '8px',
@@ -226,7 +231,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
 
             {/* Specs */}
             {bike.specs?.length > 0 && (
-              <div style={{ marginBottom: '1.5rem' }}>
+              <div style={{ marginBottom: '2rem' }}>
                 <div style={{
                   fontSize: '11px', fontWeight: 700,
                   letterSpacing: '0.06em', textTransform: 'uppercase',
@@ -250,7 +255,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
               <div style={{
                 border: '1px solid rgba(0,0,0,0.07)',
                 borderRadius: '10px', overflow: 'hidden',
-                marginBottom: '1.5rem',
+                marginBottom: '2.25rem',
               }}>
                 {[
                   { label: 'Méret', val: bike.size },
@@ -271,34 +276,38 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
               </div>
             )}
 
-            {/* Description */}
-            {bike.description && (
+            {/* Description — ad boilerplate trimmed at "Bolti ár" */}
+            {cleanDescription && (
               <p style={{
-                fontSize: '14px', lineHeight: 1.7,
+                fontSize: '14px', lineHeight: 1.8,
                 color: 'rgba(17,17,17,0.55)',
-                marginBottom: '1.5rem',
-              }}>{bike.description}</p>
+                marginBottom: '2rem',
+              }}>{cleanDescription}</p>
             )}
 
             {/* Guarantee list */}
             <div style={{
               border: '1px solid rgba(0,0,0,0.07)',
-              borderRadius: '10px', padding: '1.25rem',
+              borderRadius: '12px', padding: '0.25rem 1.5rem',
+              background: '#fafaf8',
             }}>
               {[
-                { icon: <Shield size={15} />, text: '3 hónap garancia rendeltetésszerű használat mellett' },
-                { icon: <FileText size={15} />, text: 'Adásvételi szerződés alvázszámmal' },
-                { icon: <RotateCcw size={15} />, text: 'Visszavétel ha nem felel meg az elvárásoknak' },
-              ].map((item, i) => (
+                '3 hónap garancia rendeltetésszerű használat mellett',
+                'Adásvételi szerződés alvázszámmal',
+                'Visszavétel ha nem felel meg az elvárásoknak',
+              ].map((text, i) => (
                 <div key={i} style={{
-                  display: 'flex', alignItems: 'flex-start', gap: '10px',
-                  padding: '10px 0',
+                  display: 'flex', alignItems: 'center', gap: '12px',
+                  padding: '16px 0',
                   borderBottom: i < 2 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                  fontSize: '13px', color: 'rgba(17,17,17,0.65)',
+                  fontSize: '14px', fontWeight: 500,
+                  color: 'rgba(17,17,17,0.75)',
                   lineHeight: 1.4,
                 }}>
-                  <span style={{ color: '#e8c547', flexShrink: 0, marginTop: '1px' }}>{item.icon}</span>
-                  {item.text}
+                  <span style={{ color: '#22c55e', flexShrink: 0 }}>
+                    <CheckCircle size={18} />
+                  </span>
+                  {text}
                 </div>
               ))}
             </div>

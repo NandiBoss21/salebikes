@@ -1,9 +1,11 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
+import { X } from 'lucide-react'
 
 export default function BikeGallery({ images, alt }: { images: string[]; alt: string }) {
   const [active, setActive] = useState(0)
+  const [lightbox, setLightbox] = useState(false)
 
   if (!images?.length) {
     return (
@@ -16,13 +18,17 @@ export default function BikeGallery({ images, alt }: { images: string[]; alt: st
   }
 
   return (
-    <div>
+    <>
       {/* Main image */}
-      <div style={{
-        position: 'relative', aspectRatio: '4/3',
-        background: '#f5f5f5', borderRadius: '10px',
-        overflow: 'hidden', marginBottom: '10px',
-      }}>
+      <div
+        onClick={() => setLightbox(true)}
+        style={{
+          position: 'relative', aspectRatio: '4/3',
+          background: '#f5f5f5', borderRadius: '10px',
+          overflow: 'hidden', marginBottom: '10px',
+          cursor: 'zoom-in',
+        }}
+      >
         <Image
           src={images[active]}
           alt={alt}
@@ -61,6 +67,54 @@ export default function BikeGallery({ images, alt }: { images: string[]; alt: st
           ))}
         </div>
       )}
-    </div>
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div
+          onClick={() => setLightbox(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 1000,
+            background: 'rgba(0,0,0,0.92)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setLightbox(false)}
+            style={{
+              position: 'absolute', top: '1.25rem', right: '1.25rem',
+              background: 'rgba(255,255,255,0.12)',
+              border: 'none', cursor: 'pointer',
+              borderRadius: '50%', width: '48px', height: '48px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#ffffff', zIndex: 1,
+              transition: 'background 0.15s',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.22)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.12)')}
+          >
+            <X size={22} />
+          </button>
+
+          {/* Image container — stops click from bubbling to overlay */}
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              position: 'relative',
+              width: 'min(92vw, 1100px)',
+              aspectRatio: '4/3',
+            }}
+          >
+            <Image
+              src={images[active]}
+              alt={alt}
+              fill
+              style={{ objectFit: 'contain' }}
+              sizes="92vw"
+            />
+          </div>
+        </div>
+      )}
+    </>
   )
 }
