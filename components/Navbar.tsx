@@ -19,6 +19,7 @@ const NAV_DROPDOWN = [
 const NAV_RIGHT = [
   { label: 'Mérettáblázat', href: '/#merettablazat' },
   { label: 'Rólunk', href: '/rolunk' },
+  { label: 'Kapcsolat', href: '/kapcsolat' },
 ]
 
 const NAV_MOBILE = [

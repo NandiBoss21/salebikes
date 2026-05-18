@@ -698,6 +698,11 @@ export default function Home() {
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{
+              fontSize: '10px', fontWeight: 700,
+              letterSpacing: '0.07em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.2)', marginBottom: '2px',
+            }}>Elérhetőség</div>
             <a href="tel:+36308897559" style={{
               fontSize: '12.5px', color: 'rgba(255,255,255,0.45)',
               textDecoration: 'none', transition: 'color 0.15s',
@@ -719,6 +724,41 @@ export default function Home() {
               onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
             >Rólunk</a>
+            <a href="/kapcsolat" style={{
+              fontSize: '12.5px', color: 'rgba(255,255,255,0.45)',
+              textDecoration: 'none', transition: 'color 0.15s',
+            }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
+            >Kapcsolat</a>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{
+              fontSize: '10px', fontWeight: 700,
+              letterSpacing: '0.07em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.2)', marginBottom: '2px',
+            }}>Oldalak</div>
+            <a href="/garancia" style={{
+              fontSize: '12.5px', color: 'rgba(255,255,255,0.45)',
+              textDecoration: 'none', transition: 'color 0.15s',
+            }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
+            >Garancia</a>
+            <a href="/aszf" style={{
+              fontSize: '12.5px', color: 'rgba(255,255,255,0.45)',
+              textDecoration: 'none', transition: 'color 0.15s',
+            }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
+            >ÁSZF</a>
+            <a href="/adatkezeles" style={{
+              fontSize: '12.5px', color: 'rgba(255,255,255,0.45)',
+              textDecoration: 'none', transition: 'color 0.15s',
+            }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
+            >Adatkezelés</a>
           </div>
         </div>
         <div style={{
