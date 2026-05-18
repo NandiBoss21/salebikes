@@ -123,8 +123,12 @@ export default function Home() {
   useAos([])
   useAos([loading])
 
+  const avgSavings = bikes.length > 0
+    ? Math.round(bikes.reduce((sum, b) => sum + Math.max(0, b.original_price - b.sale_price), 0) / bikes.length)
+    : 0
+
   const { value: count1000, ref: ref1000 } = useCountUp(1000)
-  const { value: count180k, ref: ref180k } = useCountUp(180000)
+  const { value: count180k, ref: ref180k } = useCountUp(avgSavings)
 
   return (
     <>
@@ -190,7 +194,7 @@ export default function Home() {
               textShadow: '0 2px 8px rgba(0,0,0,0.5)',
             }}
           >
-            {['Prémium', 'kerékpárok', 'félár alatt'].map(line => (
+            {['Prémium', 'kerékpárok', 'akár félár alatt'].map(line => (
               <motion.span
                 key={line}
                 variants={{
