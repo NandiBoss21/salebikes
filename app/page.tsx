@@ -256,8 +256,11 @@ export default function Home() {
               textAlign: 'center',
             }}>
               <span style={{
-                fontSize: 'clamp(1.1rem, 2vw, 1.5rem)',
-                fontWeight: 800, color: '#ffffff',
+                fontSize: stat.num === '180 000 Ft'
+                  ? 'clamp(1.21rem, 2.2vw, 1.65rem)'
+                  : 'clamp(1.1rem, 2vw, 1.5rem)',
+                fontWeight: 800,
+                color: stat.num === '180 000 Ft' ? '#e8c547' : '#ffffff',
                 letterSpacing: '-0.03em', lineHeight: 1.2,
               }}>{stat.num}</span>
               <span style={{
