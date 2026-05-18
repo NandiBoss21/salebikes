@@ -109,13 +109,7 @@ export default function Home() {
           }}>
             Prémium<br />
             kerékpárok<br />
-            <span style={{
-              display: 'inline-block',
-              background: '#e8c547',
-              padding: '0 0.18em',
-              lineHeight: 1.1,
-              borderRadius: '3px',
-            }}>félár alatt</span>
+            félár alatt
           </h1>
 
           <div className="aos d2" style={{
@@ -331,7 +325,7 @@ export default function Home() {
 
       {/* ── PRODUCTS ───────────────────────────────────────────── */}
       <section id="termekek" style={{
-        padding: 'clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)',
+        padding: 'clamp(1.75rem, 3vw, 2.5rem) clamp(1.5rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem)',
         background: '#fafafa',
       }}>
         <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
@@ -428,15 +422,7 @@ export default function Home() {
                 border: '1px solid #e8e8e8',
                 borderRadius: '10px',
                 padding: '1.75rem',
-                position: 'relative', overflow: 'hidden',
               }}>
-                <div style={{
-                  position: 'absolute', top: '-12px', right: '16px',
-                  fontSize: '90px', fontWeight: 900, lineHeight: 1,
-                  color: 'rgba(232,197,71,0.13)',
-                  fontFamily: 'Georgia, serif',
-                  pointerEvents: 'none', userSelect: 'none',
-                }}>&ldquo;</div>
                 <div style={{ fontSize: '14px', color: '#e8c547', marginBottom: '14px', letterSpacing: '2px' }}>★★★★★</div>
                 <p style={{
                   fontSize: '13.5px', lineHeight: 1.75,

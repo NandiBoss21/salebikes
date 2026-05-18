@@ -89,17 +89,19 @@ export default function BikeCard({ bike }: { bike: Bike }) {
             </span>
           )}
 
-          {/* Utolsó darab — bottom strip */}
-          <div style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0,
-            background: 'rgba(220,38,38,0.92)',
-            padding: '5px 10px',
-            fontSize: '11px', fontWeight: 700,
-            color: '#ffffff', letterSpacing: '0.03em',
-            textTransform: 'uppercase', textAlign: 'center',
-          }}>
-            Utolsó darab
-          </div>
+          {/* Utolsó darab — bottom strip, only for featured outlet bikes */}
+          {bike.condition === 'outlet' && bike.featured && (
+            <div style={{
+              position: 'absolute', bottom: 0, left: 0, right: 0,
+              background: 'rgba(220,38,38,0.92)',
+              padding: '5px 10px',
+              fontSize: '11px', fontWeight: 700,
+              color: '#ffffff', letterSpacing: '0.03em',
+              textTransform: 'uppercase', textAlign: 'center',
+            }}>
+              Utolsó darab
+            </div>
+          )}
         </div>
 
         {/* Info */}
