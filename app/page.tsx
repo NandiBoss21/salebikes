@@ -7,6 +7,9 @@ import Navbar from '@/components/Navbar'
 import BikeCard from '@/components/BikeCard'
 import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
+import { motion } from 'framer-motion'
+import AnimatedSection from '@/components/AnimatedSection'
+import { useCountUp } from '@/hooks/useCountUp'
 
 const CATEGORIES = [
   { label: 'Ebike',       href: '/ebike',       image: '/image/category-ebike.png' },
@@ -118,6 +121,9 @@ export default function Home() {
   useAos([])
   useAos([loading])
 
+  const { value: count1000, ref: ref1000 } = useCountUp(1000)
+  const { value: count180k, ref: ref180k } = useCountUp(180000)
+
   return (
     <>
       <Navbar />
@@ -149,39 +155,66 @@ export default function Home() {
           padding: 'clamp(5.5rem, 8vw, 7rem) clamp(2rem, 5vw, 5.5rem) 110px',
           maxWidth: '680px',
         }}>
-          <div className="aos" style={{
-            fontSize: '10.5px', fontWeight: 700,
-            letterSpacing: '0.12em', textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.6)', marginBottom: '1.5rem',
-            display: 'flex', alignItems: 'center', gap: '10px',
-          }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              fontSize: '10.5px', fontWeight: 700,
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.6)', marginBottom: '1.5rem',
+              display: 'flex', alignItems: 'center', gap: '10px',
+            }}
+          >
             <span style={{
               display: 'inline-block', width: '24px', height: '2px',
               background: '#e8c547', flexShrink: 0,
             }} />
             Outlet · Bemutató · Használt
-          </div>
+          </motion.div>
 
-          <h1 className="aos d1" style={{
-            fontSize: 'clamp(1.9rem, 5.5vw, 4.2rem)',
-            fontWeight: 900, letterSpacing: '-0.045em',
-            lineHeight: 1.02, color: '#ffffff',
-            marginBottom: '1.75rem',
-            textShadow: '0 2px 8px rgba(0,0,0,0.5)',
-          }}>
-            Prémium<br />
-            kerékpárok<br />
-            félár alatt
-          </h1>
+          <motion.h1
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
+            }}
+            initial="hidden"
+            animate="visible"
+            style={{
+              fontSize: 'clamp(1.9rem, 5.5vw, 4.2rem)',
+              fontWeight: 900, letterSpacing: '-0.045em',
+              lineHeight: 1.02, color: '#ffffff',
+              marginBottom: '1.75rem',
+              textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+            }}
+          >
+            {['Prémium', 'kerékpárok', 'félár alatt'].map(line => (
+              <motion.span
+                key={line}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+                }}
+                style={{ display: 'block' }}
+              >
+                {line}
+              </motion.span>
+            ))}
+          </motion.h1>
 
-          <div className="aos d2" style={{
-            display: 'flex', gap: '14px', flexWrap: 'wrap',
-            alignItems: 'center',
-            fontSize: '12.5px', fontWeight: 500,
-            color: 'rgba(255,255,255,0.7)',
-            marginBottom: '2.5rem',
-            textShadow: '0 1px 4px rgba(0,0,0,0.5)',
-          }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
+            style={{
+              display: 'flex', gap: '14px', flexWrap: 'wrap',
+              alignItems: 'center',
+              fontSize: '12.5px', fontWeight: 500,
+              color: 'rgba(255,255,255,0.7)',
+              marginBottom: '2.5rem',
+              textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+            }}
+          >
             <span>1000+ eladás</span>
             <span style={{
               display: 'inline-block', width: '3px', height: '3px',
@@ -193,9 +226,14 @@ export default function Home() {
               borderRadius: '50%', background: 'rgba(255,255,255,0.3)', flexShrink: 0,
             }} />
             <span>Garancia</span>
-          </div>
+          </motion.div>
 
-          <div className="aos d3" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
+            style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}
+          >
             <a href="#termekek" style={{
               background: '#ffffff', color: '#111111',
               padding: '14px 26px', borderRadius: '6px',
@@ -231,7 +269,7 @@ export default function Home() {
               <Phone size={13} />
               +36 30 889 7559
             </a>
-          </div>
+          </motion.div>
         </div>
 
         {/* Stat bar */}
@@ -244,10 +282,22 @@ export default function Home() {
           alignItems: 'stretch',
         }}>
           {[
-            { num: '1000+', label: 'Eladás 2006 óta' },
-            { num: '180 000 Ft', label: 'Átlag megtakarítás' },
-            { num: '4.9 ★', label: 'Google értékelés' },
-            { num: 'Garancia', label: 'Minden kerékpárra' },
+            {
+              label: 'Eladás 2006 óta',
+              numEl: <span ref={ref1000} style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.03em', lineHeight: 1.2 }}>{count1000}+</span>,
+            },
+            {
+              label: 'Átlag megtakarítás',
+              numEl: <span ref={ref180k} style={{ fontSize: 'clamp(1.21rem, 2.2vw, 1.65rem)', fontWeight: 800, color: '#e8c547', letterSpacing: '-0.03em', lineHeight: 1.2 }}>{count180k.toLocaleString('hu-HU')} Ft</span>,
+            },
+            {
+              label: 'Google értékelés',
+              numEl: <span style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.03em', lineHeight: 1.2 }}>4.9 ★</span>,
+            },
+            {
+              label: 'Minden kerékpárra',
+              numEl: <span style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.03em', lineHeight: 1.2 }}>Garancia</span>,
+            },
           ].map((stat, i) => (
             <div key={stat.label} style={{
               flex: 1,
@@ -257,20 +307,8 @@ export default function Home() {
               borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.2)' : 'none',
               textAlign: 'center',
             }}>
-              <span style={{
-                fontSize: stat.num === '180 000 Ft'
-                  ? 'clamp(1.21rem, 2.2vw, 1.65rem)'
-                  : 'clamp(1.1rem, 2vw, 1.5rem)',
-                fontWeight: 800,
-                color: stat.num === '180 000 Ft' ? '#e8c547' : '#ffffff',
-                letterSpacing: '-0.03em', lineHeight: 1.2,
-              }}>{stat.num}</span>
-              <span style={{
-                fontSize: '11px',
-                color: 'rgba(255,255,255,0.6)',
-                marginTop: '3px',
-                letterSpacing: '0.02em',
-              }}>{stat.label}</span>
+              {stat.numEl}
+              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginTop: '3px', letterSpacing: '0.02em' }}>{stat.label}</span>
             </div>
           ))}
         </div>
@@ -298,8 +336,15 @@ export default function Home() {
 
           <div className="cat-grid">
             {CATEGORIES.map((cat, i) => (
-              <Link key={cat.label} href={cat.href}
-                className={`cat-card aos d${Math.min(i + 1, 5)}`}
+              <motion.div
+                key={cat.label}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.06 }}
+              >
+              <Link href={cat.href}
+                className="cat-card"
                 style={{
                   position: 'relative', overflow: 'hidden',
                   background: '#111',
@@ -328,6 +373,7 @@ export default function Home() {
                   textShadow: '0 1px 4px rgba(0,0,0,0.5)',
                 }}>{cat.label}</span>
               </Link>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -345,7 +391,7 @@ export default function Home() {
             { num: 'Garancia', label: 'minden bringára', desc: 'Minden bringára, kivétel nélkül' },
             { num: '4.9 ★', label: 'Google értékelés', desc: 'Valódi vásárlói visszajelzés' },
           ].map((s, i) => (
-            <div key={s.label} className="aos" style={{
+            <AnimatedSection key={s.label} delay={i * 0.12} style={{
               textAlign: 'center',
               padding: 'clamp(2.5rem, 5vw, 4rem) 1.5rem',
               borderRight: i < 2 ? '1px solid rgba(17,17,17,0.1)' : 'none',
@@ -365,7 +411,7 @@ export default function Home() {
                 fontSize: '12px', color: 'rgba(17,17,17,0.38)',
                 lineHeight: 1.5,
               }}>{s.desc}</div>
-            </div>
+            </AnimatedSection>
           ))}
         </div>
       </section>
@@ -552,7 +598,13 @@ export default function Home() {
       }}>
         <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
 
-          <div className="aos" style={{ marginBottom: '2.5rem' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            style={{ marginBottom: '2.5rem' }}
+          >
             <div style={{
               fontSize: '10px', fontWeight: 800,
               letterSpacing: '0.12em', textTransform: 'uppercase',
@@ -575,7 +627,7 @@ export default function Home() {
                 }}
               >Google értékelés</a>
             </div>
-          </div>
+          </motion.div>
 
           <div style={{
             display: 'flex',
@@ -584,24 +636,25 @@ export default function Home() {
             gap: '1.25rem',
           }}>
             {REVIEWS.map((r, i) => (
-              <div key={i} className={`aos d${i + 1}`} style={{
-                background: '#ffffff',
-                border: '1px solid #E8E4DC',
-                borderRadius: '12px',
-                padding: '1.75rem',
-                boxShadow: '0 1px 4px rgba(17,17,17,0.04)',
-                flex: '1 1 290px',
-                maxWidth: '380px',
-              }}>
-                <div style={{ fontSize: '14px', color: '#e8c547', marginBottom: '14px', letterSpacing: '2px' }}>★★★★★</div>
-                <p style={{
-                  fontSize: '13.5px', lineHeight: 1.75,
-                  color: 'rgba(17,17,17,0.65)',
-                  marginBottom: '1.25rem',
-                  fontStyle: 'italic',
-                }}>„{r.text}"</p>
-                <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#111111' }}>{r.name}</div>
-              </div>
+              <AnimatedSection key={i} delay={i * 0.08} style={{ flex: '1 1 290px', maxWidth: '380px' }}>
+                <div style={{
+                  background: '#ffffff',
+                  border: '1px solid #E8E4DC',
+                  borderRadius: '12px',
+                  padding: '1.75rem',
+                  boxShadow: '0 1px 4px rgba(17,17,17,0.04)',
+                  height: '100%',
+                }}>
+                  <div style={{ fontSize: '14px', color: '#e8c547', marginBottom: '14px', letterSpacing: '2px' }}>★★★★★</div>
+                  <p style={{
+                    fontSize: '13.5px', lineHeight: 1.75,
+                    color: 'rgba(17,17,17,0.65)',
+                    marginBottom: '1.25rem',
+                    fontStyle: 'italic',
+                  }}>„{r.text}"</p>
+                  <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#111111' }}>{r.name}</div>
+                </div>
+              </AnimatedSection>
             ))}
           </div>
         </div>

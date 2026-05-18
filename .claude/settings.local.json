@@ -18,7 +18,10 @@
       "Bash(python3 *)",
       "Bash(npx tsc *)",
       "Bash(npx next *)",
-      "Skill(frontend-design:frontend-design)"
+      "Skill(frontend-design:frontend-design)",
+      "Bash(Get-ChildItem C:\\\\Projects\\\\salebikes\\\\hooks -ErrorAction SilentlyContinue)",
+      "Bash(Get-ChildItem C:\\\\Projects\\\\salebikes\\\\components)",
+      "Bash(dir C:Projectssalebikespublicimage *)"
     ]
   }
 }

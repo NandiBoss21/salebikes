@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
-import { useScrollAnimation } from '@/hooks/useScrollAnimation'
+import { motion } from 'framer-motion'
 
 function fmt(n: number) {
   return n.toLocaleString('hu-HU') + ' Ft'
@@ -14,8 +14,7 @@ const CONDITION_TEXT: Record<string, string> = {
   hasznalt: 'Jó állapot',
 }
 
-export default function BikeCard({ bike, delay }: { bike: Bike; delay?: number }) {
-  const animRef = useScrollAnimation<HTMLDivElement>(delay)
+export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: number }) {
   const img = bike.images?.[0]
   const savings = bike.original_price - bike.sale_price
   const pct = bike.original_price > bike.sale_price
@@ -24,22 +23,26 @@ export default function BikeCard({ bike, delay }: { bike: Bike; delay?: number }
   const condText = CONDITION_TEXT[bike.condition] ?? bike.condition
 
   return (
-    <div ref={animRef}>
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay }}
+      whileHover={{ y: -4 }}
+    >
       <div style={{
         background: '#ffffff',
         border: '1px solid #E8E4DC',
         borderRadius: '12px',
         overflow: 'hidden',
         display: 'flex', flexDirection: 'column',
-        transition: 'box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        transition: 'box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
         onMouseEnter={e => {
           (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 32px rgba(0,0,0,0.08)'
-          ;(e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'
         }}
         onMouseLeave={e => {
           (e.currentTarget as HTMLDivElement).style.boxShadow = 'none'
-          ;(e.currentTarget as HTMLDivElement).style.transform = 'none'
         }}
       >
         <Link href={`/kerekpar/${bike.id}`} style={{ textDecoration: 'none', color: 'inherit', flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -180,6 +183,6 @@ export default function BikeCard({ bike, delay }: { bike: Bike; delay?: number }
           </a>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
