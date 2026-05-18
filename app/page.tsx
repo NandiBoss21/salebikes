@@ -604,8 +604,9 @@ export default function Home() {
           </div>
 
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))',
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
             gap: '1.25rem',
           }}>
             {REVIEWS.map((r, i) => (
@@ -615,6 +616,8 @@ export default function Home() {
                 borderRadius: '12px',
                 padding: '1.75rem',
                 boxShadow: '0 1px 4px rgba(17,17,17,0.04)',
+                flex: '1 1 290px',
+                maxWidth: '380px',
               }}>
                 <div style={{ fontSize: '14px', color: '#e8c547', marginBottom: '14px', letterSpacing: '2px' }}>★★★★★</div>
                 <p style={{
