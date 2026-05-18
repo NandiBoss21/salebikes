@@ -167,6 +167,7 @@ export default function Home() {
             fontWeight: 900, letterSpacing: '-0.045em',
             lineHeight: 1.02, color: '#ffffff',
             marginBottom: '1.75rem',
+            textShadow: '0 2px 8px rgba(0,0,0,0.5)',
           }}>
             Prémium<br />
             kerékpárok<br />
@@ -179,6 +180,7 @@ export default function Home() {
             fontSize: '12.5px', fontWeight: 500,
             color: 'rgba(255,255,255,0.7)',
             marginBottom: '2.5rem',
+            textShadow: '0 1px 4px rgba(0,0,0,0.5)',
           }}>
             <span>1000+ eladás</span>
             <span style={{
@@ -195,15 +197,15 @@ export default function Home() {
 
           <div className="aos d3" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             <a href="#termekek" style={{
-              background: '#e8c547', color: '#111111',
+              background: '#ffffff', color: '#111111',
               padding: '14px 26px', borderRadius: '6px',
               fontSize: '13.5px', fontWeight: 700,
               letterSpacing: '-0.02em', textDecoration: 'none',
               display: 'inline-flex', alignItems: 'center', gap: '6px',
               transition: 'background 0.15s',
             }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#d4b23e')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#e8c547')}
+              onMouseEnter={e => (e.currentTarget.style.background = '#f0f0f0')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#ffffff')}
             >
               Böngéssz most <span style={{ fontSize: '16px' }}>→</span>
             </a>
@@ -306,7 +308,7 @@ export default function Home() {
                   textDecoration: 'none',
                   display: 'flex',
                   alignItems: 'flex-end',
-                  padding: '1.25rem 1.5rem',
+                  padding: '1rem 1.25rem',
                 }}
               >
                 <div className="cat-card-img" style={{
@@ -320,7 +322,7 @@ export default function Home() {
                 }} />
                 <span style={{
                   position: 'relative', zIndex: 1,
-                  fontSize: '1.15rem', fontWeight: 800,
+                  fontSize: '1.1rem', fontWeight: 700,
                   color: '#ffffff', letterSpacing: '-0.025em',
                   lineHeight: 1.1,
                   textShadow: '0 1px 4px rgba(0,0,0,0.5)',
@@ -708,16 +710,14 @@ export default function Home() {
 
       {/* ── STICKY MOBILE CTA ──────────────────────────────────── */}
       <a href="tel:+36308897559" className="mobile-cta" style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200,
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 999,
         background: '#e8c547', color: '#111111',
         alignItems: 'center', justifyContent: 'center',
-        gap: '10px', padding: '17px 16px',
-        fontSize: '14.5px', fontWeight: 800,
-        letterSpacing: '-0.02em', textDecoration: 'none',
-        boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
+        padding: '16px',
+        fontSize: '16px', fontWeight: 700,
+        textDecoration: 'none',
       }}>
-        <Phone size={16} />
-        Hívj most · +36 30 889 7559
+        📞 Hívj most – +36 30 889 7559
       </a>
     </>
   )

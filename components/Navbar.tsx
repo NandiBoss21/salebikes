@@ -89,7 +89,7 @@ export default function Navbar() {
         {/* Desktop left nav */}
         <ul className="desk-nav" style={{
           display: 'flex', listStyle: 'none',
-          gap: '0.5rem', flex: 1,
+          gap: '2.5rem', flex: 1,
         }}>
           {NAV_PRIMARY.map(item => (
             <li key={item.label}>
@@ -169,7 +169,7 @@ export default function Navbar() {
         </ul>
 
         {/* Desktop right nav + CTA */}
-        <div className="desk-nav" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+        <div className="desk-nav" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', flexShrink: 0 }}>
           {NAV_RIGHT.map(item => (
             <Link key={item.label} href={item.href} style={linkStyle}
               onMouseEnter={e => {

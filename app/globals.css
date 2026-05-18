@@ -104,7 +104,7 @@ a { color: inherit; }
 
 /* ── Sticky mobile CTA ──────────────────────────── */
 .mobile-cta { display: none; }
-@media (max-width: 860px) {
+@media (max-width: 768px) {
   .mobile-cta { display: flex; }
   .hide-mobile { display: none !important; }
 }
