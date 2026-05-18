@@ -29,30 +29,37 @@ const NAV_MOBILE = [
   ...NAV_RIGHT,
 ]
 
-const linkStyle: React.CSSProperties = {
-  display: 'block', padding: '6px 12px',
-  fontSize: '13px', fontWeight: 500,
-  color: 'rgba(17,17,17,0.5)',
-  textDecoration: 'none',
-  borderRadius: '6px',
-  transition: 'color 0.15s, background 0.15s',
-}
-
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const [dropOpen, setDropOpen] = useState(false)
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20)
+    const fn = () => setScrolled(window.scrollY > 50)
+    fn()
     window.addEventListener('scroll', fn, { passive: true })
     return () => window.removeEventListener('scroll', fn)
   }, [])
 
+  const textColor = scrolled ? 'rgba(17,17,17,0.5)' : 'rgba(255,255,255,0.85)'
+  const hoverColor = scrolled ? '#111111' : '#ffffff'
+  const hoverBg = scrolled ? '#f5f5f5' : 'rgba(255,255,255,0.12)'
+  const logoMainColor = scrolled ? '#111111' : '#ffffff'
+  const logoSubColor = scrolled ? 'rgba(17,17,17,0.38)' : 'rgba(255,255,255,0.5)'
+
+  const linkStyle: React.CSSProperties = {
+    display: 'block', padding: '6px 12px',
+    fontSize: '13px', fontWeight: 500,
+    color: textColor,
+    textDecoration: 'none',
+    borderRadius: '6px',
+    transition: 'color 0.15s, background 0.15s',
+  }
+
   return (
     <nav style={{
-      position: 'sticky', top: 0, zIndex: 100,
-      background: scrolled ? 'rgba(255,255,255,0.85)' : '#ffffff',
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+      background: scrolled ? 'rgba(255,255,255,0.95)' : 'transparent',
       backdropFilter: scrolled ? 'blur(12px)' : 'none',
       WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
       borderBottom: scrolled ? '1px solid rgba(0,0,0,0.07)' : 'none',
@@ -70,11 +77,13 @@ export default function Navbar() {
           <div style={{ lineHeight: 1.15 }}>
             <div style={{
               fontSize: '17px', fontWeight: 900,
-              letterSpacing: '-0.035em', color: '#111111',
+              letterSpacing: '-0.035em', color: logoMainColor,
+              transition: 'color 0.3s ease',
             }}>Bringabarát</div>
             <div style={{
               fontSize: '10px', fontWeight: 500,
-              letterSpacing: '0.01em', color: 'rgba(17,17,17,0.38)',
+              letterSpacing: '0.01em', color: logoSubColor,
+              transition: 'color 0.3s ease',
             }}>Kápolnásnyék · Velence</div>
           </div>
         </Link>
@@ -88,11 +97,11 @@ export default function Navbar() {
             <li key={item.label}>
               <Link href={item.href} style={linkStyle}
                 onMouseEnter={e => {
-                  e.currentTarget.style.color = '#111111'
-                  e.currentTarget.style.background = '#f5f5f5'
+                  e.currentTarget.style.color = hoverColor
+                  e.currentTarget.style.background = hoverBg
                 }}
                 onMouseLeave={e => {
-                  e.currentTarget.style.color = 'rgba(17,17,17,0.5)'
+                  e.currentTarget.style.color = textColor
                   e.currentTarget.style.background = 'transparent'
                 }}
               >{item.label}</Link>
@@ -110,7 +119,7 @@ export default function Navbar() {
               display: 'flex', alignItems: 'center', gap: '4px',
               background: 'none', border: 'none', cursor: 'pointer',
               fontFamily: 'inherit',
-              color: dropOpen ? '#111111' : 'rgba(17,17,17,0.5)',
+              color: dropOpen ? hoverColor : textColor,
             }}>
               Összes kerékpár
               <ChevronDown size={13} style={{
@@ -166,11 +175,11 @@ export default function Navbar() {
           {NAV_RIGHT.map(item => (
             <Link key={item.label} href={item.href} style={linkStyle}
               onMouseEnter={e => {
-                e.currentTarget.style.color = '#111111'
-                e.currentTarget.style.background = '#f5f5f5'
+                e.currentTarget.style.color = hoverColor
+                e.currentTarget.style.background = hoverBg
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.color = 'rgba(17,17,17,0.5)'
+                e.currentTarget.style.color = textColor
                 e.currentTarget.style.background = 'transparent'
               }}
             >{item.label}</Link>
@@ -197,8 +206,10 @@ export default function Navbar() {
         <button onClick={() => setOpen(o => !o)} className="mob-btn" style={{
           display: 'none', alignItems: 'center', justifyContent: 'center',
           background: 'none', border: 'none',
-          cursor: 'pointer', padding: '6px', color: '#111111',
+          cursor: 'pointer', padding: '6px',
+          color: scrolled ? '#111111' : '#ffffff',
           borderRadius: '6px', marginLeft: 'auto',
+          transition: 'color 0.3s ease',
         }}>
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>

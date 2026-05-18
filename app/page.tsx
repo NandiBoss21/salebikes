@@ -126,7 +126,7 @@ export default function Home() {
       <section style={{
         position: 'relative',
         width: '100%',
-        height: '100vh',
+        height: '85vh',
         backgroundImage: 'url(/hero-bg.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -146,9 +146,8 @@ export default function Home() {
           position: 'relative', zIndex: 1,
           flex: 1,
           display: 'flex', flexDirection: 'column', justifyContent: 'center',
-          padding: 'clamp(3.5rem, 7vw, 6rem) clamp(2rem, 5vw, 5.5rem)',
+          padding: 'clamp(5.5rem, 8vw, 7rem) clamp(2rem, 5vw, 5.5rem) 110px',
           maxWidth: '680px',
-          paddingBottom: '110px',
         }}>
           <div className="aos" style={{
             fontSize: '10.5px', fontWeight: 700,
@@ -236,9 +235,9 @@ export default function Home() {
         {/* Stat bar */}
         <div className="hero-stat-bar" style={{
           position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 1,
-          background: 'rgba(0,0,0,0.55)',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)',
+          background: 'rgba(0,0,0,0.7)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
           display: 'flex',
           alignItems: 'stretch',
         }}>
@@ -271,9 +270,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* ── GRADIENT BRIDGE: light → dark ────────────────────── */}
-      <div style={{ height: '5rem', background: 'linear-gradient(to bottom, #FAFAF8, #111111)' }} />
 
       {/* ── CATEGORY GRID ──────────────────────────────────────── */}
       <section style={{
