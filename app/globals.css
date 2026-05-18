@@ -20,24 +20,35 @@ body {
 
 a { color: inherit; }
 
-/* ── Scroll animations ─────────────────────────── */
+/* ── Scroll animations ──────────────────────────── */
 .aos {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: translateY(18px);
+  transition: opacity 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .aos.in-view { opacity: 1; transform: none; }
-.d1 { transition-delay: 0.06s; }
-.d2 { transition-delay: 0.12s; }
-.d3 { transition-delay: 0.18s; }
-.d4 { transition-delay: 0.24s; }
-.d5 { transition-delay: 0.30s; }
+.d1 { transition-delay: 0.05s; }
+.d2 { transition-delay: 0.10s; }
+.d3 { transition-delay: 0.16s; }
+.d4 { transition-delay: 0.22s; }
+.d5 { transition-delay: 0.28s; }
 
-/* ── Card image zoom ───────────────────────────── */
-.card-img { transition: transform 0.5s ease !important; }
+/* ── Card image zoom ────────────────────────────── */
+.card-img { transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important; }
 .card-img-wrap:hover .card-img { transform: scale(1.04) !important; }
 
-/* ── Responsive grids ─────────────────────────── */
+/* ── Category card hover ────────────────────────── */
+.cat-card {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.3s ease;
+}
+.cat-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+/* ── Responsive grids ───────────────────────────── */
 .bikes-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -59,11 +70,11 @@ a { color: inherit; }
   .cat-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* ── Hero split layout ────────────────────────── */
+/* ── Hero split layout ──────────────────────────── */
 .hero-split {
   display: grid;
-  grid-template-columns: 1fr 380px;
-  min-height: 460px;
+  grid-template-columns: 1fr 400px;
+  min-height: 520px;
   overflow: hidden;
 }
 @media (max-width: 860px) {
@@ -71,20 +82,25 @@ a { color: inherit; }
   .hero-savings-panel { display: none !important; }
 }
 
-/* ── Sticky mobile CTA ────────────────────────── */
+/* ── Sticky mobile CTA ──────────────────────────── */
 .mobile-cta { display: none; }
 @media (max-width: 860px) {
   .mobile-cta { display: flex; }
   .hide-mobile { display: none !important; }
 }
 
-/* ── Navbar ───────────────────────────────────── */
+/* ── Navbar ─────────────────────────────────────── */
 @media (max-width: 860px) {
   .desk-nav { display: none !important; }
   .mob-btn  { display: flex !important; }
 }
 
-/* ── Product detail responsive ────────────────── */
+/* ── Trust stats responsive ─────────────────────── */
+@media (max-width: 600px) {
+  .trust-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ── Product detail responsive ──────────────────── */
 .bike-detail-wrap {
   max-width: 1280px;
   margin: 0 auto;
@@ -101,11 +117,11 @@ a { color: inherit; }
   .bike-detail-wrap { padding: 1.5rem 1rem 7rem; }
 }
 
-/* ── Details tooltip ─────────────────────────── */
+/* ── Details tooltip ────────────────────────────── */
 details summary::-webkit-details-marker { display: none; }
 details summary { user-select: none; }
 
-/* ── Scrollbar ────────────────────────────────── */
+/* ── Scrollbar ──────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: #fff; }
-::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.14); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
