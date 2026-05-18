@@ -23,9 +23,11 @@ const CATEGORIES = [
 const BRANDS = ['Focus', 'Shimano', 'Campagnolo', 'Fox', 'Giant', 'Conway', 'Scott', 'Bulls', 'Cannondale', 'Corratec', 'Cube', 'Genesis', 'Merida', 'KTM']
 
 const REVIEWS = [
-  { text: 'Nagyon kedves és segítőkész kiszolgálásban volt részem. Széles választék, jó minőségű kerékpárok, barátságos hangulat. Bátran ajánlom mindenkinek, aki bringát keres!', name: 'Dávid S.' },
+  { text: 'Legjobb hely, barátságos a tulajdonos is, csak ajánlani tudom őket!', name: 'Orion T.' },
+  { text: 'A Bringabarát telephely rendezett és profi hely, ahol gyors és korrekt kiszolgálást kaptam. Minden gördülékenyen ment, teljesen elégedett voltam.', name: 'Marsi Dominik' },
+  { text: 'Tamás nagyon korrekt! Mindig őszintén elmondja a véleményét, akkor is, ha neki kedvezőtlen! Csodás bringák, maximális tájékoztatás!', name: 'István V.' },
   { text: 'Hat bicikli vásárlásán vagyok túl tőlük és évek óta semmi gond semelyikkel. Korrekt!', name: 'Adrián' },
-  { text: 'Nagyon jó kis bolt. Szuper bringákkal, kedves, segítőkész eladóval.', name: 'Kollár Gábor' },
+  { text: 'Nagyon kedves és segítőkész kiszolgálásban volt részem. Széles választék, jó minőségű kerékpárok, barátságos hangulat. Bátran ajánlom!', name: 'Dávid S.' },
 ]
 
 const MTB_SIZES    = [
@@ -368,7 +370,7 @@ export default function Home() {
           {[
             { num: '1000+', label: 'eladás 2008 óta', desc: 'Kerékpár gazdát cserélt' },
             { num: 'Garancia', label: 'minden bringára', desc: 'Minden bringára, kivétel nélkül' },
-            { num: '4.7 ★', label: 'Google értékelés', desc: 'Valódi vásárlói visszajelzések' },
+            { num: '4.9 ★', label: 'Google értékelés', desc: '14 valódi vásárlói visszajelzés' },
           ].map((s, i) => (
             <div key={s.label} className="aos" style={{
               textAlign: 'center',
@@ -588,7 +590,7 @@ export default function Home() {
                 fontSize: 'clamp(2rem, 4vw, 3rem)',
                 fontWeight: 900, letterSpacing: '-0.05em',
                 color: '#111111', lineHeight: 1,
-              }}>4.7</span>
+              }}>4.9</span>
               <span style={{ fontSize: '20px', color: '#e8c547', letterSpacing: '3px' }}>★★★★★</span>
               <a
                 href="https://www.google.com/maps/search/Bringabarát+Tesztbike+Kápolnásnyék"
@@ -599,7 +601,7 @@ export default function Home() {
                   color: 'rgba(17,17,17,0.4)',
                   textDecoration: 'underline', textUnderlineOffset: '3px',
                 }}
-              >7 Google értékelés</a>
+              >14 Google értékelés</a>
             </div>
           </div>
 

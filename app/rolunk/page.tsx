@@ -10,7 +10,7 @@ export const metadata = {
 const STATS = [
   { num: '2006', label: 'óta működünk' },
   { num: '1000+', label: 'eladott kerékpár' },
-  { num: '4.7★', label: 'Google értékelés' },
+  { num: '4.9★', label: '14 Google értékelés' },
 ]
 
 const SERVICES = [
