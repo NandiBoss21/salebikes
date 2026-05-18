@@ -9,19 +9,73 @@ import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
 
 const CATEGORIES = [
-  { label: 'Ebike',    href: '/ebike',    gradient: 'linear-gradient(145deg, #0d1f3c 0%, #1a3a6b 45%, #0a1628 100%)' },
-  { label: 'MTB',      href: '/mtb',      gradient: 'linear-gradient(145deg, #0a1a0d 0%, #18351e 45%, #0a1510 100%)' },
-  { label: 'Trekking', href: '/trekking', gradient: 'linear-gradient(145deg, #0f1a2e 0%, #1a2d4a 45%, #0c1525 100%)' },
-  { label: 'Gravel',   href: '/gravel',   gradient: 'linear-gradient(145deg, #1c1200 0%, #302000 45%, #151000 100%)' },
-  { label: 'Gyerek',   href: '/gyerek',   gradient: 'linear-gradient(145deg, #1a0a2e 0%, #2d1357 45%, #110828 100%)' },
-  { label: 'Összes',   href: '#termekek', gradient: 'linear-gradient(145deg, #111111 0%, #2a2a2a 45%, #111111 100%)' },
+  { label: 'Ebike',       href: '/ebike',       gradient: 'linear-gradient(145deg, #0d1f3c 0%, #1a3a6b 45%, #0a1628 100%)' },
+  { label: 'MTB',         href: '/mtb',         gradient: 'linear-gradient(145deg, #0a1a0d 0%, #18351e 45%, #0a1510 100%)' },
+  { label: 'Trekking',    href: '/trekking',    gradient: 'linear-gradient(145deg, #0f1a2e 0%, #1a2d4a 45%, #0c1525 100%)' },
+  { label: 'Gravel',      href: '/gravel',      gradient: 'linear-gradient(145deg, #1c1200 0%, #302000 45%, #151000 100%)' },
+  { label: 'Gyerek',      href: '/gyerek',      gradient: 'linear-gradient(145deg, #1a0a2e 0%, #2d1357 45%, #110828 100%)' },
+  { label: 'Országúti',   href: '/orszaguti',   gradient: 'linear-gradient(145deg, #0a0f1a 0%, #1a2236 45%, #080d18 100%)' },
+  { label: 'Kemping',     href: '/kemping',     gradient: 'linear-gradient(145deg, #0d1a0a 0%, #1a2e14 45%, #0a1508 100%)' },
+  { label: 'Alkatrészek', href: '/alkatreszek', gradient: 'linear-gradient(145deg, #1a1a1a 0%, #2e2e2e 45%, #111111 100%)' },
 ]
+
+const BRANDS = ['Focus', 'Shimano', 'Campagnolo', 'Fox', 'Giant', 'Conway', 'Scott', 'Bulls', 'Cannondale', 'Corratec', 'Cube', 'Genesis', 'Merida', 'KTM']
 
 const REVIEWS = [
   { text: 'Nagyon kedves és segítőkész kiszolgálásban volt részem. Széles választék, jó minőségű kerékpárok, barátságos hangulat. Bátran ajánlom mindenkinek, aki bringát keres!', name: 'Dávid S.' },
   { text: 'Hat bicikli vásárlásán vagyok túl tőlük és évek óta semmi gond semelyikkel. Korrekt!', name: 'Adrián' },
   { text: 'Nagyon jó kis bolt. Szuper bringákkal, kedves, segítőkész eladóval.', name: 'Kollár Gábor' },
 ]
+
+const MTB_SIZES    = [
+  { height: '148–158 cm', frame: '13–14"', size: 'XS' },
+  { height: '158–168 cm', frame: '15–16"', size: 'S' },
+  { height: '168–178 cm', frame: '17–18"', size: 'M' },
+  { height: '178–185 cm', frame: '19–20"', size: 'L' },
+  { height: '185–193 cm', frame: '21–22"', size: 'XL' },
+  { height: '193–198 cm', frame: '23–24"', size: 'XXL' },
+]
+const TREKKING_SIZES = [
+  { height: '147–155 cm', frame: '13–14" / 47–49 cm', size: 'XS' },
+  { height: '155–165 cm', frame: '15–16" / 50–52 cm', size: 'S' },
+  { height: '165–175 cm', frame: '17–18" / 53–54 cm', size: 'M' },
+  { height: '175–183 cm', frame: '19–20" / 55–57 cm', size: 'L' },
+  { height: '183–191 cm', frame: '21–22" / 58–61 cm', size: 'XL' },
+  { height: '191–198 cm', frame: '23–25" / 61–63 cm', size: 'XXL' },
+]
+const ROAD_SIZES = [
+  { height: '148–152 cm', frame: '47–48 cm', size: 'XXS' },
+  { height: '152–160 cm', frame: '49–50 cm', size: 'XS' },
+  { height: '160–168 cm', frame: '51–53 cm', size: 'S' },
+  { height: '168–175 cm', frame: '54–55 cm', size: 'M' },
+  { height: '175–183 cm', frame: '56–58 cm', size: 'L' },
+  { height: '183–191 cm', frame: '58–60 cm', size: 'XL' },
+  { height: '191–198 cm', frame: '61–63 cm', size: 'XXL' },
+]
+const KIDS_SIZES = [
+  { age: '2–4 év', height: '85–100 cm', wheel: '12"' },
+  { age: '3–5 év', height: '95–110 cm', wheel: '14"' },
+  { age: '5–7 év', height: '110–120 cm', wheel: '16"' },
+  { age: '7–9 év', height: '120–135 cm', wheel: '20"' },
+  { age: '9–11 év', height: '135–145 cm', wheel: '24"' },
+  { age: '11+ év', height: '145+ cm',    wheel: '26"' },
+]
+
+const SIZE_TABS = ['MTB', 'Trekking', 'Országúti', 'Gyerek'] as const
+type SizeTab = typeof SIZE_TABS[number]
+
+const thStyle: React.CSSProperties = {
+  padding: '11px 16px', textAlign: 'left',
+  fontSize: '11px', fontWeight: 800,
+  letterSpacing: '0.06em', textTransform: 'uppercase',
+  color: '#111111',
+}
+const tdStyle: React.CSSProperties = {
+  padding: '11px 16px',
+  fontSize: '13px', fontWeight: 500,
+  color: 'rgba(17,17,17,0.75)',
+  borderBottom: '1px solid rgba(0,0,0,0.05)',
+}
 
 function useAos(deps: unknown[]) {
   useEffect(() => {
@@ -58,13 +112,22 @@ function useCountUp(target: number, durationMs = 1600) {
 
 export default function Home() {
   const [bikes, setBikes] = useState<Bike[]>([])
+  const [latestBikes, setLatestBikes] = useState<Bike[]>([])
   const [loading, setLoading] = useState(true)
+  const [sizeTab, setSizeTab] = useState<SizeTab>('MTB')
 
   useEffect(() => {
     supabase.from('bikes').select('*').eq('available', true)
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false })
       .then(({ data }) => { setBikes((data || []) as Bike[]); setLoading(false) })
+  }, [])
+
+  useEffect(() => {
+    supabase.from('bikes').select('*').eq('available', true)
+      .order('created_at', { ascending: false })
+      .limit(3)
+      .then(({ data }) => setLatestBikes((data || []) as Bike[]))
   }, [])
 
   useAos([])
@@ -331,6 +394,94 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── BRANDS ─────────────────────────────────────────────── */}
+      <section style={{
+        background: '#FAFAF8',
+        padding: 'clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem)',
+        borderBottom: '1px solid rgba(17,17,17,0.06)',
+      }}>
+        <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
+          <div className="aos" style={{
+            fontSize: '10px', fontWeight: 800,
+            letterSpacing: '0.12em', textTransform: 'uppercase',
+            color: 'rgba(17,17,17,0.3)', marginBottom: '1.75rem',
+            textAlign: 'center',
+          }}>Forgalmazott márkák</div>
+          <div className="aos d1" style={{
+            display: 'flex', flexWrap: 'wrap',
+            justifyContent: 'center', gap: '10px',
+          }}>
+            {BRANDS.map(brand => (
+              <span key={brand} style={{
+                fontSize: '13px', fontWeight: 600,
+                color: 'rgba(17,17,17,0.55)',
+                padding: '7px 18px',
+                border: '1px solid #E8E4DC',
+                borderRadius: '100px',
+                background: '#ffffff',
+                letterSpacing: '-0.01em',
+                transition: 'color 0.15s, border-color 0.15s',
+              }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.color = '#111111'
+                  e.currentTarget.style.borderColor = '#111111'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.color = 'rgba(17,17,17,0.55)'
+                  e.currentTarget.style.borderColor = '#E8E4DC'
+                }}
+              >{brand}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── LEGÚJABBAN FELTÖLTÖTT ───────────────────────────────── */}
+      {latestBikes.length > 0 && (
+        <section style={{
+          background: '#F2F0EB',
+          padding: 'clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem)',
+          borderBottom: '1px solid rgba(17,17,17,0.07)',
+        }}>
+          <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
+            <div className="aos" style={{
+              display: 'flex', alignItems: 'center',
+              justifyContent: 'space-between', flexWrap: 'wrap',
+              gap: '12px', marginBottom: '2rem',
+            }}>
+              <div>
+                <div style={{
+                  fontSize: '10px', fontWeight: 800,
+                  letterSpacing: '0.12em', textTransform: 'uppercase',
+                  color: 'rgba(17,17,17,0.35)', marginBottom: '6px',
+                }}>Friss feltöltés</div>
+                <h2 style={{
+                  fontSize: 'clamp(1.4rem, 3vw, 2rem)',
+                  fontWeight: 900, letterSpacing: '-0.04em',
+                  color: '#111111', lineHeight: 1.1,
+                }}>Legújabban feltöltött</h2>
+              </div>
+              <a href="#termekek" style={{
+                fontSize: '13px', fontWeight: 600,
+                color: 'rgba(17,17,17,0.45)', textDecoration: 'none',
+                display: 'flex', alignItems: 'center', gap: '4px',
+                transition: 'color 0.15s',
+              }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#111111')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(17,17,17,0.45)')}
+              >
+                Összes kerékpár →
+              </a>
+            </div>
+            <div className="bikes-grid">
+              {latestBikes.map((bike, i) => (
+                <BikeCard key={bike.id} bike={bike} delay={i * 0.08} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── PRODUCTS ───────────────────────────────────────────── */}
       <section id="termekek" style={{
         padding: 'clamp(1.75rem, 3vw, 2.5rem) clamp(1.5rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem)',
@@ -383,6 +534,103 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── MÉRETTÁBLÁZAT ──────────────────────────────────────── */}
+      <section style={{
+        background: '#FAFAF8',
+        padding: 'clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)',
+        borderTop: '1px solid rgba(17,17,17,0.07)',
+        borderBottom: '1px solid rgba(17,17,17,0.07)',
+      }}>
+        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+          <div className="aos" style={{ marginBottom: '2rem' }}>
+            <div style={{
+              fontSize: '10px', fontWeight: 800,
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+              color: 'rgba(17,17,17,0.35)', marginBottom: '0.6rem',
+            }}>Segítség a választáshoz</div>
+            <h2 style={{
+              fontSize: 'clamp(1.4rem, 3vw, 2rem)',
+              fontWeight: 900, letterSpacing: '-0.04em',
+              color: '#111111',
+            }}>Mérettáblázat</h2>
+          </div>
+
+          {/* Tabs */}
+          <div className="aos d1" style={{
+            display: 'flex', gap: '6px', flexWrap: 'wrap',
+            marginBottom: '1.5rem',
+          }}>
+            {SIZE_TABS.map(tab => (
+              <button key={tab} onClick={() => setSizeTab(tab)} style={{
+                padding: '8px 20px', borderRadius: '6px',
+                fontSize: '13px', fontWeight: 600,
+                border: '1px solid',
+                cursor: 'pointer',
+                transition: 'all 0.15s',
+                background: sizeTab === tab ? '#e8c547' : '#ffffff',
+                borderColor: sizeTab === tab ? '#e8c547' : '#E8E4DC',
+                color: sizeTab === tab ? '#111111' : 'rgba(17,17,17,0.55)',
+              }}>
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Table */}
+          <div className="aos d2" style={{
+            borderRadius: '10px', overflow: 'hidden',
+            border: '1px solid #E8E4DC',
+          }}>
+            {(sizeTab === 'MTB' || sizeTab === 'Trekking' || sizeTab === 'Országúti') && (
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ background: '#e8c547' }}>
+                    <th style={thStyle}>Testmagasság</th>
+                    <th style={thStyle}>{sizeTab === 'Országúti' ? 'Csőhossz' : 'Keretméret'}</th>
+                    <th style={thStyle}>Méret</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(sizeTab === 'MTB' ? MTB_SIZES : sizeTab === 'Trekking' ? TREKKING_SIZES : ROAD_SIZES).map((row, i) => (
+                    <tr key={i} style={{ background: i % 2 === 0 ? '#FAFAF8' : '#F2F0EB' }}>
+                      <td style={tdStyle}>{row.height}</td>
+                      <td style={tdStyle}>{row.frame}</td>
+                      <td style={{ ...tdStyle, fontWeight: 700, color: '#111111' }}>{row.size}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            {sizeTab === 'Gyerek' && (
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ background: '#e8c547' }}>
+                    <th style={thStyle}>Kor</th>
+                    <th style={thStyle}>Magasság</th>
+                    <th style={thStyle}>Kerékméret</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {KIDS_SIZES.map((row, i) => (
+                    <tr key={i} style={{ background: i % 2 === 0 ? '#FAFAF8' : '#F2F0EB' }}>
+                      <td style={tdStyle}>{row.age}</td>
+                      <td style={tdStyle}>{row.height}</td>
+                      <td style={{ ...tdStyle, fontWeight: 700, color: '#111111' }}>{row.wheel}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+          <p style={{
+            marginTop: '1rem', fontSize: '11.5px',
+            color: 'rgba(17,17,17,0.35)', lineHeight: 1.6,
+          }}>
+            * Az értékek irányadók. Bizonytalan esetben kérj segítséget — hívj minket!
+          </p>
+        </div>
+      </section>
+
       {/* ── REVIEWS ────────────────────────────────────────────── */}
       <section style={{
         background: '#F2F0EB',
@@ -425,8 +673,8 @@ export default function Home() {
             {REVIEWS.map((r, i) => (
               <div key={i} className={`aos d${i + 1}`} style={{
                 background: '#ffffff',
-                border: '1px solid rgba(17,17,17,0.08)',
-                borderRadius: '10px',
+                border: '1px solid #E8E4DC',
+                borderRadius: '12px',
                 padding: '1.75rem',
                 boxShadow: '0 1px 4px rgba(17,17,17,0.04)',
               }}>
