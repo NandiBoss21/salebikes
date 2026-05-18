@@ -2,7 +2,23 @@
   "permissions": {
     "allow": [
       "Bash(npm show *)",
-      "Bash(python3 -c \"import json,sys; v=json.load\\(sys.stdin\\); print\\('\\\\n'.join\\(v[-20:]\\)\\)\")"
+      "Bash(python3 -c \"import json,sys; v=json.load\\(sys.stdin\\); print\\('\\\\n'.join\\(v[-20:]\\)\\)\")",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git rm *)",
+      "Bash(npm run *)",
+      "Bash(Start-Sleep -Seconds 5)",
+      "Bash(Get-Content \"C:\\\\Users\\\\admin\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projects-salebikes\\\\b326f19c-8551-4c4c-8dfd-ac98e0604ece\\\\tasks\\\\bnuqn5az6.output\" -Tail 10)",
+      "Bash(npx --yes playwright@latest screenshot --browser chromium --viewport-size \"1400,900\" http://localhost:3456 /tmp/hero.png)",
+      "Bash(npx playwright *)",
+      "Bash(node *)",
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "Bash(python3 *)",
+      "Bash(npx tsc *)",
+      "Bash(npx next *)",
+      "Skill(frontend-design:frontend-design)"
     ]
   }
 }
