@@ -59,16 +59,14 @@ export default function Navbar() {
   return (
     <nav style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-      background: scrolled ? 'rgba(255,255,255,0.95)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(12px)' : 'none',
-      WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
-      borderBottom: scrolled ? '1px solid rgba(0,0,0,0.07)' : 'none',
-      boxShadow: scrolled ? '0 1px 20px rgba(0,0,0,0.06)' : 'none',
-      transition: 'background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
+      background: scrolled ? '#ffffff' : 'rgba(0,0,0,0.3)',
+      backdropFilter: scrolled ? 'none' : 'blur(8px)',
+      WebkitBackdropFilter: scrolled ? 'none' : 'blur(8px)',
+      boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.08)' : 'none',
+      transition: 'all 0.3s ease',
     }}>
       <div style={{
-        maxWidth: '1360px', margin: '0 auto',
-        padding: '0 clamp(1.5rem, 4vw, 3rem)', height: '64px',
+        padding: '0 3rem', height: '64px',
         display: 'flex', alignItems: 'center', gap: '1.5rem',
       }}>
 
@@ -91,7 +89,7 @@ export default function Navbar() {
         {/* Desktop left nav */}
         <ul className="desk-nav" style={{
           display: 'flex', listStyle: 'none',
-          gap: '2px', flex: 1,
+          gap: '0.5rem', flex: 1,
         }}>
           {NAV_PRIMARY.map(item => (
             <li key={item.label}>
@@ -171,7 +169,7 @@ export default function Navbar() {
         </ul>
 
         {/* Desktop right nav + CTA */}
-        <div className="desk-nav" style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 }}>
+        <div className="desk-nav" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
           {NAV_RIGHT.map(item => (
             <Link key={item.label} href={item.href} style={linkStyle}
               onMouseEnter={e => {
