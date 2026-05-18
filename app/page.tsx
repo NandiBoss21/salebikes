@@ -232,8 +232,8 @@ export default function Home() {
       {/* ── CATEGORY GRID ──────────────────────────────────────── */}
       <section style={{
         padding: 'clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)',
-        background: '#fafafa',
-        borderBottom: '1px solid #e8e8e8',
+        background: '#111111',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}>
         <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
 
@@ -244,9 +244,9 @@ export default function Home() {
             <span style={{
               fontSize: '10px', fontWeight: 800,
               letterSpacing: '0.12em', textTransform: 'uppercase',
-              color: 'rgba(17,17,17,0.35)',
+              color: 'rgba(255,255,255,0.35)',
             }}>Kategóriák</span>
-            <span style={{ flex: 1, height: '1px', background: 'rgba(17,17,17,0.08)' }} />
+            <span style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }} />
           </div>
 
           <div className="cat-grid">
@@ -287,7 +287,7 @@ export default function Home() {
       </section>
 
       {/* ── TRUST STATS ────────────────────────────────────────── */}
-      <section style={{ background: '#ffffff', borderBottom: '1px solid #e8e8e8' }}>
+      <section style={{ background: '#f5f3ef', borderBottom: '1px solid rgba(17,17,17,0.08)' }}>
         <div style={{
           maxWidth: '1360px', margin: '0 auto',
           display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
@@ -301,7 +301,7 @@ export default function Home() {
             <div key={s.label} className="aos" style={{
               textAlign: 'center',
               padding: 'clamp(2.5rem, 5vw, 4rem) 1.5rem',
-              borderRight: i < 2 ? '1px solid #e8e8e8' : 'none',
+              borderRight: i < 2 ? '1px solid rgba(17,17,17,0.1)' : 'none',
               display: 'flex', flexDirection: 'column', gap: '6px',
             }}>
               <div style={{
@@ -326,7 +326,7 @@ export default function Home() {
       {/* ── PRODUCTS ───────────────────────────────────────────── */}
       <section id="termekek" style={{
         padding: 'clamp(1.75rem, 3vw, 2.5rem) clamp(1.5rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem)',
-        background: '#fafafa',
+        background: '#fafaf8',
       }}>
         <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
 
@@ -379,9 +379,9 @@ export default function Home() {
 
       {/* ── REVIEWS ────────────────────────────────────────────── */}
       <section style={{
-        background: '#ffffff',
+        background: '#f5f3ef',
         padding: 'clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)',
-        borderTop: '1px solid #e8e8e8',
+        borderTop: '1px solid rgba(17,17,17,0.08)',
       }}>
         <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
 
@@ -419,9 +419,10 @@ export default function Home() {
             {REVIEWS.map((r, i) => (
               <div key={i} className={`aos d${i + 1}`} style={{
                 background: '#ffffff',
-                border: '1px solid #e8e8e8',
+                border: '1px solid rgba(17,17,17,0.08)',
                 borderRadius: '10px',
                 padding: '1.75rem',
+                boxShadow: '0 1px 4px rgba(17,17,17,0.04)',
               }}>
                 <div style={{ fontSize: '14px', color: '#e8c547', marginBottom: '14px', letterSpacing: '2px' }}>★★★★★</div>
                 <p style={{
