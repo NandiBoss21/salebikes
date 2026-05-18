@@ -80,18 +80,22 @@ export default function Home() {
       <Navbar />
 
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <section className="hero-split">
+      <section className="hero-split" style={{
+        backgroundImage: 'url(/hero-bg.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}>
 
-        {/* Left – text */}
+        {/* Left – text over dark overlay */}
         <div style={{
           padding: 'clamp(3.5rem, 7vw, 6rem) clamp(2rem, 5vw, 5.5rem)',
           display: 'flex', flexDirection: 'column', justifyContent: 'center',
-          background: '#FAFAF8',
+          background: 'rgba(0,0,0,0.55)',
         }}>
           <div className="aos" style={{
             fontSize: '10.5px', fontWeight: 700,
             letterSpacing: '0.12em', textTransform: 'uppercase',
-            color: 'rgba(17,17,17,0.35)', marginBottom: '1.5rem',
+            color: 'rgba(255,255,255,0.6)', marginBottom: '1.5rem',
             display: 'flex', alignItems: 'center', gap: '10px',
           }}>
             <span style={{
@@ -104,7 +108,7 @@ export default function Home() {
           <h1 className="aos d1" style={{
             fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)',
             fontWeight: 900, letterSpacing: '-0.045em',
-            lineHeight: 1.02, color: '#111111',
+            lineHeight: 1.02, color: '#ffffff',
             marginBottom: '1.75rem',
           }}>
             Prémium<br />
@@ -116,40 +120,40 @@ export default function Home() {
             display: 'flex', gap: '14px', flexWrap: 'wrap',
             alignItems: 'center',
             fontSize: '12.5px', fontWeight: 500,
-            color: 'rgba(17,17,17,0.45)',
+            color: 'rgba(255,255,255,0.7)',
             marginBottom: '2.5rem',
           }}>
             <span>1000+ eladás</span>
             <span style={{
               display: 'inline-block', width: '3px', height: '3px',
-              borderRadius: '50%', background: 'rgba(17,17,17,0.2)', flexShrink: 0,
+              borderRadius: '50%', background: 'rgba(255,255,255,0.3)', flexShrink: 0,
             }} />
             <span>2008 óta</span>
             <span style={{
               display: 'inline-block', width: '3px', height: '3px',
-              borderRadius: '50%', background: 'rgba(17,17,17,0.2)', flexShrink: 0,
+              borderRadius: '50%', background: 'rgba(255,255,255,0.3)', flexShrink: 0,
             }} />
             <span>3 hónap garancia</span>
           </div>
 
           <div className="aos d3" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             <a href="#termekek" style={{
-              background: '#111111', color: '#ffffff',
+              background: '#e8c547', color: '#111111',
               padding: '14px 26px', borderRadius: '6px',
               fontSize: '13.5px', fontWeight: 700,
               letterSpacing: '-0.02em', textDecoration: 'none',
               display: 'inline-flex', alignItems: 'center', gap: '6px',
               transition: 'background 0.15s',
             }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#2a2a2a')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#111111')}
+              onMouseEnter={e => (e.currentTarget.style.background = '#d4b23e')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#e8c547')}
             >
               Böngéssz most <span style={{ fontSize: '16px' }}>→</span>
             </a>
 
             <a href="tel:+36308897559" style={{
-              background: 'transparent', color: '#111111',
-              border: '1.5px solid rgba(17,17,17,0.18)',
+              background: 'transparent', color: '#ffffff',
+              border: '1.5px solid rgba(255,255,255,0.35)',
               padding: '14px 22px', borderRadius: '6px',
               fontSize: '13.5px', fontWeight: 600,
               letterSpacing: '-0.02em', textDecoration: 'none',
@@ -157,11 +161,11 @@ export default function Home() {
               transition: 'all 0.15s',
             }}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = '#111111'
-                e.currentTarget.style.background = 'rgba(17,17,17,0.03)'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.8)'
+                e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'rgba(17,17,17,0.18)'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.35)'
                 e.currentTarget.style.background = 'transparent'
               }}
             >
