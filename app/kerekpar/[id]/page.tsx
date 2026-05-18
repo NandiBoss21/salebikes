@@ -50,11 +50,6 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
   }
 
   const bike = data as Bike
-  const rawDesc = bike.description ?? ''
-  const cleanDescription = rawDesc.includes('Bolti ár')
-    ? rawDesc.split('Bolti ár')[0].trim()
-    : rawDesc
-
   const savings = bike.original_price - bike.sale_price
   const pct = Math.round((1 - bike.sale_price / bike.original_price) * 100)
   const condIdx = CONDITION_IDX[bike.condition] ?? 2
@@ -64,7 +59,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
     <>
       <Navbar />
 
-      <div className="bike-detail-wrap">
+      <div className="bike-detail-wrap" style={{ background: '#fafaf8' }}>
 
         {/* Back link */}
         <Link href="/" style={{
@@ -113,7 +108,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
 
             {/* Price block */}
             <div style={{
-              background: 'var(--bg-secondary)',
+              background: '#f5f3ef',
               border: '1px solid rgba(0,0,0,0.07)',
               borderRadius: '10px',
               padding: '1.5rem',
@@ -267,7 +262,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
                     alignItems: 'center',
                     padding: '12px 16px',
                     borderBottom: i < arr.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
-                    background: i % 2 === 0 ? '#ffffff' : 'var(--bg-primary)',
+                    background: i % 2 === 0 ? '#ffffff' : '#fafaf8',
                   }}>
                     <span style={{ fontSize: '13px', color: 'rgba(17,17,17,0.45)', fontWeight: 500 }}>{row.label}</span>
                     <span style={{ fontSize: '13px', fontWeight: 600 }}>{row.val}</span>
@@ -276,20 +271,20 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
               </div>
             )}
 
-            {/* Description — ad boilerplate trimmed at "Bolti ár" */}
-            {cleanDescription && (
+            {/* Description */}
+            {bike.description && (
               <p style={{
                 fontSize: '14px', lineHeight: 1.8,
                 color: 'rgba(17,17,17,0.55)',
                 marginBottom: '2rem',
-              }}>{cleanDescription}</p>
+              }}>{bike.description}</p>
             )}
 
             {/* Guarantee list */}
             <div style={{
               border: '1px solid rgba(0,0,0,0.07)',
               borderRadius: '12px', padding: '0.25rem 1.5rem',
-              background: 'var(--bg-primary)',
+              background: '#fafaf8',
             }}>
               {[
                 '3 hónap garancia rendeltetésszerű használat mellett',
