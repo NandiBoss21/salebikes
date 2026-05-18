@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useRef } from 'react'
 
 export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(delay?: number) {
