@@ -16,6 +16,7 @@ export default function CategoryPage({ category, label }: { category: string; la
       .from('bikes')
       .select('*')
       .eq('available', true)
+      .not('sold', 'eq', true)
       .eq('category', category)
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false })

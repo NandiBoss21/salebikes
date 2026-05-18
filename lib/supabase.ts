@@ -22,4 +22,5 @@ export type Bike = {
   size?: string
   year?: number
   color?: string
+  sold?: boolean
 }

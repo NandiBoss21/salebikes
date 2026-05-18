@@ -105,14 +105,14 @@ export default function Home() {
   const [sizeTab, setSizeTab] = useState<SizeTab>('MTB')
 
   useEffect(() => {
-    supabase.from('bikes').select('*').eq('available', true)
+    supabase.from('bikes').select('*').eq('available', true).not('sold', 'eq', true)
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false })
       .then(({ data }) => { setBikes((data || []) as Bike[]); setLoading(false) })
   }, [])
 
   useEffect(() => {
-    supabase.from('bikes').select('*').eq('available', true)
+    supabase.from('bikes').select('*').eq('available', true).not('sold', 'eq', true)
       .order('created_at', { ascending: false })
       .limit(3)
       .then(({ data }) => setLatestBikes((data || []) as Bike[]))
