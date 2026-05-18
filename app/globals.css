@@ -96,15 +96,10 @@ a { color: inherit; }
   }
 }
 
-/* ── Hero split layout ──────────────────────────── */
-.hero-split {
-  display: grid;
-  grid-template-columns: 1fr 400px;
-  min-height: 100vh;
-}
-@media (max-width: 860px) {
-  .hero-split { grid-template-columns: 1fr; min-height: auto; }
-  .hero-savings-panel { display: none !important; }
+/* ── Hero stat bar responsive ───────────────────── */
+@media (max-width: 600px) {
+  .hero-stat-bar { flex-wrap: wrap; }
+  .hero-stat-bar > div { flex: 0 0 50%; border-top: 1px solid rgba(255,255,255,0.2); }
 }
 
 /* ── Sticky mobile CTA ──────────────────────────── */

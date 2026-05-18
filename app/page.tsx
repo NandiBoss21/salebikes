@@ -94,24 +94,6 @@ function useAos(deps: unknown[]) {
   }, deps)
 }
 
-function useCountUp(target: number, durationMs = 1600) {
-  const [val, setVal] = useState(0)
-  useEffect(() => {
-    if (!target) return
-    setVal(0)
-    let frame = 0
-    const totalFrames = Math.round(durationMs / 16)
-    const id = setInterval(() => {
-      frame++
-      const t = Math.min(frame / totalFrames, 1)
-      const eased = 1 - Math.pow(1 - t, 4)
-      setVal(Math.round(target * eased))
-      if (frame >= totalFrames) clearInterval(id)
-    }, 16)
-    return () => clearInterval(id)
-  }, [target, durationMs])
-  return val
-}
 
 export default function Home() {
   const [bikes, setBikes] = useState<Bike[]>([])
@@ -136,27 +118,37 @@ export default function Home() {
   useAos([])
   useAos([loading])
 
-  const savingsTarget = !loading && bikes.length > 0
-    ? Math.round(bikes.reduce((s, b) => s + (b.original_price - b.sale_price), 0) / bikes.length / 1000) * 1000
-    : 180000
-  const displaySavings = useCountUp(savingsTarget)
-
   return (
     <>
       <Navbar />
 
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <section className="hero-split" style={{
+      <section style={{
+        position: 'relative',
+        width: '100%',
+        height: '100vh',
         backgroundImage: 'url(/hero-bg.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
       }}>
-
-        {/* Left – text over dark overlay */}
+        {/* Dark overlay */}
         <div style={{
-          padding: 'clamp(3.5rem, 7vw, 6rem) clamp(2rem, 5vw, 5.5rem)',
+          position: 'absolute', inset: 0,
+          background: 'rgba(0,0,0,0.45)',
+          zIndex: 0,
+        }} />
+
+        {/* Text content – left side */}
+        <div style={{
+          position: 'relative', zIndex: 1,
+          flex: 1,
           display: 'flex', flexDirection: 'column', justifyContent: 'center',
-          background: 'rgba(0,0,0,0.55)',
+          padding: 'clamp(3.5rem, 7vw, 6rem) clamp(2rem, 5vw, 5.5rem)',
+          maxWidth: '680px',
+          paddingBottom: '110px',
         }}>
           <div className="aos" style={{
             fontSize: '10.5px', fontWeight: 700,
@@ -241,62 +233,42 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Right – savings panel */}
-        <div className="hero-savings-panel" style={{
-          background: '#e8c547',
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          padding: '3.5rem 2.5rem', textAlign: 'center',
-          gap: '0.6rem', overflow: 'hidden',
-          position: 'sticky', top: 0, height: '100vh', alignSelf: 'start',
+        {/* Stat bar */}
+        <div className="hero-stat-bar" style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 1,
+          background: 'rgba(0,0,0,0.55)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'stretch',
         }}>
-          <div style={{
-            position: 'absolute', top: '-50px', right: '-50px',
-            width: '220px', height: '220px', borderRadius: '50%',
-            border: '45px solid rgba(17,17,17,0.05)',
-            pointerEvents: 'none',
-          }} />
-          <div style={{
-            position: 'absolute', bottom: '-70px', left: '-35px',
-            width: '200px', height: '200px', borderRadius: '50%',
-            border: '45px solid rgba(17,17,17,0.04)',
-            pointerEvents: 'none',
-          }} />
-
-          <div style={{
-            fontSize: '10px', fontWeight: 800,
-            color: 'rgba(17,17,17,0.5)',
-            textTransform: 'uppercase', letterSpacing: '0.12em',
-            position: 'relative',
-          }}>Átlagos megtakarítás</div>
-
-          <div style={{
-            fontSize: 'clamp(2.75rem, 5.5vw, 5rem)',
-            fontWeight: 900, letterSpacing: '-0.055em',
-            color: '#111111', lineHeight: 1.0,
-            fontVariantNumeric: 'tabular-nums',
-            position: 'relative',
-          }}>
-            {displaySavings.toLocaleString('hu-HU')}
-          </div>
-
-          <div style={{
-            fontSize: '17px', fontWeight: 700,
-            color: 'rgba(17,17,17,0.55)',
-            letterSpacing: '-0.02em',
-            position: 'relative',
-          }}>Ft · vásárlásonként</div>
-
-          <div style={{
-            marginTop: '1.75rem',
-            background: 'rgba(17,17,17,0.1)',
-            borderRadius: '6px', padding: '1rem 1.25rem',
-            fontSize: '12px', color: 'rgba(17,17,17,0.65)',
-            lineHeight: 1.7, maxWidth: '210px',
-            position: 'relative',
-          }}>
-            Cube · Scott · Bulls<br />Giant · KTM · Specialized
-          </div>
+          {[
+            { num: '1000+', label: 'Eladás 2006 óta' },
+            { num: '180 000 Ft', label: 'Átlag megtakarítás' },
+            { num: '4.9★', label: 'Google értékelés' },
+            { num: 'Garancia', label: 'Minden kerékpárra' },
+          ].map((stat, i) => (
+            <div key={stat.label} style={{
+              flex: 1,
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center',
+              padding: '1.25rem 1rem',
+              borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.2)' : 'none',
+              textAlign: 'center',
+            }}>
+              <span style={{
+                fontSize: 'clamp(1.1rem, 2vw, 1.5rem)',
+                fontWeight: 800, color: '#ffffff',
+                letterSpacing: '-0.03em', lineHeight: 1.2,
+              }}>{stat.num}</span>
+              <span style={{
+                fontSize: '11px',
+                color: 'rgba(255,255,255,0.6)',
+                marginTop: '3px',
+                letterSpacing: '0.02em',
+              }}>{stat.label}</span>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -370,7 +342,7 @@ export default function Home() {
           {[
             { num: '1000+', label: 'eladás 2008 óta', desc: 'Kerékpár gazdát cserélt' },
             { num: 'Garancia', label: 'minden bringára', desc: 'Minden bringára, kivétel nélkül' },
-            { num: '4.9 ★', label: 'Google értékelés', desc: '14 valódi vásárlói visszajelzés' },
+            { num: '4.9 ★', label: 'Google értékelés', desc: 'Valódi vásárlói visszajelzés' },
           ].map((s, i) => (
             <div key={s.label} className="aos" style={{
               textAlign: 'center',
@@ -590,8 +562,7 @@ export default function Home() {
                 fontSize: 'clamp(2rem, 4vw, 3rem)',
                 fontWeight: 900, letterSpacing: '-0.05em',
                 color: '#111111', lineHeight: 1,
-              }}>4.9</span>
-              <span style={{ fontSize: '20px', color: '#e8c547', letterSpacing: '3px' }}>★★★★★</span>
+              }}>4.9★</span>
               <a
                 href="https://www.google.com/maps/search/Bringabarát+Tesztbike+Kápolnásnyék"
                 target="_blank"
@@ -601,7 +572,7 @@ export default function Home() {
                   color: 'rgba(17,17,17,0.4)',
                   textDecoration: 'underline', textUnderlineOffset: '3px',
                 }}
-              >14 Google értékelés</a>
+              >Google értékelés</a>
             </div>
           </div>
 
