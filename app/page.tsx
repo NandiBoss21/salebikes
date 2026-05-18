@@ -80,7 +80,7 @@ export default function Home() {
       <Navbar />
 
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <section className="hero-split" style={{ borderBottom: '1px solid #e8e8e8' }}>
+      <section className="hero-split">
 
         {/* Left – text */}
         <div style={{
@@ -177,7 +177,8 @@ export default function Home() {
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
           padding: '3.5rem 2.5rem', textAlign: 'center',
-          gap: '0.6rem', position: 'relative', overflow: 'hidden',
+          gap: '0.6rem', overflow: 'hidden',
+          position: 'sticky', top: 0, height: '100vh', alignSelf: 'start',
         }}>
           <div style={{
             position: 'absolute', top: '-50px', right: '-50px',
@@ -229,9 +230,12 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── GRADIENT BRIDGE: light → dark ────────────────────── */}
+      <div style={{ height: '5rem', background: 'linear-gradient(to bottom, #FAFAF8, #111111)' }} />
+
       {/* ── CATEGORY GRID ──────────────────────────────────────── */}
       <section style={{
-        padding: 'clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)',
+        padding: '0 clamp(1.5rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem)',
         background: '#111111',
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}>

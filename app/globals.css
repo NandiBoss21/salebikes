@@ -82,11 +82,10 @@ a { color: inherit; }
 .hero-split {
   display: grid;
   grid-template-columns: 1fr 400px;
-  min-height: 520px;
-  overflow: hidden;
+  min-height: 100vh;
 }
 @media (max-width: 860px) {
-  .hero-split { grid-template-columns: 1fr; }
+  .hero-split { grid-template-columns: 1fr; min-height: auto; }
   .hero-savings-panel { display: none !important; }
 }
 
