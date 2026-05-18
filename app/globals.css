@@ -117,6 +117,13 @@ a { color: inherit; }
   .bike-detail-wrap { padding: 1.5rem 1rem 7rem; }
 }
 
+/* ── Bike detail CTA hover ──────────────────────── */
+.bike-cta-btn {
+  background: #e8c547;
+  transition: background 0.15s;
+}
+.bike-cta-btn:hover { background: #d4b23e; }
+
 /* ── Details tooltip ────────────────────────────── */
 details summary::-webkit-details-marker { display: none; }
 details summary { user-select: none; }

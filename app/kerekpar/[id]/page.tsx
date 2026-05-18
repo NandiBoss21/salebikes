@@ -211,19 +211,15 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
             </div>
 
             {/* CTA — desktop */}
-            <a href="tel:+36308897559" className="hide-mobile" style={{
+            <a href="tel:+36308897559" className="bike-cta-btn hide-mobile" style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               gap: '10px', width: '100%', padding: '16px',
-              background: '#e8c547', color: '#111111',
+              color: '#111111',
               borderRadius: '9px', textDecoration: 'none',
               fontSize: '16px', fontWeight: 800,
               letterSpacing: '-0.02em',
               marginBottom: '1.5rem',
-              transition: 'background 0.15s',
-            }}
-              onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.background = '#d4b23e')}
-              onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.background = '#e8c547')}
-            >
+            }}>
               <Phone size={18} />
               Érdeklődöm – +36 30 889 7559
             </a>
