@@ -240,7 +240,7 @@ export default function Home() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
             style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}
           >
-            <a href="/osszes-kerekpar" style={{
+            <a href="#kategoriak" style={{
               background: '#ffffff', color: '#111111',
               padding: '14px 26px', borderRadius: '6px',
               fontSize: '13.5px', fontWeight: 700,
@@ -321,7 +321,7 @@ export default function Home() {
       </section>
 
       {/* ── CATEGORY GRID ──────────────────────────────────────── */}
-      <section style={{
+      <section id="kategoriak" style={{
         padding: '3rem clamp(1.5rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem)',
         background: '#111111',
         borderBottom: '1px solid rgba(255,255,255,0.06)',

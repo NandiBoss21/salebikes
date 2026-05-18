@@ -29,7 +29,7 @@ const NAV_RIGHT = [
 
 const NAV_MOBILE = [
   ...NAV_PRIMARY,
-  { label: 'Összes kerékpár', href: '/' },
+  { label: 'Összes kerékpár', href: '/osszes-kerekpar' },
   ...NAV_DROPDOWN,
   ...NAV_EXTRA,
   ...NAV_RIGHT,
@@ -161,7 +161,7 @@ export default function Navbar() {
                 transition: 'opacity 0.2s ease, transform 0.2s ease',
               }}
             >
-              <Link href="/" onClick={() => setDropOpen(false)} style={{
+              <Link href="/osszes-kerekpar" onClick={() => setDropOpen(false)} style={{
                 display: 'block', padding: '9px 16px 11px',
                 fontSize: '13px', fontWeight: 600,
                 color: '#111111', textDecoration: 'none',
