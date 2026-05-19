@@ -7,7 +7,7 @@ import { ChevronDown } from 'lucide-react'
 const FAQ_ITEMS = [
   {
     q: 'Mennyi a garancia?',
-    a: 'Minden kerékpárra garanciát vállalunk rendeltetésszerű használat mellett. Outlet és új bemutatódarabokra hosszabb, használt kerékpárokra 1–6 hónap garancia vonatkozik. A pontos feltételeket a garancia oldalon olvashatod.',
+    a: 'Adásvételi szerződéssel ellátott garanciát vállalunk minden kerékpárunkra. A pontos feltételeket a Garancia oldalon olvashatod.',
   },
   {
     q: 'Lehet-e személyesen megnézni a kerékpárt?',
@@ -19,7 +19,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Mi a különbség outlet és használt között?',
-    a: 'Az outlet kerékpárok új, 0 km-es bemutatódarabok – soha nem ltek forgalomban. A használt kerékpárokat előző tulajdonos már használta, de minden darabot átvizsgálunk és szükség esetén szervizbe küldünk érkezés után.',
+    a: 'Az outlet kerékpárok új, 0 km-es bemutatódarabok – soha nem lettek forgalomban. A használt kerékpárokat előző tulajdonos már használta, de minden darabot átvizsgálunk érkezés után.',
   },
   {
     q: 'Hogyan zajlik a vásárlás?',
