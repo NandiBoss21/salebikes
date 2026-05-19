@@ -314,11 +314,16 @@ export default function AdminPage() {
   async function save() {
     if (!form.brand || !form.model || !form.sale_price) { showToast('Márka, modell és ár kötelező!'); return }
     setSaving(true)
+    const dataToSave = {
+      ...form,
+      condition_detail: form.condition_detail || 'uj',
+      kilometers: form.kilometers ?? 0,
+    }
     if (editing) {
-      await supabase.from('bikes').update(form).eq('id', editing)
+      await supabase.from('bikes').update(dataToSave).eq('id', editing)
       showToast('Kerékpár frissítve')
     } else {
-      await supabase.from('bikes').insert(form)
+      await supabase.from('bikes').insert(dataToSave)
       showToast('Kerékpár hozzáadva')
     }
     setSaving(false); setForm({ ...empty }); setEditing(null); setView('list'); loadBikes()
@@ -665,7 +670,7 @@ export default function AdminPage() {
                 </div>
                 <div>
                   <label style={labelStyle}>Állapot részletesen</label>
-                  <select value={form.condition_detail ?? ''} onChange={e => setForm(f => ({ ...f, condition_detail: (e.target.value || undefined) as Bike['condition_detail'] }))} style={inputStyle}>
+                  <select value={form.condition_detail ?? ''} onChange={e => setForm(f => ({ ...f, condition_detail: (e.target.value as Bike['condition_detail']) || 'uj' }))} style={inputStyle}>
                     <option value="">— Nem megadott —</option>
                     <option value="uj">Új – Bemutató darab, 0 km, karcmentes</option>
                     <option value="kivalo">Kiváló – Alig használt, 1–2 szezon</option>
