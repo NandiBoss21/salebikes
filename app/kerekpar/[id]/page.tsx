@@ -299,19 +299,27 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
 
             {/* Description — boilerplate lines filtered, newlines preserved */}
             {cleanDesc && (
-              <p style={{
-                fontSize: '14px', lineHeight: 1.8,
-                color: 'rgba(17,17,17,0.55)',
+              <div style={{
+                background: '#ffffff',
+                border: '1px solid #E8E4DC',
+                borderRadius: '8px',
+                padding: '1.5rem',
                 marginBottom: '2rem',
-                whiteSpace: 'pre-line',
-              }}>{cleanDesc}</p>
+              }}>
+                <p style={{
+                  fontSize: '14px', lineHeight: 1.8,
+                  color: '#333333',
+                  margin: 0,
+                  whiteSpace: 'pre-line',
+                }}>{cleanDesc}</p>
+              </div>
             )}
 
             {/* Guarantee list */}
             <div style={{
-              border: '1px solid rgba(0,0,0,0.07)',
+              border: '1px solid #E8E4DC',
               borderRadius: '12px', padding: '0.25rem 1.5rem',
-              background: '#fafaf8',
+              background: '#ffffff',
             }}>
               {[
                 'Garancia rendeltetésszerű használat mellett',
@@ -326,8 +334,12 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
                   color: 'rgba(17,17,17,0.75)',
                   lineHeight: 1.4,
                 }}>
-                  <span style={{ color: '#22c55e', flexShrink: 0 }}>
-                    <CheckCircle size={18} />
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    width: '22px', height: '22px', borderRadius: '50%',
+                    background: '#e8c547', flexShrink: 0,
+                  }}>
+                    <CheckCircle size={14} color="#111111" strokeWidth={2.5} />
                   </span>
                   {text}
                 </div>
