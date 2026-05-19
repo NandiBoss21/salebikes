@@ -457,10 +457,10 @@ export default function AdminPage() {
                   <label style={labelStyle}>Állapot részletesen</label>
                   <select value={form.condition_detail ?? ''} onChange={e => setForm(f => ({ ...f, condition_detail: (e.target.value || undefined) as Bike['condition_detail'] }))} style={inputStyle}>
                     <option value="">— Nem megadott —</option>
-                    <option value="uj">Új – Bemutató darab, 0 km, karcmentes. Gyárihoz azonos állapot.</option>
-                    <option value="kivalo">Kiváló – Alig használt, 1–2 szezon. Kopásnyomok nélkül.</option>
-                    <option value="jo">Jó – Normálisan használt. Kisebb esztétikai kopásnyomok.</option>
-                    <option value="megfelelo">Megfelelő – Rendszeres használat nyomai láthatók. Műszakilag kifogástalan.</option>
+                    <option value="uj">Új – Bemutató darab, 0 km, karcmentes</option>
+                    <option value="kivalo">Kiváló – Alig használt, 1–2 szezon</option>
+                    <option value="jo">Jó – Normálisan használt</option>
+                    <option value="megfelelo">Megfelelő – Rendszeres használat nyomai</option>
                   </select>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>

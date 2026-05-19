@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import CookieBanner from '@/components/CookieBanner'
+import ChatBot from '@/components/ChatBot'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body>
         {children}
         <CookieBanner />
+        <ChatBot />
       </body>
     </html>
   )

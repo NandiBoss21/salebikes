@@ -329,12 +329,11 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
               {[
                 'Garancia rendeltetésszerű használat mellett',
                 'Adásvételi szerződés alvázszámmal',
-                'Visszavétel ha nem felel meg az elvárásoknak',
               ].map((text, i) => (
                 <div key={i} style={{
                   display: 'flex', alignItems: 'center', gap: '12px',
                   padding: '16px 0',
-                  borderBottom: i < 2 ? '1px solid rgba(0,0,0,0.06)' : 'none',
+                  borderBottom: i < 1 ? '1px solid rgba(0,0,0,0.06)' : 'none',
                   fontSize: '14px', fontWeight: 500,
                   color: 'rgba(17,17,17,0.75)',
                   lineHeight: 1.4,

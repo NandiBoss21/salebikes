@@ -739,6 +739,13 @@ export default function Home() {
               onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
             >Garancia</a>
+            <a href="/faq" style={{
+              fontSize: '12.5px', color: 'rgba(255,255,255,0.45)',
+              textDecoration: 'none', transition: 'color 0.15s',
+            }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
+            >GYIK</a>
             <a href="/aszf" style={{
               fontSize: '12.5px', color: 'rgba(255,255,255,0.45)',
               textDecoration: 'none', transition: 'color 0.15s',

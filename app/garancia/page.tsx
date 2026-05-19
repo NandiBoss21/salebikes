@@ -27,7 +27,7 @@ const NOT_COVERED = [
 const STEPS = [
   { title: 'Kapcsolatfelvétel', desc: 'Telefonon vagy emailen jelezd a problémát. Írd le röviden, mi és mikor romlott el.' },
   { title: 'Megvizsgáljuk', desc: 'Személyesen hozzuk helyre vagy megbeszéljük az ejtési módot. A kerékpárt nem kell előre bepostázni.' },
-  { title: 'Megoldás', desc: 'Javítjuk a hibás alkatrészt, vagy ha az nem lehetséges, visszaváltjuk a vételárat.' },
+  { title: 'Megoldás', desc: 'Javítjuk a hibás alkatrészt, vagy ha az nem lehetséges, egyéb megoldást keresünk.' },
 ]
 
 export default function GarantiaPage() {
