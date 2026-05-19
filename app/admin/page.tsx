@@ -314,16 +314,29 @@ export default function AdminPage() {
   async function save() {
     if (!form.brand || !form.model || !form.sale_price) { showToast('Márka, modell és ár kötelező!'); return }
     setSaving(true)
-    const dataToSave = {
-      ...form,
-      condition_detail: form.condition_detail || 'uj',
+    const saveData = {
+      brand: form.brand,
+      model: form.model,
+      category: form.category,
+      condition: form.condition,
+      condition_detail: form.condition_detail ?? 'uj',
       kilometers: form.kilometers ?? 0,
+      original_price: form.original_price,
+      sale_price: form.sale_price,
+      description: form.description,
+      specs: form.specs,
+      images: form.images,
+      available: form.available,
+      featured: form.featured,
+      size: form.size,
+      year: form.year,
+      color: form.color,
     }
     if (editing) {
-      await supabase.from('bikes').update(dataToSave).eq('id', editing)
+      await supabase.from('bikes').update(saveData).eq('id', editing)
       showToast('Kerékpár frissítve')
     } else {
-      await supabase.from('bikes').insert(dataToSave)
+      await supabase.from('bikes').insert(saveData)
       showToast('Kerékpár hozzáadva')
     }
     setSaving(false); setForm({ ...empty }); setEditing(null); setView('list'); loadBikes()
