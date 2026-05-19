@@ -10,9 +10,15 @@ function fmt(n: number) {
   return n.toLocaleString('hu-HU') + ' Ft'
 }
 
-const CONDITION_TEXT: Record<string, string> = {
-  outlet:   '0 km · Karcmentes',
-  hasznalt: 'Jó állapot',
+function getCondText(bike: Bike): string {
+  const km = bike.kilometers ?? 0
+  switch (bike.condition_detail) {
+    case 'uj':        return '0 km · Karcmentes'
+    case 'kivalo':    return `${km.toLocaleString('hu-HU')} km · Kiváló állapot`
+    case 'jo':        return `${km.toLocaleString('hu-HU')} km · Jó állapot`
+    case 'megfelelo': return `${km.toLocaleString('hu-HU')} km · Megfelelő állapot`
+    default:          return km === 0 ? '0 km · Karcmentes' : `${km.toLocaleString('hu-HU')} km`
+  }
 }
 
 export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: number }) {
@@ -21,7 +27,7 @@ export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: numb
   const pct = bike.original_price > bike.sale_price
     ? Math.round((1 - bike.sale_price / bike.original_price) * 100)
     : 0
-  const condText = CONDITION_TEXT[bike.condition] ?? bike.condition
+  const condText = getCondText(bike)
 
   return (
     <motion.div
