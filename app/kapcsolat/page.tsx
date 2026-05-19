@@ -91,7 +91,7 @@ export default function KapcsolatPage() {
               }}>Outlet · Bemutató · Használt kerékpárok</div>
 
               {[
-                { icon: <MapPin size={16} />, label: 'Cím', value: 'Kápolnásnyék, Tó utca 6\n2475 Magyarország', href: undefined },
+                { icon: <MapPin size={16} />, label: 'Cím', value: '2474 Kápolnásnyék, Tó utca 6.\nMagyarország', href: undefined },
                 { icon: <Phone size={16} />, label: 'Telefon', value: '+36-30-889-7559', href: 'tel:+36308897559' },
                 { icon: <Mail size={16} />, label: 'Email', value: 'ht.bike@hotmail.com', href: 'mailto:ht.bike@hotmail.com' },
                 { icon: <Clock size={16} />, label: 'Nyitvatartás', value: 'Előzetes egyeztetés alapján', href: undefined },

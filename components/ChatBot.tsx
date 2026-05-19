@@ -38,7 +38,7 @@ function getBotReply(input: string): string {
     return 'Szállítás Magyar Posta mindenkori díjszabása szerint lehetséges.'
   }
   if (t.includes('hol') || t.includes('cím') || t.includes('hely')) {
-    return 'Kápolnásnyék, Tó utca 6, 2475. Előzetes egyeztetés alapján várunk!'
+    return '2474 Kápolnásnyék, Tó utca 6. Előzetes egyeztetés alapján várunk!'
   }
   if (t.includes('használt') || t.includes('outlet') || t.includes('különbség')) {
     return 'Az outlet kerékpárok új, 0 km-es bemutatódarabok. A használt kerékpárok előzőleg már forgalomban voltak.'
