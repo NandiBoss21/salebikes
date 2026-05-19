@@ -19,7 +19,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Mi a különbség outlet és használt között?',
-    a: 'Az outlet kerékpárok új, 0 km-es bemutatódarabok – soha nem lettek forgalomban. A használt kerékpárokat előző tulajdonos már használta, de minden darabot átvizsgálunk érkezés után.',
+    a: 'Az outlet kerékpárok új, 0 km-es bemutatódarabok – soha nem voltak forgalomban. A használt kerékpárokat előző tulajdonos már használta, de minden darabot átvizsgálunk érkezés után.',
   },
   {
     q: 'Hogyan zajlik a vásárlás?',
