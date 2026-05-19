@@ -22,7 +22,7 @@ const BRANDS = ['Cube', 'Scott', 'Bulls', 'Giant', 'KTM', 'Merida', 'Corratec', 
 const empty: Partial<Bike> = {
   brand: '', model: '', category: 'trekking', condition: 'outlet',
   original_price: 0, sale_price: 0, description: '',
-  specs: [], images: [], available: true, featured: false, sold: false, condition_detail: undefined, kilometers: 0,
+  specs: [], images: [], available: true, featured: false, sold: false, condition_detail: 'uj', kilometers: 0,
   size: '', year: new Date().getFullYear(), color: '',
 }
 
