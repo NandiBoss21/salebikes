@@ -713,11 +713,23 @@ export default function AdminPage() {
                     <span style={{ color: 'rgba(17,17,17,0.5)', fontWeight: 400 }}> ({Math.round((1 - form.sale_price / form.original_price) * 100)}%)</span>
                   </div>
                 )}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
-                  <div><label style={labelStyle}>Futott kilométerek</label><input type="number" value={form.kilometers ?? 0} onChange={e => setForm(f => ({ ...f, kilometers: parseInt(e.target.value) || 0 }))} style={inputStyle} placeholder="0" /></div>
-                  <div><label style={labelStyle}>Méret</label><input value={form.size || ''} onChange={e => setForm(f => ({ ...f, size: e.target.value }))} style={inputStyle} placeholder="L, 54cm..." /></div>
-                  <div><label style={labelStyle}>Év</label><input type="number" value={form.year || ''} onChange={e => setForm(f => ({ ...f, year: parseInt(e.target.value) }))} style={inputStyle} placeholder="2024" /></div>
-                  <div><label style={labelStyle}>Szín</label><input value={form.color || ''} onChange={e => setForm(f => ({ ...f, color: e.target.value }))} style={inputStyle} placeholder="Fekete" /></div>
+                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'1rem', marginBottom:'1.25rem'}}>
+                  <div>
+                    <label style={labelStyle}>Futott km</label>
+                    <input type="number" value={form.kilometers || 0} onChange={e => setForm(f => ({...f, kilometers: parseInt(e.target.value)||0}))} style={inputStyle} placeholder="0"/>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Méret</label>
+                    <input value={form.size||''} onChange={e => setForm(f=>({...f, size:e.target.value}))} style={inputStyle} placeholder="L, 54cm..."/>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Év</label>
+                    <input type="number" value={form.year||''} onChange={e => setForm(f=>({...f, year:parseInt(e.target.value)}))} style={inputStyle} placeholder="2024"/>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Szín</label>
+                    <input value={form.color||''} onChange={e => setForm(f=>({...f, color:e.target.value}))} style={inputStyle} placeholder="Fekete"/>
+                  </div>
                 </div>
                 <div>
                   <label style={labelStyle}>Leírás</label>
