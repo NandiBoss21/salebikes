@@ -313,11 +313,15 @@ export default function AdminPage() {
   }
 
   async function save() {
-    if (!form.brand || !form.model || !form.sale_price) { showToast('Márka, modell és ár kötelező!'); return }
+    if (!form.brand || !form.model || !form.sale_price) {
+      showToast('⚠️ Márka, modell és ár kötelező!')
+      return
+    }
     setSaving(true)
+
     const saveData = {
-      brand: form.brand || '',
-      model: form.model || '',
+      brand: form.brand,
+      model: form.model,
       category: form.category || 'trekking',
       condition: form.condition || 'outlet',
       condition_detail: form.condition_detail || 'uj',
@@ -327,22 +331,34 @@ export default function AdminPage() {
       description: form.description || '',
       specs: form.specs || [],
       images: form.images || [],
-      available: form.available ?? true,
-      featured: form.featured ?? false,
+      available: form.available !== false,
+      featured: form.featured || false,
       size: form.size || '',
       year: Number(form.year) || new Date().getFullYear(),
       color: form.color || '',
+      sold: form.sold || false,
     }
+
+    console.log('Saving data:', saveData)
+    console.log('Editing ID:', editing)
+
     if (editing) {
-      const result = await supabase.from('bikes').update(saveData).eq('id', editing)
-      console.log('Update result:', result)
-      showToast('Kerékpár frissítve')
+      const { data, error } = await supabase.from('bikes').update(saveData).eq('id', editing).select()
+      console.log('Update result:', { data, error })
+      if (error) { showToast('❌ Hiba: ' + error.message); setSaving(false); return }
+      showToast('✓ Kerékpár frissítve')
     } else {
-      const result = await supabase.from('bikes').insert(saveData)
-      console.log('Insert result:', result)
-      showToast('Kerékpár hozzáadva')
+      const { data, error } = await supabase.from('bikes').insert(saveData).select()
+      console.log('Insert result:', { data, error })
+      if (error) { showToast('❌ Hiba: ' + error.message); setSaving(false); return }
+      showToast('✓ Kerékpár hozzáadva')
     }
-    setSaving(false); setForm({ ...empty }); setEditing(null); setView('list'); loadBikes()
+
+    setSaving(false)
+    setForm({ ...empty })
+    setEditing(null)
+    setView('list')
+    loadBikes()
   }
 
   async function deleteBike(id: string) {
