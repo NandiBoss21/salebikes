@@ -55,13 +55,19 @@ export default function RolunkPage() {
             color: 'rgba(255,255,255,0.3)', marginBottom: '1rem',
           }}>Ismerj meg minket</div>
           <h1 style={{
-            fontSize: 'clamp(2.75rem, 7vw, 5rem)',
-            fontWeight: 900, letterSpacing: '-0.04em',
+            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+            fontWeight: 900, letterSpacing: '-0.02em',
             color: '#ffffff', lineHeight: 1.0,
-            marginBottom: '1.25rem',
+            marginBottom: '0.75rem',
           }}>
             Rólunk
           </h1>
+          <div style={{
+            width: '60px', height: '4px',
+            background: '#e8c547',
+            borderRadius: '2px',
+            marginBottom: '1.25rem',
+          }} />
           <p style={{
             fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
             fontWeight: 500, color: 'rgba(255,255,255,0.45)',

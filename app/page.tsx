@@ -293,6 +293,27 @@ export default function Home() {
           </motion.div>
         </div>
 
+        {/* Location label – right side, desktop only */}
+        <div className="hero-location" style={{
+          position: 'absolute', right: '3rem', top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 1, textAlign: 'right', pointerEvents: 'none',
+        }}>
+          <div style={{
+            fontSize: '13px', fontWeight: 600,
+            letterSpacing: '0.1em', textTransform: 'uppercase',
+            color: '#ffffff',
+            textShadow: '0 1px 6px rgba(0,0,0,0.6)',
+          }}>Kápolnásnyék · Velence</div>
+          <div style={{
+            fontSize: '11px', fontWeight: 400,
+            color: 'rgba(255,255,255,0.65)',
+            marginTop: '4px',
+            textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+            letterSpacing: '0.05em',
+          }}>Tó utca 6, 2475</div>
+        </div>
+
         {/* Stat bar */}
         <div className="hero-stat-bar" style={{
           position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 1,

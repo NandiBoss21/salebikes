@@ -6,11 +6,14 @@ import { X, MessageCircle, Send } from 'lucide-react'
 type Message = { role: 'bot' | 'user'; text: string }
 
 function renderText(text: string) {
-  const parts = text.split(/(\[.+?\]\(.+?\))/g)
+  const parts = text.split(/(\[.+?\]\(.+?\)|\+36 30 889 7559)/g)
   return parts.map((part, i) => {
-    const match = part.match(/^\[(.+?)\]\((.+?)\)$/)
-    if (match) {
-      return <a key={i} href={match[2]} style={{ color: '#111111', fontWeight: 700, textDecoration: 'underline' }}>{match[1]}</a>
+    const linkMatch = part.match(/^\[(.+?)\]\((.+?)\)$/)
+    if (linkMatch) {
+      return <a key={i} href={linkMatch[2]} style={{ color: '#111111', fontWeight: 700, textDecoration: 'underline' }}>{linkMatch[1]}</a>
+    }
+    if (part === '+36 30 889 7559') {
+      return <a key={i} href="tel:+36308897559" style={{ color: '#e8c547', textDecoration: 'underline', fontWeight: 600 }}>+36 30 889 7559</a>
     }
     return part
   })

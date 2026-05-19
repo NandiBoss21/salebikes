@@ -159,3 +159,6 @@ details summary { user-select: none; }
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: #fff; }
 ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
+
+/* ── Hero location label ────────────────────────── */
+@media (max-width: 768px) { .hero-location { display: none !important; } }
