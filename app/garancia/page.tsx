@@ -57,7 +57,7 @@ export default function GarantiaPage() {
             fontSize: '16px', lineHeight: 1.75,
             color: 'rgba(17,17,17,0.6)', maxWidth: '640px',
           }}>
-            Használt, többnyire külföldről érkező termékeket árulunk – ezért minden kerékpárt személyesen átvizsgálunk és szükség esetén szervizbe küldünk érkezés után. Garanciát vállalunk, hogy a megvásárolt kerékpár rendeltetésszerű használat mellett megfelelően működjön.
+            Használt, többnyire külföldről érkező termékeket árulunk – ezért minden kerékpárt átvizsgálunk és szükség esetén szervizelünk értékesítés előtt.
           </p>
         </div>
       </section>
