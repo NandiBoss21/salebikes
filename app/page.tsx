@@ -140,7 +140,7 @@ export default function Home() {
     : 0
 
   const { value: count1000, ref: ref1000 } = useCountUp(1000)
-  const { value: count180k, ref: ref180k } = useCountUp(avgSavings)
+  const { value: count180k, ref: ref180k } = useCountUp(avgSavings > 0 ? avgSavings : 180000)
 
   return (
     <>
@@ -635,7 +635,7 @@ export default function Home() {
                 color: '#111111', lineHeight: 1,
               }}>4.9★</span>
               <a
-                href="https://www.google.com/maps/search/Bringabarát+Tesztbike+Kápolnásnyék"
+                href="https://www.google.com/maps/place/Bringabarát+Tesztbike/@47.279,18.679,17z"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -781,7 +781,7 @@ export default function Home() {
           display: 'flex', justifyContent: 'space-between',
           flexWrap: 'wrap', gap: '8px',
         }}>
-          <span>© 2025 SaleBikes · Bringabarát Tesztbike</span>
+          <span>© 2026 Bringabarát Tesztbike</span>
           <span>Outlet · Bemutató · Használt kerékpárok</span>
         </div>
       </footer>
