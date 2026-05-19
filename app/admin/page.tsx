@@ -574,8 +574,7 @@ export default function AdminPage() {
                     ) : (
                       <ResponsiveContainer width="100%" height={200}>
                         <PieChart>
-                          <Pie data={catPieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={75} labelLine={false}
-                            label={(props) => (props.percent ?? 0) > 0.06 ? `${((props.percent ?? 0) * 100).toFixed(0)}%` : ''}>
+                          <Pie data={catPieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={75} label={false}>
                             {catPieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                           </Pie>
                           <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #E8E4DC', fontSize: '12px' }} />
@@ -584,13 +583,17 @@ export default function AdminPage() {
                     )}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {catPieData.map((item, i) => (
-                      <div key={item.name} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ width: '10px', height: '10px', borderRadius: '3px', background: PIE_COLORS[i % PIE_COLORS.length], flexShrink: 0 }} />
-                        <span style={{ fontSize: '12px', color: 'rgba(17,17,17,0.7)', flex: 1 }}>{item.name}</span>
-                        <span style={{ fontSize: '12px', fontWeight: 700 }}>{item.value} db</span>
-                      </div>
-                    ))}
+                    {(() => {
+                      const total = catPieData.reduce((s, c) => s + c.value, 0)
+                      return catPieData.map((item, i) => (
+                        <div key={item.name} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <div style={{ width: '10px', height: '10px', borderRadius: '3px', background: PIE_COLORS[i % PIE_COLORS.length], flexShrink: 0 }} />
+                          <span style={{ fontSize: '12px', color: 'rgba(17,17,17,0.7)', flex: 1 }}>{item.name}</span>
+                          <span style={{ fontSize: '11px', color: 'rgba(17,17,17,0.4)', marginRight: '4px' }}>{total > 0 ? Math.round(item.value / total * 100) : 0}%</span>
+                          <span style={{ fontSize: '12px', fontWeight: 700 }}>{item.value} db</span>
+                        </div>
+                      ))
+                    })()}
                   </div>
                 </div>
 
