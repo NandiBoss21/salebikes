@@ -5,6 +5,17 @@ import { X, MessageCircle, Send } from 'lucide-react'
 
 type Message = { role: 'bot' | 'user'; text: string }
 
+function renderText(text: string) {
+  const parts = text.split(/(\[.+?\]\(.+?\))/g)
+  return parts.map((part, i) => {
+    const match = part.match(/^\[(.+?)\]\((.+?)\)$/)
+    if (match) {
+      return <a key={i} href={match[2]} style={{ color: '#111111', fontWeight: 700, textDecoration: 'underline' }}>{match[1]}</a>
+    }
+    return part
+  })
+}
+
 const WELCOME = 'Szia! Én vagyok a Bringabarát chatbot. Miben segíthetek?'
 
 const QUICK_REPLIES = ['Garancia infók', 'Időpont egyeztetés', 'Szállítás', 'Árak']
@@ -12,10 +23,10 @@ const QUICK_REPLIES = ['Garancia infók', 'Időpont egyeztetés', 'Szállítás'
 function getBotReply(input: string): string {
   const t = input.toLowerCase()
   if (t.includes('ár') || t.includes('mennyibe') || t.includes('kerül')) {
-    return 'Kerékpárjaink ára 50.000 Ft-tól 1.500.000 Ft-ig terjed. Pontos árakért böngéssz a kínálatban!'
+    return 'Tekintse meg kerékpárjainkat! [Kerékpárok böngészése](/) – minden kategóriában megtalálja az árat.'
   }
   if (t.includes('garancia')) {
-    return 'Minden kerékpárra garanciát vállalunk. Outlet/új darabokra hosszabb, használt kerékpárokra 1-6 hónap.'
+    return 'Adásvételi szerződéssel ellátott garanciát vállalunk minden kerékpárunkra.'
   }
   if (t.includes('megtekint') || t.includes('megnézni') || t.includes('időpont')) {
     return 'Személyes megtekintés előzetes egyeztetés alapján lehetséges. Hívj: +36 30 889 7559'
@@ -121,7 +132,7 @@ export default function ChatBot() {
                   fontSize: '13.5px',
                   lineHeight: 1.5,
                   fontWeight: 500,
-                }}>{msg.text}</div>
+                }}>{renderText(msg.text)}</div>
               </div>
             ))}
 
