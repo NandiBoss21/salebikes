@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function RuhazatPage() {
-  return <CategoryPage category="ruhazat" label="Ruházat" />
+  return <CategoryPage category="ruhazat" label="Ruházat" suffix="" />
 }

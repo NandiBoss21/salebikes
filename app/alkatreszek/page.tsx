@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function AlkatreszekPage() {
-  return <CategoryPage category="alkatreszek" label="Alkatrészek" />
+  return <CategoryPage category="alkatreszek" label="Alkatrészek" suffix="" />
 }

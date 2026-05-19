@@ -7,7 +7,7 @@ import BikeCard from '@/components/BikeCard'
 import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
 
-export default function CategoryPage({ category, label }: { category: string; label: string }) {
+export default function CategoryPage({ category, label, suffix = 'kerékpárok' }: { category: string; label: string; suffix?: string }) {
   const [bikes, setBikes] = useState<Bike[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -66,8 +66,9 @@ export default function CategoryPage({ category, label }: { category: string; la
             fontWeight: 900, letterSpacing: '-0.04em',
             color: '#ffffff', lineHeight: 1.05, margin: 0,
           }}>
-            {label}{' '}
-            <span style={{ color: '#e8c547' }}>kerékpárok</span>
+            {label}{suffix ? (
+              <>{' '}<span style={{ color: '#e8c547' }}>{suffix}</span></>
+            ) : null}
           </h1>
         </div>
       </section>
@@ -81,7 +82,7 @@ export default function CategoryPage({ category, label }: { category: string; la
               Betöltés…
             </div>
           ) : bikes.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '5rem 2rem', color: 'rgba(17,17,17,0.45)' }}>
+            <div style={{ textAlign: 'center', padding: '4rem 2rem', color: 'rgba(17,17,17,0.45)' }}>
               <div style={{ fontSize: '40px', marginBottom: '1.25rem' }}>🚲</div>
               <div style={{ fontSize: '17px', fontWeight: 700, color: '#111111', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>
                 Hamarosan érkeznek kerékpárok ebben a kategóriában.

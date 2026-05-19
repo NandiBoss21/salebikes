@@ -101,6 +101,7 @@ function useAos(deps: unknown[]) {
 
 export default function Home() {
   usePageView('/')
+  const [mounted, setMounted] = useState(false)
   const [bikes, setBikes] = useState<Bike[]>([])
   const [latestBikes, setLatestBikes] = useState<Bike[]>([])
   const [loading, setLoading] = useState(true)
@@ -131,6 +132,8 @@ export default function Home() {
       .limit(3)
       .then(({ data }) => setLatestBikes((data || []) as Bike[]))
   }, [])
+
+  useEffect(() => setMounted(true), [])
 
   useAos([])
   useAos([loading])
@@ -477,7 +480,7 @@ export default function Home() {
       </section>
 
       {/* ── LEGÚJABBAN FELTÖLTÖTT ───────────────────────────────── */}
-      {latestBikes.length > 0 && (
+      {mounted && latestBikes.length > 0 && (
         <section style={{
           background: '#F2F0EB',
           padding: 'clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem)',
