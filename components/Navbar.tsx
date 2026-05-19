@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Phone, Menu, X, ChevronDown } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 const NAV_PRIMARY = [
   { label: 'Ebike',    href: '/ebike' },
@@ -41,6 +42,19 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [dropOpen, setDropOpen] = useState(false)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [hiddenSlugs, setHiddenSlugs] = useState<string[] | null>(null)
+
+  useEffect(() => {
+    supabase.from('categories').select('slug,visible').then(({ data, error }) => {
+      if (!error && data) setHiddenSlugs(data.filter(c => !c.visible).map(c => c.slug))
+    })
+  }, [])
+
+  const isVisible = (href: string) => {
+    if (!hiddenSlugs) return true
+    const slug = href.replace('/', '')
+    return !hiddenSlugs.includes(slug)
+  }
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 50)
@@ -170,7 +184,7 @@ export default function Navbar() {
                 borderBottom: '1px solid rgba(0,0,0,0.06)',
               }}>Összes kerékpár</Link>
 
-              {NAV_DROPDOWN.map(item => (
+              {NAV_DROPDOWN.filter(item => isVisible(item.href)).map(item => (
                 <Link key={item.label} href={item.href}
                   onClick={() => setDropOpen(false)}
                   style={{
@@ -196,7 +210,7 @@ export default function Navbar() {
           </li>
 
           {/* Alkatrészek + Ruházat as direct links */}
-          {NAV_EXTRA.map(item => (
+          {NAV_EXTRA.filter(item => isVisible(item.href)).map(item => (
             <li key={item.label}>
               <Link href={item.href} style={linkStyle}
                 onMouseEnter={e => {
@@ -264,7 +278,7 @@ export default function Navbar() {
           background: '#ffffff',
           padding: '0.75rem 2rem 1.5rem',
         }}>
-          {NAV_MOBILE.map(item => (
+          {NAV_MOBILE.filter(item => isVisible(item.href)).map(item => (
             <Link key={item.label} href={item.href} onClick={() => setOpen(false)} style={{
               display: 'block', padding: '13px 0',
               borderBottom: '1px solid rgba(0,0,0,0.05)',

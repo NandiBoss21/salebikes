@@ -2,7 +2,8 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Bike } from '@/lib/supabase'
-import { Plus, Trash2, Edit, Eye, EyeOff, Star, Upload, X, LogOut, Check, ShoppingBag, BarChart2, Search } from 'lucide-react'
+import { Plus, Trash2, Edit, Eye, EyeOff, Star, Upload, X, LogOut, Check, ShoppingBag, BarChart2, Search, GripVertical } from 'lucide-react'
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 const CATEGORIES = [
   { key: 'ebike', label: 'Ebike' },
@@ -50,7 +51,7 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false)
   const [specInput, setSpecInput] = useState('')
   const [toast, setToast] = useState('')
-  const [view, setView] = useState<'list' | 'form' | 'stats'>('list')
+  const [view, setView] = useState<'list' | 'form' | 'stats' | 'categories'>('list')
   const [dragIdx, setDragIdx] = useState<number | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -67,6 +68,11 @@ export default function AdminPage() {
   const [pageViews, setPageViews] = useState<PageViewRow[]>([])
   const [inquiries, setInquiries] = useState<InquiryRow[]>([])
   const [statsLoading, setStatsLoading] = useState(false)
+
+  type Category = { id: string; name: string; slug: string; visible: boolean; display_order: number }
+  const [categories, setCategories] = useState<Category[]>([])
+  const [catLoading, setCatLoading] = useState(false)
+  const [catDragIdx, setCatDragIdx] = useState<number | null>(null)
 
   useEffect(() => { if (authed) loadBikes() }, [authed])
 
@@ -93,6 +99,35 @@ export default function AdminPage() {
       showToast('Statisztikák betöltése sikertelen')
     }
     setStatsLoading(false)
+  }
+
+  async function loadCategories() {
+    setCatLoading(true)
+    const { data } = await supabase.from('categories').select('*').order('display_order')
+    setCategories((data || []) as Category[])
+    setCatLoading(false)
+  }
+
+  async function toggleCatVisible(cat: Category) {
+    await supabase.from('categories').update({ visible: !cat.visible }).eq('id', cat.id)
+    setCategories(prev => prev.map(c => c.id === cat.id ? { ...c, visible: !c.visible } : c))
+    showToast(`${cat.name} ${!cat.visible ? 'megjelenítve' : 'elrejtve'}`)
+  }
+
+  function onCatDragStart(i: number) { setCatDragIdx(i) }
+  function onCatDragOver(e: React.DragEvent, i: number) {
+    e.preventDefault()
+    if (catDragIdx === null || catDragIdx === i) return
+    setCategories(prev => {
+      const cats = [...prev]; const [moved] = cats.splice(catDragIdx, 1); cats.splice(i, 0, moved)
+      setCatDragIdx(i); return cats
+    })
+  }
+  async function onCatDragEnd() {
+    setCatDragIdx(null)
+    await Promise.all(categories.map((c, i) =>
+      supabase.from('categories').update({ display_order: i + 1 }).eq('id', c.id)
+    ))
   }
 
   // Filtered + sorted bikes
@@ -242,6 +277,26 @@ export default function AdminPage() {
     }, {} as Record<string, number>)
   ).sort((a, b) => b[1] - a[1])
 
+  const dailyViewsData = (() => {
+    const result: { date: string; views: number }[] = []
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i)
+      const iso = d.toISOString().split('T')[0]
+      result.push({ date: (d.getMonth() + 1) + '.' + d.getDate() + '.', views: pageViews.filter(v => v.created_at.startsWith(iso)).length })
+    }
+    return result
+  })()
+
+  const topBikesBarData = topBikes.map(item => ({
+    name: item.bike ? `${item.bike.brand} ${item.bike.model}`.slice(0, 15) : item.bikeId.slice(0, 8),
+    views: item.count,
+  }))
+
+  const PIE_COLORS = ['#e8c547', '#111111', '#4CAF50', '#2196F3', '#FF5722', '#9C27B0', '#FF9800', '#00BCD4']
+  const catPieData = CATEGORIES
+    .map(c => ({ name: c.label, value: bikes.filter(b => b.category === c.key && b.available && !b.sold).length }))
+    .filter(c => c.value > 0)
+
   // Admin stats (top bar)
   const totalBikes = bikes.length
   const availableBikes = bikes.filter(b => b.available && !b.sold).length
@@ -288,10 +343,15 @@ export default function AdminPage() {
         {/* Tab buttons */}
         <div style={{ display: 'flex', gap: '4px' }}>
           {[
-            { label: 'Kerékpárok', val: 'list' as const },
-            { label: 'Statisztikák', val: 'stats' as const, icon: <BarChart2 size={14} /> },
+            { label: 'Kerékpárok', val: 'list' as const, icon: undefined as React.ReactNode },
+            { label: 'Statisztikák', val: 'stats' as const, icon: <BarChart2 size={14} /> as React.ReactNode },
+            { label: 'Kategóriák', val: 'categories' as const, icon: undefined as React.ReactNode },
           ].map(tab => (
-            <button key={tab.val} onClick={() => { if (tab.val === 'stats') { setView('stats'); loadStats() } else setView('list') }}
+            <button key={tab.val} onClick={() => {
+              if (tab.val === 'stats') { setView('stats'); loadStats() }
+              else if (tab.val === 'categories') { setView('categories'); loadCategories() }
+              else setView('list')
+            }}
               style={{
                 display: 'flex', alignItems: 'center', gap: '5px',
                 padding: '7px 14px', borderRadius: '7px', border: 'none', cursor: 'pointer',
@@ -333,12 +393,13 @@ export default function AdminPage() {
               <div style={{ textAlign: 'center', padding: '4rem', color: 'rgba(17,17,17,0.3)' }}>Betöltés…</div>
             ) : (
               <>
-                {/* Page view summary */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+                {/* Stat cards */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
                   {[
-                    { label: 'Mai oldalnézet', value: todayViews },
-                    { label: 'Heti oldalnézet', value: weekViews },
+                    { label: 'Mai látogatók', value: todayViews },
+                    { label: 'Heti látogatók', value: weekViews },
                     { label: 'Összes oldalnézet', value: pageViews.length },
+                    { label: 'Összes érdeklődő', value: inquiries.length },
                   ].map(s => (
                     <div key={s.label} style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.25rem 1.5rem' }}>
                       <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(17,17,17,0.4)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '6px' }}>{s.label}</div>
@@ -347,23 +408,37 @@ export default function AdminPage() {
                   ))}
                 </div>
 
+                {/* Line chart – napi látogatók */}
+                <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(17,17,17,0.4)', marginBottom: '1rem' }}>Napi látogatók – elmúlt 30 nap</div>
+                  <ResponsiveContainer width="100%" height={180}>
+                    <LineChart data={dailyViewsData} margin={{ top: 4, right: 8, bottom: 4, left: -20 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0ede8" vertical={false} />
+                      <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgba(17,17,17,0.35)' }} tickLine={false} axisLine={false} interval={4} />
+                      <YAxis tick={{ fontSize: 10, fill: 'rgba(17,17,17,0.35)' }} tickLine={false} axisLine={false} allowDecimals={false} />
+                      <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #E8E4DC', fontSize: '12px' }} />
+                      <Line type="monotone" dataKey="views" stroke="#e8c547" strokeWidth={2.5} dot={false} activeDot={{ r: 4, fill: '#e8c547' }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
-                  {/* Top 5 bikes */}
+                  {/* Top 5 bikes – bar chart */}
                   <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.25rem' }}>
                     <div style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(17,17,17,0.4)', marginBottom: '1rem' }}>Top 5 megtekintett kerékpár</div>
-                    {topBikes.length === 0 ? (
+                    {topBikesBarData.length === 0 ? (
                       <div style={{ fontSize: '13px', color: 'rgba(17,17,17,0.35)', padding: '1rem 0' }}>Még nincs adat</div>
-                    ) : topBikes.map((item, i) => (
-                      <div key={item.bikeId} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 0', borderBottom: i < topBikes.length - 1 ? '1px solid #f0ede8' : 'none' }}>
-                        <div style={{ fontWeight: 800, fontSize: '16px', color: '#e8c547', width: '20px', textAlign: 'center' }}>{i + 1}</div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: '13px', fontWeight: 600, color: '#111111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {item.bike ? `${item.bike.brand} ${item.bike.model}` : item.bikeId.slice(0, 8) + '…'}
-                          </div>
-                        </div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: '#111111', background: '#f5f5f5', padding: '3px 10px', borderRadius: '6px' }}>{item.count} nézet</div>
-                      </div>
-                    ))}
+                    ) : (
+                      <ResponsiveContainer width="100%" height={200}>
+                        <BarChart data={topBikesBarData} margin={{ top: 4, right: 8, bottom: 48, left: -20 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f0ede8" vertical={false} />
+                          <XAxis dataKey="name" tick={{ fontSize: 9, fill: 'rgba(17,17,17,0.5)' }} tickLine={false} axisLine={false} angle={-35} textAnchor="end" interval={0} />
+                          <YAxis tick={{ fontSize: 10, fill: 'rgba(17,17,17,0.35)' }} tickLine={false} axisLine={false} allowDecimals={false} />
+                          <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #E8E4DC', fontSize: '12px' }} />
+                          <Bar dataKey="views" fill="#111111" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    )}
                   </div>
 
                   {/* Referrers */}
@@ -384,6 +459,35 @@ export default function AdminPage() {
                         </div>
                       )
                     })}
+                  </div>
+                </div>
+
+                {/* Categories pie chart */}
+                <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', alignItems: 'center' }}>
+                  <div>
+                    <div style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(17,17,17,0.4)', marginBottom: '1rem' }}>Kategória megoszlás</div>
+                    {catPieData.length === 0 ? (
+                      <div style={{ fontSize: '13px', color: 'rgba(17,17,17,0.35)' }}>Még nincs adat</div>
+                    ) : (
+                      <ResponsiveContainer width="100%" height={200}>
+                        <PieChart>
+                          <Pie data={catPieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={75} labelLine={false}
+                            label={(props) => (props.percent ?? 0) > 0.06 ? `${((props.percent ?? 0) * 100).toFixed(0)}%` : ''}>
+                            {catPieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                          </Pie>
+                          <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #E8E4DC', fontSize: '12px' }} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {catPieData.map((item, i) => (
+                      <div key={item.name} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ width: '10px', height: '10px', borderRadius: '3px', background: PIE_COLORS[i % PIE_COLORS.length], flexShrink: 0 }} />
+                        <span style={{ fontSize: '12px', color: 'rgba(17,17,17,0.7)', flex: 1 }}>{item.name}</span>
+                        <span style={{ fontSize: '12px', fontWeight: 700 }}>{item.value} db</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -543,6 +647,64 @@ export default function AdminPage() {
               </button>
               <button onClick={() => { setView('list'); setEditing(null); setForm({ ...empty }) }} style={{ background: 'transparent', color: '#111111', border: '1px solid #E8E4DC', padding: '14px 24px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>Mégse</button>
             </div>
+          </div>
+        )}
+
+        {/* ── CATEGORIES VIEW ────────────────────────────────────── */}
+        {view === 'categories' && (
+          <div>
+            <h2 style={{ fontWeight: 800, fontSize: '1.5rem', letterSpacing: '-0.04em', marginBottom: '0.5rem' }}>Kategória kezelés</h2>
+            <p style={{ fontSize: '13px', color: 'rgba(17,17,17,0.45)', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+              Húzd át a sorrendhez. A rejtett kategóriák nem jelennek meg a főoldalon és a navigációban.
+            </p>
+
+            {catLoading ? (
+              <div style={{ textAlign: 'center', padding: '4rem', color: 'rgba(17,17,17,0.3)' }}>Betöltés…</div>
+            ) : categories.length === 0 ? (
+              <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '2rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '13px', color: 'rgba(17,17,17,0.45)', marginBottom: '8px' }}>
+                  A categories tábla még nem létezik az adatbázisban.
+                </div>
+                <div style={{ fontSize: '12px', color: 'rgba(17,17,17,0.35)', fontFamily: 'monospace' }}>
+                  Futtasd le: supabase/categories.sql
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxWidth: '640px' }}>
+                {categories.map((cat, i) => (
+                  <div
+                    key={cat.id}
+                    draggable
+                    onDragStart={() => onCatDragStart(i)}
+                    onDragOver={e => onCatDragOver(e, i)}
+                    onDragEnd={onCatDragEnd}
+                    style={{
+                      background: '#ffffff',
+                      border: `1px solid ${catDragIdx === i ? '#e8c547' : '#E8E4DC'}`,
+                      borderRadius: '10px', padding: '12px 16px',
+                      display: 'flex', alignItems: 'center', gap: '12px',
+                      cursor: 'grab',
+                      opacity: catDragIdx !== null && catDragIdx !== i ? 0.55 : 1,
+                      transition: 'opacity 0.15s, border-color 0.15s',
+                    }}
+                  >
+                    <GripVertical size={16} style={{ color: 'rgba(17,17,17,0.25)', flexShrink: 0 }} />
+                    <div style={{ width: '24px', height: '24px', borderRadius: '6px', background: '#f0ede8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, color: 'rgba(17,17,17,0.5)', flexShrink: 0 }}>{i + 1}</div>
+                    <div style={{ flex: 1, fontSize: '14px', fontWeight: 600, color: '#111111' }}>{cat.name}</div>
+                    <div style={{ fontSize: '11px', color: 'rgba(17,17,17,0.35)', fontFamily: 'monospace', background: '#f5f5f5', padding: '3px 8px', borderRadius: '4px' }}>/{cat.slug}</div>
+                    <button onClick={() => toggleCatVisible(cat)} style={{
+                      padding: '7px 14px', borderRadius: '7px', border: '1px solid', cursor: 'pointer',
+                      fontSize: '12px', fontWeight: 600, transition: 'all 0.15s',
+                      background: cat.visible ? 'rgba(34,197,94,0.08)' : 'rgba(220,38,38,0.06)',
+                      borderColor: cat.visible ? '#22c55e' : '#dc2626',
+                      color: cat.visible ? '#15803d' : '#dc2626',
+                    }}>
+                      {cat.visible ? 'Látható' : 'Rejtett'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

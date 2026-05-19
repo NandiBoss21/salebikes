@@ -105,6 +105,18 @@ export default function Home() {
   const [latestBikes, setLatestBikes] = useState<Bike[]>([])
   const [loading, setLoading] = useState(true)
   const [sizeTab, setSizeTab] = useState<SizeTab>('MTB')
+  const [catOrder, setCatOrder] = useState<{ slug: string; visible: boolean }[] | null>(null)
+
+  useEffect(() => {
+    supabase.from('categories').select('slug,visible,display_order').order('display_order')
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0) setCatOrder(data as { slug: string; visible: boolean; display_order: number }[])
+      })
+  }, [])
+
+  const visibleCategories = catOrder
+    ? catOrder.filter(c => c.visible).map(c => CATEGORIES.find(cat => cat.href === `/${c.slug}`)).filter(Boolean) as typeof CATEGORIES
+    : CATEGORIES
 
   useEffect(() => {
     supabase.from('bikes').select('*').eq('available', true).not('sold', 'eq', true)
@@ -341,7 +353,7 @@ export default function Home() {
           </div>
 
           <div className="cat-grid">
-            {CATEGORIES.map((cat, i) => (
+            {visibleCategories.map((cat, i) => (
               <motion.div
                 key={cat.label}
                 initial={{ opacity: 0, y: 30 }}
