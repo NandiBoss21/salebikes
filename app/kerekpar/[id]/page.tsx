@@ -76,9 +76,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
   const bike = data as Bike
   const savings = bike.original_price - bike.sale_price
   const pct = Math.round((1 - bike.sale_price / bike.original_price) * 100)
-  const condIdx = bike.condition_detail != null
-    ? (CONDITION_DETAIL_IDX[bike.condition_detail] ?? CONDITION_FALLBACK_IDX[bike.condition] ?? 2)
-    : (CONDITION_FALLBACK_IDX[bike.condition] ?? 2)
+  const condIdx = CONDITION_DETAIL_IDX[bike.condition_detail ?? ''] ?? (bike.condition === 'outlet' ? 0 : 2)
   const pageBg = getBikeBackground(bike.color)
 
   const todayStart = new Date()
