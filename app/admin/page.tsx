@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Bike } from '@/lib/supabase'
-import { Plus, Trash2, Edit, Eye, EyeOff, Star, Upload, X, LogOut, Check, ShoppingBag, BarChart2, Search, GripVertical } from 'lucide-react'
+import { Plus, Trash2, Edit, Eye, EyeOff, Star, Upload, X, LogOut, Check, ShoppingBag, BarChart2, Search, GripVertical, Copy, Settings } from 'lucide-react'
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 const CATEGORIES = [
@@ -51,7 +51,7 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false)
   const [specInput, setSpecInput] = useState('')
   const [toast, setToast] = useState('')
-  const [view, setView] = useState<'list' | 'form' | 'stats' | 'categories'>('list')
+  const [view, setView] = useState<'list' | 'form' | 'stats' | 'categories' | 'settings'>('list')
   const [dragIdx, setDragIdx] = useState<number | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -74,7 +74,31 @@ export default function AdminPage() {
   const [catLoading, setCatLoading] = useState(false)
   const [catDragIdx, setCatDragIdx] = useState<number | null>(null)
 
+  const [exportOpen, setExportOpen] = useState(false)
+  const exportRef = useRef<HTMLDivElement>(null)
+  const [editingPrice, setEditingPrice] = useState<{ id: string; value: string } | null>(null)
+  const [flashIds, setFlashIds] = useState<string[]>([])
+
+  type NotifSettings = { newInquiry: boolean; unsoldAfter7: boolean; email: string }
+  const [notifSettings, setNotifSettings] = useState<NotifSettings>({ newInquiry: true, unsoldAfter7: false, email: 'ht.bike@hotmail.com' })
+
   useEffect(() => { if (authed) loadBikes() }, [authed])
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('bb_admin_notif')
+      if (saved) setNotifSettings(JSON.parse(saved))
+    } catch {}
+  }, [])
+
+  useEffect(() => {
+    if (!exportOpen) return
+    function handleClick(e: MouseEvent) {
+      if (exportRef.current && !exportRef.current.contains(e.target as Node)) setExportOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [exportOpen])
 
   function showToast(msg: string) {
     setToast(msg)
@@ -128,6 +152,84 @@ export default function AdminPage() {
     await Promise.all(categories.map((c, i) =>
       supabase.from('categories').update({ display_order: i + 1 }).eq('id', c.id)
     ))
+  }
+
+  async function exportPDF() {
+    const { default: jsPDF } = await import('jspdf')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { default: autoTable } = await import('jspdf-autotable') as { default: (doc: any, opts: any) => void }
+    const doc = new jsPDF()
+    doc.setFontSize(16)
+    doc.text('Bringabarat - Arlista', 14, 16)
+    doc.setFontSize(10)
+    doc.text(new Date().toLocaleDateString('hu-HU'), 14, 23)
+    const exportBikes = bikes.filter(b => b.available && !b.sold)
+    autoTable(doc, {
+      head: [['Marka', 'Modell', 'Kategoria', 'Allapot', 'Bolti ar', 'Eladasi ar', 'Megtakaritas']],
+      body: exportBikes.map(b => [
+        b.brand, b.model,
+        CATEGORIES.find(c => c.key === b.category)?.label || b.category,
+        b.condition === 'outlet' ? 'Outlet' : 'Hasznalt',
+        b.original_price.toLocaleString('hu-HU') + ' Ft',
+        b.sale_price.toLocaleString('hu-HU') + ' Ft',
+        (b.original_price - b.sale_price).toLocaleString('hu-HU') + ' Ft',
+      ]),
+      startY: 28,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [232, 197, 71], textColor: [17, 17, 17] },
+    })
+    doc.save(`bringabarat-arlista-${new Date().toISOString().split('T')[0]}.pdf`)
+    setExportOpen(false)
+  }
+
+  async function exportExcel() {
+    const XLSX = await import('xlsx')
+    const exportBikes = bikes.filter(b => b.available && !b.sold)
+    const data = exportBikes.map(b => ({
+      'Márka': b.brand,
+      'Modell': b.model,
+      'Kategória': CATEGORIES.find(c => c.key === b.category)?.label || b.category,
+      'Állapot': b.condition === 'outlet' ? 'Outlet' : 'Használt',
+      'Bolti ár (Ft)': b.original_price,
+      'Eladási ár (Ft)': b.sale_price,
+      'Megtakarítás (Ft)': b.original_price - b.sale_price,
+    }))
+    const ws = XLSX.utils.json_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Árlista')
+    XLSX.writeFile(wb, `bringabarat-arlista-${new Date().toISOString().split('T')[0]}.xlsx`)
+    setExportOpen(false)
+  }
+
+  function showFlash(id: string) {
+    setFlashIds(prev => [...prev, id])
+    setTimeout(() => setFlashIds(prev => prev.filter(x => x !== id)), 1200)
+  }
+
+  async function savePriceEdit(bikeId: string, currentPrice: number) {
+    if (!editingPrice || editingPrice.id !== bikeId) return
+    const newPrice = parseInt(editingPrice.value.replace(/\D/g, ''))
+    setEditingPrice(null)
+    if (!newPrice || newPrice === currentPrice) return
+    await supabase.from('bikes').update({ sale_price: newPrice }).eq('id', bikeId)
+    setBikes(prev => prev.map(b => b.id === bikeId ? { ...b, sale_price: newPrice } : b))
+    showFlash(bikeId)
+    showToast('Ár frissítve')
+  }
+
+  async function duplicateBike(bike: Bike) {
+    const copy: Record<string, unknown> = { ...bike }
+    delete copy.id
+    delete copy.created_at
+    copy.model = `${bike.model} – Másolat`
+    copy.available = false; copy.featured = false; copy.sold = false
+    const { data } = await supabase.from('bikes').insert(copy).select().single()
+    if (data) { await loadBikes(); editBike(data as Bike); showToast('Kerékpár másolva') }
+  }
+
+  function saveNotifSettings() {
+    localStorage.setItem('bb_admin_notif', JSON.stringify(notifSettings))
+    showToast('Beállítások mentve')
   }
 
   // Filtered + sorted bikes
@@ -346,11 +448,12 @@ export default function AdminPage() {
             { label: 'Kerékpárok', val: 'list' as const, icon: undefined as React.ReactNode },
             { label: 'Statisztikák', val: 'stats' as const, icon: <BarChart2 size={14} /> as React.ReactNode },
             { label: 'Kategóriák', val: 'categories' as const, icon: undefined as React.ReactNode },
+            { label: 'Beállítások', val: 'settings' as const, icon: <Settings size={14} /> as React.ReactNode },
           ].map(tab => (
             <button key={tab.val} onClick={() => {
               if (tab.val === 'stats') { setView('stats'); loadStats() }
               else if (tab.val === 'categories') { setView('categories'); loadCategories() }
-              else setView('list')
+              else setView(tab.val)
             }}
               style={{
                 display: 'flex', alignItems: 'center', gap: '5px',
@@ -708,6 +811,36 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* ── SETTINGS VIEW ──────────────────────────────────────── */}
+        {view === 'settings' && (
+          <div style={{ maxWidth: '560px' }}>
+            <h2 style={{ fontWeight: 800, fontSize: '1.5rem', letterSpacing: '-0.04em', marginBottom: '0.5rem' }}>Beállítások</h2>
+            <p style={{ fontSize: '13px', color: 'rgba(17,17,17,0.45)', marginBottom: '2rem', lineHeight: 1.6 }}>
+              Az értesítési beállítások a böngészőben tárolódnak (localStorage).
+            </p>
+            <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.75rem 2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <label style={labelStyle}>Értesítési e-mail cím</label>
+                <input value={notifSettings.email} onChange={e => setNotifSettings(p => ({ ...p, email: e.target.value }))} style={inputStyle} placeholder="ht.bike@hotmail.com" />
+              </div>
+              {([
+                { key: 'newInquiry' as const, label: 'E-mail értesítés új érdeklődőnél' },
+                { key: 'unsoldAfter7' as const, label: 'E-mail értesítés ha kerékpár 7 napja nem kelt el' },
+              ] as const).map(({ key, label }) => (
+                <div key={key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+                  <span style={{ fontSize: '14px', fontWeight: 500, color: '#111111', lineHeight: 1.4 }}>{label}</span>
+                  <button onClick={() => setNotifSettings(p => ({ ...p, [key]: !p[key] }))} style={{ width: '46px', height: '26px', borderRadius: '13px', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0, background: notifSettings[key] ? '#22c55e' : '#D1D5DB', transition: 'background 0.2s' }}>
+                    <div style={{ position: 'absolute', top: '3px', left: notifSettings[key] ? '23px' : '3px', width: '20px', height: '20px', borderRadius: '50%', background: '#ffffff', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }} />
+                  </button>
+                </div>
+              ))}
+              <button onClick={saveNotifSettings} style={{ alignSelf: 'flex-start', background: '#111111', color: '#ffffff', border: 'none', padding: '11px 24px', borderRadius: '8px', fontWeight: 700, fontSize: '14px', cursor: 'pointer' }}>
+                Mentés
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* ── LIST VIEW ──────────────────────────────────────────── */}
         {view === 'list' && (
           <div>
@@ -763,6 +896,23 @@ export default function AdminPage() {
               <h2 style={{ fontWeight: 800, fontSize: '1.4rem', letterSpacing: '-0.04em' }}>
                 Kerékpárok <span style={{ color: 'rgba(17,17,17,0.3)', fontWeight: 500 }}>({filteredBikes.length})</span>
               </h2>
+              <div ref={exportRef} style={{ position: 'relative' }}>
+                <button onClick={() => setExportOpen(o => !o)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 14px', borderRadius: '8px', border: '1px solid #E8E4DC', background: '#ffffff', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}>
+                  Export ↓
+                </button>
+                {exportOpen && (
+                  <div style={{ position: 'absolute', top: 'calc(100% + 6px)', right: 0, background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '10px', boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 50, minWidth: '160px', padding: '6px' }}>
+                    {[{ label: 'PDF letöltés', fn: exportPDF }, { label: 'Excel letöltés', fn: exportExcel }].map(item => (
+                      <button key={item.label} onClick={item.fn}
+                        style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 14px', borderRadius: '6px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: 500, color: '#111111' }}
+                        onMouseEnter={e => (e.currentTarget.style.background = '#f5f5f5')}
+                        onMouseLeave={e => (e.currentTarget.style.background = 'none')}>
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {filteredBikes.length === 0 ? (
@@ -809,10 +959,23 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      {/* Price */}
-                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      {/* Price – inline editable */}
+                      <div style={{ textAlign: 'right', flexShrink: 0, minWidth: '110px' }}>
                         <div style={{ fontSize: '11px', color: 'rgba(17,17,17,0.35)', textDecoration: 'line-through', marginBottom: '2px' }}>{bike.original_price.toLocaleString('hu-HU')} Ft</div>
-                        <div style={{ fontWeight: 800, fontSize: '1rem', letterSpacing: '-0.03em' }}>{bike.sale_price.toLocaleString('hu-HU')} Ft</div>
+                        {editingPrice?.id === bike.id ? (
+                          <input autoFocus value={editingPrice.value}
+                            onChange={e => setEditingPrice({ id: bike.id, value: e.target.value })}
+                            onKeyDown={e => { if (e.key === 'Enter') savePriceEdit(bike.id, bike.sale_price); if (e.key === 'Escape') setEditingPrice(null) }}
+                            onBlur={() => savePriceEdit(bike.id, bike.sale_price)}
+                            style={{ width: '100px', padding: '3px 8px', border: '2px solid #e8c547', borderRadius: '6px', fontSize: '13px', fontWeight: 700, textAlign: 'right', outline: 'none', fontFamily: 'Inter, system-ui, sans-serif' }}
+                          />
+                        ) : (
+                          <div onClick={() => setEditingPrice({ id: bike.id, value: bike.sale_price.toString() })}
+                            title="Kattints az ár módosításához"
+                            style={{ fontWeight: 800, fontSize: '1rem', letterSpacing: '-0.03em', cursor: 'pointer', padding: '2px 4px', borderRadius: '4px', transition: 'background 0.4s, color 0.4s', background: flashIds.includes(bike.id) ? 'rgba(34,197,94,0.15)' : 'transparent', color: flashIds.includes(bike.id) ? '#15803d' : '#111111' }}>
+                            {bike.sale_price.toLocaleString('hu-HU')} Ft
+                          </div>
+                        )}
                       </div>
 
                       {/* Actions */}
@@ -826,6 +989,7 @@ export default function AdminPage() {
                         <button onClick={() => toggleSold(bike.id, !!bike.sold)} title={bike.sold ? 'Eladott visszavon' : 'Eladottnak jelöl'} style={iconBtn(bike.sold ? '#dc2626' : 'rgba(17,17,17,0.25)')}>
                           <ShoppingBag size={16} />
                         </button>
+                        <button onClick={() => duplicateBike(bike)} title="Másolás" style={iconBtn('rgba(17,17,17,0.4)')}><Copy size={16} /></button>
                         <button onClick={() => editBike(bike)} title="Szerkesztés" style={iconBtn('rgba(17,17,17,0.5)')}><Edit size={16} /></button>
                         <button onClick={() => deleteBike(bike.id)} title="Törlés" style={iconBtn('#dc2626')}><Trash2 size={16} /></button>
                       </div>
