@@ -304,7 +304,7 @@ export default function Home() {
             letterSpacing: '0.1em', textTransform: 'uppercase',
             color: '#ffffff',
             textShadow: '0 1px 6px rgba(0,0,0,0.6)',
-          }}>2474 Kápolnásnyék</div>
+          }}>2475 Kápolnásnyék</div>
           <div style={{
             fontSize: '11px', fontWeight: 400,
             color: 'rgba(255,255,255,0.65)',
@@ -724,7 +724,7 @@ export default function Home() {
               lineHeight: 1.8,
             }}>
               Bringabarát Tesztbike<br />
-              2474 Kápolnásnyék, Tó utca 6.
+              2475 Kápolnásnyék, Tó utca 6.
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>

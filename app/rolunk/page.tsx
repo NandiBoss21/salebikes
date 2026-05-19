@@ -241,7 +241,7 @@ export default function RolunkPage() {
             fontSize: '14px', color: 'rgba(255,255,255,0.4)',
             marginBottom: '2.5rem', lineHeight: 1.7,
           }}>
-            2474 Kápolnásnyék, Tó utca 6. · Előzetes egyeztetés alapján
+            2475 Kápolnásnyék, Tó utca 6. · Előzetes egyeztetés alapján
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/kapcsolat" style={{
@@ -276,7 +276,7 @@ export default function RolunkPage() {
             {[
               { icon: <Phone size={14} />, value: '+36 30 889 7559', href: 'tel:+36308897559' },
               { icon: <Mail size={14} />, value: 'ht.bike@hotmail.com', href: 'mailto:ht.bike@hotmail.com' },
-              { icon: <MapPin size={14} />, value: '2474 Kápolnásnyék, Tó utca 6.', href: undefined },
+              { icon: <MapPin size={14} />, value: '2475 Kápolnásnyék, Tó utca 6.', href: undefined },
             ].map(item => (
               <div key={item.value} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ color: 'rgba(255,255,255,0.25)' }}>{item.icon}</span>
