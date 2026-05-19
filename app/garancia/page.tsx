@@ -26,7 +26,7 @@ const NOT_COVERED = [
 
 const STEPS = [
   { title: 'Kapcsolatfelvétel', desc: 'Telefonon vagy emailen jelezd a problémát. Írd le röviden, mi és mikor romlott el.' },
-  { title: 'Megvizsgáljuk', desc: 'Személyesen orvosoljuk a problémát.' },
+  { title: 'Megvizsgáljuk', desc: 'Személyesen átvizsgáljuk a kerékpárt és átbeszéljük a teendőket.' },
   { title: 'Megoldás', desc: 'Javítjuk a hibás alkatrészt, vagy ha az nem lehetséges, egyéb megoldást keresünk.' },
 ]
 
