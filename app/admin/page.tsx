@@ -21,8 +21,9 @@ const BRANDS = ['Cube', 'Scott', 'Bulls', 'Giant', 'KTM', 'Merida', 'Corratec', 
 
 const empty: Partial<Bike> = {
   brand: '', model: '', category: 'trekking', condition: 'outlet',
+  condition_detail: 'uj', kilometers: 0,
   original_price: 0, sale_price: 0, description: '',
-  specs: [], images: [], available: true, featured: false, sold: false, condition_detail: 'uj', kilometers: 0,
+  specs: [], images: [], available: true, featured: false,
   size: '', year: new Date().getFullYear(), color: '',
 }
 
@@ -315,28 +316,30 @@ export default function AdminPage() {
     if (!form.brand || !form.model || !form.sale_price) { showToast('Márka, modell és ár kötelező!'); return }
     setSaving(true)
     const saveData = {
-      brand: form.brand,
-      model: form.model,
-      category: form.category,
-      condition: form.condition,
-      condition_detail: form.condition_detail ?? 'uj',
-      kilometers: form.kilometers ?? 0,
-      original_price: form.original_price,
-      sale_price: form.sale_price,
-      description: form.description,
-      specs: form.specs,
-      images: form.images,
-      available: form.available,
-      featured: form.featured,
-      size: form.size,
-      year: form.year,
-      color: form.color,
+      brand: form.brand || '',
+      model: form.model || '',
+      category: form.category || 'trekking',
+      condition: form.condition || 'outlet',
+      condition_detail: form.condition_detail || 'uj',
+      kilometers: Number(form.kilometers) || 0,
+      original_price: Number(form.original_price) || 0,
+      sale_price: Number(form.sale_price) || 0,
+      description: form.description || '',
+      specs: form.specs || [],
+      images: form.images || [],
+      available: form.available ?? true,
+      featured: form.featured ?? false,
+      size: form.size || '',
+      year: Number(form.year) || new Date().getFullYear(),
+      color: form.color || '',
     }
     if (editing) {
-      await supabase.from('bikes').update(saveData).eq('id', editing)
+      const result = await supabase.from('bikes').update(saveData).eq('id', editing)
+      console.log('Update result:', result)
       showToast('Kerékpár frissítve')
     } else {
-      await supabase.from('bikes').insert(saveData)
+      const result = await supabase.from('bikes').insert(saveData)
+      console.log('Insert result:', result)
       showToast('Kerékpár hozzáadva')
     }
     setSaving(false); setForm({ ...empty }); setEditing(null); setView('list'); loadBikes()
@@ -358,7 +361,10 @@ export default function AdminPage() {
     loadBikes()
   }
 
-  function editBike(bike: Bike) { setForm({ ...bike }); setEditing(bike.id); setView('form'); window.scrollTo(0, 0) }
+  function editBike(bike: Bike) {
+    setForm({ ...bike, condition_detail: bike.condition_detail || 'uj', kilometers: bike.kilometers || 0 })
+    setEditing(bike.id); setView('form'); window.scrollTo(0, 0)
+  }
   function newBike() { setForm({ ...empty }); setEditing(null); setView('form'); window.scrollTo(0, 0) }
   function addSpec() { if (!specInput.trim()) return; setForm(f => ({ ...f, specs: [...(f.specs || []), specInput.trim()] })); setSpecInput('') }
   function removeSpec(i: number) { setForm(f => ({ ...f, specs: f.specs?.filter((_, idx) => idx !== i) })) }

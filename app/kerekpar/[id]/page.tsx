@@ -26,7 +26,6 @@ const CONDITION_LEVELS = [
   { label: 'Megfelelő', desc: 'Rendszeres használat nyomai láthatók. Műszakilag kifogástalan.',    key: 'megfelelo' },
 ]
 const CONDITION_DETAIL_IDX: Record<string, number> = { uj: 0, kivalo: 1, jo: 2, megfelelo: 3 }
-const CONDITION_FALLBACK_IDX: Record<string, number> = { outlet: 0, hasznalt: 2 }
 
 // Subtle tinted background based on bike color — max ~5% color, never darker than #e8e8e8
 function getBikeBackground(color?: string | null): string {
@@ -76,7 +75,8 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
   const bike = data as Bike
   const savings = bike.original_price - bike.sale_price
   const pct = Math.round((1 - bike.sale_price / bike.original_price) * 100)
-  const condIdx = CONDITION_DETAIL_IDX[bike.condition_detail ?? ''] ?? (bike.condition === 'outlet' ? 0 : 2)
+  const conditionIndex = { uj: 0, kivalo: 1, jo: 2, megfelelo: 3 } as const
+  const condIdx = conditionIndex[bike.condition_detail as keyof typeof conditionIndex] ?? (bike.condition === 'outlet' ? 0 : 2)
   const pageBg = getBikeBackground(bike.color)
 
   const todayStart = new Date()
