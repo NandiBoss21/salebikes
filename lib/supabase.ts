@@ -23,4 +23,5 @@ export type Bike = {
   year?: number
   color?: string
   sold?: boolean
+  condition_detail?: 'uj' | 'kivalo' | 'jo' | 'megfelelo'
 }

@@ -20,12 +20,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 const CONDITION_LEVELS = [
-  { label: 'Új',        desc: 'Bemutató darab, 0 km, karcmentes. Gyárihoz azonos állapot.' },
-  { label: 'Kiváló',   desc: 'Alig használt, 1–2 szezon. Kopásnyomok nélkül.' },
-  { label: 'Jó',        desc: 'Normálisan használt. Kisebb esztétikai kopásnyomok.' },
-  { label: 'Megfelelő', desc: 'Rendszeres használat nyomai láthatók. Műszakilag kifogástalan.' },
+  { label: 'Új',        desc: 'Bemutató darab, 0 km, karcmentes. Gyárihoz azonos állapot.',        key: 'uj' },
+  { label: 'Kiváló',   desc: 'Alig használt, 1–2 szezon. Kopásnyomok nélkül.',                    key: 'kivalo' },
+  { label: 'Jó',        desc: 'Normálisan használt. Kisebb esztétikai kopásnyomok.',               key: 'jo' },
+  { label: 'Megfelelő', desc: 'Rendszeres használat nyomai láthatók. Műszakilag kifogástalan.',    key: 'megfelelo' },
 ]
-const CONDITION_IDX: Record<string, number> = { outlet: 0, hasznalt: 2 }
+const CONDITION_DETAIL_IDX: Record<string, number> = { uj: 0, kivalo: 1, jo: 2, megfelelo: 3 }
+const CONDITION_FALLBACK_IDX: Record<string, number> = { outlet: 0, hasznalt: 2 }
 
 // Subtle tinted background based on bike color — max ~5% color, never darker than #e8e8e8
 function getBikeBackground(color?: string | null): string {
@@ -75,7 +76,9 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
   const bike = data as Bike
   const savings = bike.original_price - bike.sale_price
   const pct = Math.round((1 - bike.sale_price / bike.original_price) * 100)
-  const condIdx = CONDITION_IDX[bike.condition] ?? 2
+  const condIdx = bike.condition_detail != null
+    ? (CONDITION_DETAIL_IDX[bike.condition_detail] ?? CONDITION_FALLBACK_IDX[bike.condition] ?? 2)
+    : (CONDITION_FALLBACK_IDX[bike.condition] ?? 2)
   const pageBg = getBikeBackground(bike.color)
 
   const todayStart = new Date()
@@ -213,15 +216,17 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
 
               <div style={{ display: 'flex', gap: '6px' }}>
                 {CONDITION_LEVELS.map((c, i) => (
-                  <div key={c.label} style={{ flex: 1, textAlign: 'center' }}>
+                  <div key={c.label} title={c.desc} style={{ flex: 1, textAlign: 'center', cursor: 'help' }}>
                     <div style={{
-                      height: '4px', borderRadius: '2px',
-                      background: i <= condIdx ? '#e8c547' : 'rgba(0,0,0,0.1)',
+                      height: '5px', borderRadius: '3px',
+                      background: i === condIdx ? '#e8c547' : i < condIdx ? 'rgba(232,197,71,0.3)' : 'rgba(0,0,0,0.08)',
                       marginBottom: '6px',
                       transition: 'background 0.2s',
+                      outline: i === condIdx ? '2px solid #e8c547' : 'none',
+                      outlineOffset: '2px',
                     }} />
                     <div style={{
-                      fontSize: '10px', fontWeight: i === condIdx ? 700 : 500,
+                      fontSize: '10px', fontWeight: i === condIdx ? 800 : 500,
                       color: i === condIdx ? '#111111' : 'rgba(17,17,17,0.35)',
                       letterSpacing: '-0.01em',
                     }}>{c.label}</div>

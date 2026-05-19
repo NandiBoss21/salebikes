@@ -21,7 +21,7 @@ const BRANDS = ['Cube', 'Scott', 'Bulls', 'Giant', 'KTM', 'Merida', 'Corratec', 
 const empty: Partial<Bike> = {
   brand: '', model: '', category: 'trekking', condition: 'outlet',
   original_price: 0, sale_price: 0, description: '',
-  specs: [], images: [], available: true, featured: false, sold: false,
+  specs: [], images: [], available: true, featured: false, sold: false, condition_detail: undefined,
   size: '', year: new Date().getFullYear(), color: '',
 }
 
@@ -446,12 +446,22 @@ export default function AdminPage() {
                     </select>
                   </div>
                   <div>
-                    <label style={labelStyle}>Állapot</label>
+                    <label style={labelStyle}>Típus</label>
                     <select value={form.condition} onChange={e => setForm(f => ({ ...f, condition: e.target.value as 'outlet' | 'hasznalt' }))} style={inputStyle}>
-                      <option value="outlet">Outlet / Bemutató (Új)</option>
+                      <option value="outlet">Outlet / Bemutató</option>
                       <option value="hasznalt">Használt</option>
                     </select>
                   </div>
+                </div>
+                <div>
+                  <label style={labelStyle}>Állapot részletesen</label>
+                  <select value={form.condition_detail ?? ''} onChange={e => setForm(f => ({ ...f, condition_detail: (e.target.value || undefined) as Bike['condition_detail'] }))} style={inputStyle}>
+                    <option value="">— Nem megadott —</option>
+                    <option value="uj">Új – Bemutató darab, 0 km, karcmentes. Gyárihoz azonos állapot.</option>
+                    <option value="kivalo">Kiváló – Alig használt, 1–2 szezon. Kopásnyomok nélkül.</option>
+                    <option value="jo">Jó – Normálisan használt. Kisebb esztétikai kopásnyomok.</option>
+                    <option value="megfelelo">Megfelelő – Rendszeres használat nyomai láthatók. Műszakilag kifogástalan.</option>
+                  </select>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
