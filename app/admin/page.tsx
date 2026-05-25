@@ -320,6 +320,7 @@ export default function AdminPage() {
   }
 
   async function save() {
+    console.log('Save called', form.description)
     if (!form.brand || !form.model || !form.sale_price) {
       showToast('⚠️ Márka, modell és ár kötelező!')
       return
