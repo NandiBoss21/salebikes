@@ -8,23 +8,28 @@ function track(bikeId: string, bikeName: string, source: string) {
 
 export function InquiryButtonDesktop({ bikeId, bikeName }: { bikeId: string; bikeName: string }) {
   return (
-    <a
-      href="tel:+36308897559"
-      className="bike-cta-btn hide-mobile"
-      onClick={() => track(bikeId, bikeName, 'detail_desktop')}
-      style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        gap: '10px', width: '100%', padding: '16px',
-        color: '#111111',
-        borderRadius: '9px', textDecoration: 'none',
-        fontSize: '16px', fontWeight: 800,
-        letterSpacing: '-0.02em',
-        marginBottom: '1.5rem',
-      }}
-    >
-      <Phone size={18} />
-      Érdeklődöm – +36 30 889 7559
-    </a>
+    <>
+      <a
+        href="tel:+36308897559"
+        className="bike-cta-btn hide-mobile"
+        onClick={() => track(bikeId, bikeName, 'detail_desktop')}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          gap: '10px', width: '100%', padding: '16px',
+          color: '#111111',
+          borderRadius: '9px', textDecoration: 'none',
+          fontSize: '16px', fontWeight: 800,
+          letterSpacing: '-0.02em',
+          marginBottom: '8px',
+        }}
+      >
+        <Phone size={18} />
+        Érdeklődöm – +36 30 889 7559
+      </a>
+      <p style={{ fontSize: '13px', color: '#6B6B6B', textAlign: 'center', marginBottom: '1.5rem' }}>
+        📍 Személyes átvétel Kápolnásnyéken, előre egyeztetett időpontban
+      </p>
+    </>
   )
 }
 
