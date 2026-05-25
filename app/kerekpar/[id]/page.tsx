@@ -275,17 +275,25 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
             )}
 
             {/* Details table */}
-            {(bike.size || bike.year || bike.color) && (
-              <div style={{
-                border: '1px solid rgba(0,0,0,0.07)',
-                borderRadius: '10px', overflow: 'hidden',
-                marginBottom: '2.25rem',
-              }}>
-                {[
-                  { label: 'Méret',   val: bike.size },
-                  { label: 'Évjárat', val: bike.year?.toString() },
-                  { label: 'Szín',    val: bike.color },
-                ].filter(r => r.val).map((row, i, arr) => (
+            {(() => {
+              const km = bike.kilometers ?? 0
+              const kmVal = bike.condition === 'outlet'
+                ? '0 km · Karcmentes'
+                : km > 0 ? `${km.toLocaleString('hu-HU')} km` : null
+              const rows = [
+                { label: 'Kilométer', val: kmVal },
+                { label: 'Méret',     val: bike.size },
+                { label: 'Évjárat',   val: bike.year?.toString() },
+                { label: 'Szín',      val: bike.color },
+              ].filter(r => r.val)
+              if (rows.length === 0) return null
+              return (
+            <div style={{
+              border: '1px solid rgba(0,0,0,0.07)',
+              borderRadius: '10px', overflow: 'hidden',
+              marginBottom: '2.25rem',
+            }}>
+              {rows.map((row, i, arr) => (
                   <div key={row.label} style={{
                     display: 'flex', justifyContent: 'space-between',
                     alignItems: 'center',
@@ -298,7 +306,8 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
                   </div>
                 ))}
               </div>
-            )}
+              )
+            })()}
 
             {/* Description — boilerplate lines filtered, newlines preserved */}
             {cleanDesc && (

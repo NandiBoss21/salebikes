@@ -12,12 +12,13 @@ function fmt(n: number) {
 
 function getCondText(bike: Bike): string {
   const km = bike.kilometers ?? 0
+  if (bike.condition === 'outlet') return '0 km · Karcmentes'
+  if (km === 0) return ''
   switch (bike.condition_detail) {
-    case 'uj':        return '0 km · Karcmentes'
     case 'kivalo':    return `${km.toLocaleString('hu-HU')} km · Kiváló állapot`
     case 'jo':        return `${km.toLocaleString('hu-HU')} km · Jó állapot`
     case 'megfelelo': return `${km.toLocaleString('hu-HU')} km · Megfelelő állapot`
-    default:          return km === 0 ? '0 km · Karcmentes' : `${km.toLocaleString('hu-HU')} km`
+    default:          return `${km.toLocaleString('hu-HU')} km`
   }
 }
 
@@ -137,11 +138,13 @@ export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: numb
                 color: '#e8c547', letterSpacing: '0.06em',
                 textTransform: 'uppercase',
               }}>{bike.brand}</div>
-              <div style={{
-                fontSize: '10px', fontWeight: 600,
-                color: bike.condition === 'outlet' ? '#059669' : '#6B6B6B',
-                letterSpacing: '-0.01em',
-              }}>{condText}</div>
+              {condText && (
+                <div style={{
+                  fontSize: '10px', fontWeight: 600,
+                  color: bike.condition === 'outlet' ? '#059669' : '#6B6B6B',
+                  letterSpacing: '-0.01em',
+                }}>{condText}</div>
+              )}
             </div>
 
             <div style={{
