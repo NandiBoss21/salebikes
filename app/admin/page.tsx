@@ -776,7 +776,7 @@ export default function AdminPage() {
                 </div>
                 <div>
                   <label style={labelStyle}>Leírás</label>
-                  <textarea value={form.description || ''} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={4} style={{ ...inputStyle, resize: 'vertical', minHeight: '100px' }} placeholder="Rövid leírás..." />
+                  <textarea value={form.description || ''} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={10} style={{ ...inputStyle, resize: 'vertical', minHeight: '200px' }} placeholder="Rövid leírás..." />
                 </div>
                 <div>
                   <label style={labelStyle}>Komponensek / Specifikációk</label>
