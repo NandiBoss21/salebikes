@@ -17,7 +17,7 @@ const CATEGORIES = [
   { key: 'ruhazat', label: 'Ruházat' },
 ]
 
-const BRANDS = ['Cube', 'Scott', 'Bulls', 'Giant', 'KTM', 'Merida', 'Corratec', 'Conway', 'Genesis', 'Focus', 'Brennabor', 'Hercules', 'Husqvarna', 'Kalkhoff', 'Egyéb']
+const BRANDS = ['Cube', 'Scott', 'Bulls', 'Giant', 'KTM', 'Merida', 'Corratec', 'Conway', 'Genesis', 'Focus', 'Brennabor', 'Cannondale', 'Hercules', 'Husqvarna', 'Kalkhoff', 'Moustache', 'Puch', 'Winora', 'Egyéb']
 
 const STANDARD_FOOTER = `Az ár fix, nem alkuképes. Minden kerékpárunkhoz alvázszámmal ellátott adásvételi szerződést adunk.
 GARANCIA használt kerékpárokra 1 hónap, új-outlet kerékpárokra 3 hónap, amelyekhez alvázszámmal ellátott adásvételi szerződést adunk.
