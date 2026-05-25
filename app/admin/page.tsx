@@ -371,7 +371,8 @@ export default function AdminPage() {
   async function deleteBike(id: string) {
     if (!confirm('Biztosan törlöd ezt a kerékpárt?')) return
     await supabase.from('bikes').delete().eq('id', id)
-    showToast('Kerékpár törölve'); loadBikes()
+    setBikes(prev => prev.filter(b => b.id !== id))
+    showToast('Kerékpár törölve')
   }
 
   async function toggleField(id: string, field: 'available' | 'featured', val: boolean) {
