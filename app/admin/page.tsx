@@ -44,7 +44,8 @@ function normalizeReferrer(ref: string | null): string {
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false)
-  const [pw, setPw] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [bikes, setBikes] = useState<Bike[]>([])
   const [form, setForm] = useState<Partial<Bike>>({ ...empty })
   const [editing, setEditing] = useState<string | null>(null)
@@ -82,6 +83,12 @@ export default function AdminPage() {
 
   type NotifSettings = { newInquiry: boolean; unsoldAfter7: boolean; email: string }
   const [notifSettings, setNotifSettings] = useState<NotifSettings>({ newInquiry: true, unsoldAfter7: false, email: 'ht.bike@hotmail.com' })
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) setAuthed(true)
+    })
+  }, [])
 
   useEffect(() => { if (authed) loadBikes() }, [authed])
 
@@ -446,19 +453,37 @@ export default function AdminPage() {
   const avgSavings = bikes.length > 0
     ? Math.round(bikes.reduce((sum, b) => sum + Math.max(0, b.original_price - b.sale_price), 0) / bikes.length) : 0
 
+  async function login() {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) showToast('❌ Hibás email vagy jelszó')
+    else setAuthed(true)
+  }
+
+  async function logout() {
+    await supabase.auth.signOut()
+    setAuthed(false)
+  }
+
   // ─── Login screen ───────────────────────────────────────────────────
   if (!authed) {
     return (
       <div style={{ minHeight: '100vh', background: '#fafaf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        {toast && (
+          <div style={{ position: 'fixed', top: '1rem', right: '1rem', background: '#111111', color: '#ffffff', padding: '12px 20px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', zIndex: 999, boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>{toast}</div>
+        )}
         <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '2.5rem', width: '360px', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
           <div style={{ fontWeight: 900, fontSize: '22px', letterSpacing: '-0.04em', marginBottom: '1.75rem', textAlign: 'center', color: '#111111' }}>
             Bringabarát <span style={{ color: '#e8c547' }}>Admin</span>
           </div>
+          <label style={labelStyle}>Email</label>
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && login()}
+            style={{ ...inputStyle, marginBottom: '1rem' }} placeholder="admin@example.com" />
           <label style={labelStyle}>Jelszó</label>
-          <input type="password" value={pw} onChange={e => setPw(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && pw === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'salebikes2024') && setAuthed(true)}
+          <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && login()}
             style={inputStyle} placeholder="••••••••" />
-          <button onClick={() => pw === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'salebikes2024') && setAuthed(true)}
+          <button onClick={login}
             style={{ width: '100%', padding: '13px', background: '#111111', color: '#ffffff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '14px', letterSpacing: '-0.01em', marginTop: '0.75rem' }}>
             Belépés
           </button>
@@ -519,7 +544,7 @@ export default function AdminPage() {
               ← Vissza
             </button>
           )}
-          <button onClick={() => setAuthed(false)} style={{ background: 'none', border: 'none', color: 'rgba(17,17,17,0.4)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px', padding: '8px' }}>
+          <button onClick={logout} style={{ background: 'none', border: 'none', color: 'rgba(17,17,17,0.4)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px', padding: '8px' }}>
             <LogOut size={15} /> Kilépés
           </button>
         </div>
