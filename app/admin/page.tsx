@@ -19,6 +19,13 @@ const CATEGORIES = [
 
 const BRANDS = ['Cube', 'Scott', 'Bulls', 'Giant', 'KTM', 'Merida', 'Corratec', 'Conway', 'Genesis', 'Focus', 'Brennabor', 'Hercules', 'Kalkhoff', 'Egyéb']
 
+const STANDARD_FOOTER = `Az ár fix, nem alkuképes. Minden kerékpárunkhoz alvázszámmal ellátott adásvételi szerződést adunk.
+GARANCIA használt kerékpárokra 1 hónap, új-outlet kerékpárokra 3 hónap, amelyekhez alvázszámmal ellátott adásvételi szerződést adunk.
+Bosch elektromos kerékpárokhoz diagnosztikai lapot biztosítunk.
+Kérem nézze meg a további hirdetéseinket is!
+bringabarat@hotmail.com
+Tévedés, elírás jogát fenntartjuk.`
+
 const empty: Partial<Bike> = {
   brand: '', model: '', category: 'trekking', condition: 'outlet',
   condition_detail: 'uj', kilometers: 0,
@@ -76,6 +83,7 @@ export default function AdminPage() {
   const [catLoading, setCatLoading] = useState(false)
   const [catDragIdx, setCatDragIdx] = useState<number | null>(null)
 
+  const [addFooter, setAddFooter] = useState(true)
   const [exportOpen, setExportOpen] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
   const [editingPrice, setEditingPrice] = useState<{ id: string; value: string } | null>(null)
@@ -336,7 +344,7 @@ export default function AdminPage() {
       kilometers: Number(form.kilometers) || 0,
       original_price: Number(form.original_price) || 0,
       sale_price: Number(form.sale_price) || 0,
-      description: form.description || '',
+      description: addFooter ? (form.description || '') + '\n\n' + STANDARD_FOOTER : form.description || '',
       specs: form.specs || [],
       images: form.images || [],
       available: form.available !== false,
@@ -777,6 +785,10 @@ export default function AdminPage() {
                 <div>
                   <label style={labelStyle}>Leírás</label>
                   <textarea value={form.description || ''} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={10} style={{ ...inputStyle, resize: 'vertical', minHeight: '200px' }} placeholder="Rövid leírás..." />
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px', cursor: 'pointer', fontSize: '13px', color: 'rgba(17,17,17,0.6)', fontWeight: 500 }}>
+                    <input type="checkbox" checked={addFooter} onChange={e => setAddFooter(e.target.checked)} style={{ width: '15px', height: '15px', accentColor: '#111111', cursor: 'pointer' }} />
+                    Szabványos záró szöveg hozzáadása
+                  </label>
                 </div>
                 <div>
                   <label style={labelStyle}>Komponensek / Specifikációk</label>
