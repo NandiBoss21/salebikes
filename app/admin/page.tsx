@@ -17,7 +17,7 @@ const CATEGORIES = [
   { key: 'ruhazat', label: 'Ruházat' },
 ]
 
-const BRANDS = ['Cube', 'Scott', 'Bulls', 'Giant', 'KTM', 'Merida', 'Corratec', 'Genesis', 'Focus', 'Brennabor', 'Hercules', 'Kalkhoff', 'Egyéb']
+const BRANDS = ['Cube', 'Scott', 'Bulls', 'Giant', 'KTM', 'Merida', 'Corratec', 'Conway', 'Genesis', 'Focus', 'Brennabor', 'Hercules', 'Kalkhoff', 'Egyéb']
 
 const empty: Partial<Bike> = {
   brand: '', model: '', category: 'trekking', condition: 'outlet',
