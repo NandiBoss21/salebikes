@@ -102,17 +102,29 @@ export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: numb
               </span>
             )}
 
-            {/* Utolsó darab — bottom strip, only for featured outlet bikes */}
-            {bike.condition === 'outlet' && bike.featured && (
-              <div style={{
-                position: 'absolute', bottom: 0, left: 0, right: 0,
-                background: 'rgba(220,38,38,0.92)',
-                padding: '5px 10px',
-                fontSize: '11px', fontWeight: 700,
-                color: '#ffffff', letterSpacing: '0.03em',
-                textTransform: 'uppercase', textAlign: 'center',
-              }}>
-                Utolsó darab
+            {/* Bottom badges */}
+            {(bike.featured || bike.condition === 'outlet') && (
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+                {bike.featured && (
+                  <div style={{
+                    background: 'rgba(234,179,8,0.95)',
+                    padding: '5px 10px',
+                    fontSize: '11px', fontWeight: 700,
+                    color: '#111111', letterSpacing: '0.03em', textAlign: 'center',
+                  }}>
+                    ⭐ Kiemelt ajánlat
+                  </div>
+                )}
+                {bike.condition === 'outlet' && (
+                  <div style={{
+                    background: 'rgba(5,150,105,0.92)',
+                    padding: '5px 10px',
+                    fontSize: '11px', fontWeight: 700,
+                    color: '#ffffff', letterSpacing: '0.03em', textAlign: 'center',
+                  }}>
+                    0 km · Új
+                  </div>
+                )}
               </div>
             )}
           </div>
