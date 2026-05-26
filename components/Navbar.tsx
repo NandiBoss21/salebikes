@@ -24,6 +24,7 @@ const NAV_EXTRA = [
 
 const NAV_RIGHT = [
   { label: 'Mérettáblázat', href: '/#merettablazat' },
+  { label: 'Méretkereső', href: '/#meretkereso' },
   { label: 'Garancia', href: '/garancia' },
   { label: 'GYIK', href: '/faq' },
   { label: 'Rólunk', href: '/rolunk' },

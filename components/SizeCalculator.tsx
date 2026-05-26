@@ -84,7 +84,7 @@ export default function SizeCalculator() {
   const matchingBikes = allBikes.filter(b => matchesSize(b.size, label))
 
   return (
-    <section style={{
+    <section id="meretkereso" style={{
       background: '#111111',
       padding: 'clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)',
     }}>
