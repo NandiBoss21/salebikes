@@ -20,6 +20,18 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'hu_HU',
     url: 'https://testbikevelence.hu',
+    images: [
+      {
+        url: 'https://testbikevelence.hu/hero-bg.png',
+        width: 1200,
+        height: 630,
+        alt: 'Bringabarát Tesztbike – Prémium kerékpárok garanciával',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['https://testbikevelence.hu/hero-bg.png'],
   },
   robots: {
     index: true,
