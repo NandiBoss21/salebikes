@@ -97,8 +97,42 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
     .gte('created_at', todayStart.toISOString())
   const cleanDesc = bike.description ? cleanDescription(bike.description) : ''
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: `${bike.brand} ${bike.model}`,
+    brand: {
+      '@type': 'Brand',
+      name: bike.brand,
+    },
+    offers: {
+      '@type': 'Offer',
+      price: bike.sale_price,
+      priceCurrency: 'HUF',
+      availability: 'https://schema.org/InStock',
+      seller: {
+        '@type': 'LocalBusiness',
+        name: 'Bringabarát Tesztbike',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'Tó utca 6.',
+          addressLocality: 'Kápolnásnyék',
+          postalCode: '2475',
+          addressCountry: 'HU',
+        },
+      },
+    },
+    itemCondition: bike.condition === 'outlet'
+      ? 'https://schema.org/NewCondition'
+      : 'https://schema.org/UsedCondition',
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       <TrackPageView path={`/kerekpar/${id}`} bikeId={id} />
 

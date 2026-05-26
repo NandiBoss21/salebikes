@@ -38,6 +38,29 @@ export default function RootLayout({
   return (
     <html lang="hu">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'LocalBusiness',
+            name: 'Bringabarát Tesztbike',
+            url: 'https://testbikevelence.hu',
+            telephone: '+36308897559',
+            email: 'ht.bike@hotmail.com',
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: 'Tó utca 6.',
+              addressLocality: 'Kápolnásnyék',
+              postalCode: '2475',
+              addressCountry: 'HU',
+            },
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: '4.9',
+              reviewCount: '47',
+            },
+          })}}
+        />
         {children}
         <CookieBanner />
         <ChatBot />
