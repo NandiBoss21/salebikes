@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import { Phone, Mail, MapPin, Clock, Truck } from 'lucide-react'
 
-export default function KapcsolatPage() {
+function KapcsolatForm() {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -286,5 +286,13 @@ export default function KapcsolatPage() {
         }
       `}</style>
     </>
+  )
+}
+
+export default function KapcsolatPage() {
+  return (
+    <Suspense fallback={null}>
+      <KapcsolatForm />
+    </Suspense>
   )
 }
