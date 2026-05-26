@@ -15,18 +15,18 @@ export const metadata: Metadata = {
   description: 'Prémium outlet és használt kerékpárok garanciával. Cube, Scott, Bulls, Giant, KTM – bolti ár töredékéért. Kápolnásnyék, személyes megtekintés rugalmasan.',
   keywords: 'outlet kerékpár, használt kerékpár, Cube, Scott, Bulls, Giant, KTM, kerékpár garancia, Kápolnásnyék, ebike, mountain bike, trekking, bringabarát, kápolnásnyék kerékpár, velence kerékpár',
   openGraph: {
-    title: 'Bringabarát – Prémium outlet kerékpárok félár alatt',
-    description: 'Cube, Scott, Bulls, Giant – garanciával, bolti ár töredékéért.',
+    title: 'Bringabarát – Prémium kerékpárok garanciával',
+    description: 'Cube, Scott, Bulls, Giant – átvilágítva, garanciával, tisztességes áron.',
     type: 'website',
     locale: 'hu_HU',
-    url: 'https://salebikes.hu',
+    url: 'https://testbikevelence.hu',
   },
   robots: {
     index: true,
     follow: true,
   },
   alternates: {
-    canonical: 'https://salebikes.hu',
+    canonical: 'https://testbikevelence.hu',
   },
 }
 

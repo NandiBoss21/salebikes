@@ -16,6 +16,15 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return {
     title: `${bike.brand} ${bike.model} – ${bike.sale_price.toLocaleString('hu-HU')} Ft | SaleBikes`,
     description: `${bike.brand} ${bike.model} ${bike.condition === 'outlet' ? 'outlet' : 'használt'} kerékpár ${bike.sale_price.toLocaleString('hu-HU')} Ft-ért. Bolti ár: ${bike.original_price.toLocaleString('hu-HU')} Ft. Garancia, adásvételi szerződés.`,
+    openGraph: {
+      title: `${bike.brand} ${bike.model} – ${bike.sale_price.toLocaleString('hu-HU')} Ft`,
+      description: `${bike.brand} ${bike.model} kerékpár garanciával. Bolti ár: ${bike.original_price.toLocaleString('hu-HU')} Ft.`,
+      type: 'website',
+      locale: 'hu_HU',
+    },
+    alternates: {
+      canonical: `https://testbikevelence.hu/kerekpar/${id}`,
+    },
   }
 }
 
