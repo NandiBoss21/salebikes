@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import { Phone, Mail, MapPin, Clock, Truck } from 'lucide-react'
 
@@ -12,6 +13,15 @@ export default function KapcsolatPage() {
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const bike = searchParams.get('bike')
+    if (bike && !message) {
+      setMessage(`Érdeklődöm a következő kerékpár iránt: ${bike}\n\n`)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

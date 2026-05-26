@@ -1,16 +1,17 @@
 'use client'
-import { Phone } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
 function track(bikeId: string, bikeName: string, source: string) {
   supabase.from('inquiries').insert({ bike_id: bikeId, bike_name: bikeName, source }).then(() => {})
 }
 
-export function InquiryButtonDesktop({ bikeId, bikeName }: { bikeId: string; bikeName: string }) {
+export function InquiryButtonDesktop({ bikeId, bikeName, bikeLabel }: { bikeId: string; bikeName: string; bikeLabel: string }) {
+  const href = `/kapcsolat?bike=${encodeURIComponent(bikeLabel)}`
   return (
     <>
       <a
-        href="tel:+36308897559"
+        href={href}
         className="bike-cta-btn hide-mobile"
         onClick={() => track(bikeId, bikeName, 'detail_desktop')}
         style={{
@@ -23,8 +24,8 @@ export function InquiryButtonDesktop({ bikeId, bikeName }: { bikeId: string; bik
           marginBottom: '8px',
         }}
       >
-        <Phone size={18} />
-        Érdeklődöm – +36 30 889 7559
+        <MessageCircle size={18} />
+        Érdeklődöm →
       </a>
       <p style={{
         fontSize: '13px', color: '#444444', textAlign: 'center', marginBottom: '1.5rem',
@@ -36,10 +37,11 @@ export function InquiryButtonDesktop({ bikeId, bikeName }: { bikeId: string; bik
   )
 }
 
-export function InquiryButtonMobile({ bikeId, bikeName }: { bikeId: string; bikeName: string }) {
+export function InquiryButtonMobile({ bikeId, bikeName, bikeLabel }: { bikeId: string; bikeName: string; bikeLabel: string }) {
+  const href = `/kapcsolat?bike=${encodeURIComponent(bikeLabel)}`
   return (
     <a
-      href="tel:+36308897559"
+      href={href}
       className="mobile-cta"
       onClick={() => track(bikeId, bikeName, 'detail_mobile')}
       style={{
@@ -51,8 +53,8 @@ export function InquiryButtonMobile({ bikeId, bikeName }: { bikeId: string; bike
         letterSpacing: '-0.01em', textDecoration: 'none',
       }}
     >
-      <Phone size={17} />
-      Érdeklődöm – +36 30 889 7559
+      <MessageCircle size={17} />
+      Érdeklődöm
     </a>
   )
 }

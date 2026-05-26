@@ -314,7 +314,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
             )}
 
             {/* CTA — desktop */}
-            <InquiryButtonDesktop bikeId={bike.id} bikeName={`${bike.brand} ${bike.model}`} />
+            <InquiryButtonDesktop bikeId={bike.id} bikeName={`${bike.brand} ${bike.model}`} bikeLabel={`${bike.brand} ${bike.model} – ${bike.sale_price.toLocaleString('hu-HU')} Ft`} />
 
             {/* Specs */}
             {bike.specs?.length > 0 && (
@@ -424,7 +424,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
       </div>
 
       {/* Sticky CTA — mobile only */}
-      <InquiryButtonMobile bikeId={bike.id} bikeName={`${bike.brand} ${bike.model}`} />
+      <InquiryButtonMobile bikeId={bike.id} bikeName={`${bike.brand} ${bike.model}`} bikeLabel={`${bike.brand} ${bike.model} – ${bike.sale_price.toLocaleString('hu-HU')} Ft`} />
     </>
   )
 }
