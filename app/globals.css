@@ -162,3 +162,6 @@ details summary { user-select: none; }
 
 /* ── Hero location label ────────────────────────── */
 @media (max-width: 768px) { .hero-location { display: none !important; } }
+
+/* ── SEO text grid ─────────────────────────────── */
+@media (max-width: 768px) { .seo-text-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; } }

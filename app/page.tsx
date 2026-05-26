@@ -460,43 +460,66 @@ export default function Home() {
 
       {/* ── SEO TEXT ────────────────────────────────────────────── */}
       <section style={{
-        background: '#FAFAF8',
+        background: '#111111',
         padding: 'clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)',
-        borderBottom: '1px solid rgba(17,17,17,0.07)'
+        borderBottom: '1px solid rgba(255,255,255,0.06)'
       }}>
-        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
-          <h2 style={{
-            fontSize: 'clamp(1.4rem, 3vw, 2rem)',
-            fontWeight: 900,
-            letterSpacing: '-0.04em',
-            color: '#111111',
-            marginBottom: '1.5rem'
-          }}>
-            Prémium kerékpárok – outlet és használt, garanciával
-          </h2>
-          <p style={{
-            fontSize: '15px',
-            lineHeight: 1.8,
-            color: 'rgba(17,17,17,0.65)',
-            marginBottom: '1.25rem'
-          }}>
-            A Bringabarát Tesztbike Kápolnásnyéken, a Velencei-tó mellett kínál válogatott outlet és használt kerékpárokat – Budapesttől mindössze 50 km-re. Raktáron tartunk Cube, Scott, Bulls, Giant, KTM és más prémium márkájú elektromos kerékpárokat, MTB-ket, trekking és gravel bringákat, amelyek mindegyikét személyesen ellenőrzünk és garanciával adunk el.
-          </p>
-          <p style={{
-            fontSize: '15px',
-            lineHeight: 1.8,
-            color: 'rgba(17,17,17,0.65)',
-            marginBottom: '1.25rem'
-          }}>
-            Minden kerékpár átvilágított, dokumentált, adásvételi szerződéssel. Nem alkalmi túrákon összeszedett ismeretlen darabok – hanem szakmai szelekció, ahol csak azt kínáljuk, amit mi magunk is megvennénk. 2008 óta több mint 1000 kerékpár talált gazdát nálunk, és vásárlóink átlagosan 300 000 Ft-ot takarítottak meg a bolti árhoz képest.
-          </p>
-          <p style={{
-            fontSize: '15px',
-            lineHeight: 1.8,
-            color: 'rgba(17,17,17,0.65)'
-          }}>
-            Személyes megtekintés rugalmasan egyeztethető – hívj, és megmutatjuk mi van raktáron.
-          </p>
+        <div className="seo-text-grid" style={{ maxWidth: '1360px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+          <div>
+            <div style={{ fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#e8c547', marginBottom: '1.25rem' }}>
+              Kápolnásnyék · Velence · 50 km Budapesttől
+            </div>
+            <h2 style={{
+              fontSize: 'clamp(1.6rem, 3.5vw, 2.6rem)',
+              fontWeight: 900,
+              letterSpacing: '-0.04em',
+              color: '#ffffff',
+              lineHeight: 1.1,
+              marginBottom: '1.75rem'
+            }}>
+              Prémium kerékpárok.<br />Átvilágítva, garanciával,<br />tisztességes áron.
+            </h2>
+            <p style={{ fontSize: '15px', lineHeight: 1.85, color: 'rgba(255,255,255,0.55)', marginBottom: '1.25rem' }}>
+              A Bringabarát Tesztbike Kápolnásnyéken, a Velencei-tó mellett kínál válogatott outlet és használt kerékpárokat – Budapesttől mindössze 50 km-re. Cube, Scott, Bulls, Giant, KTM és más prémium márkák, személyesen ellenőrizve, garanciával.
+            </p>
+            <p style={{ fontSize: '15px', lineHeight: 1.85, color: 'rgba(255,255,255,0.55)', marginBottom: '2rem' }}>
+              Nem alkalmi túrákon összeszedett ismeretlen darabok – hanem szakmai szelekció, ahol csak azt kínáljuk, amit mi magunk is megvennénk. 2008 óta több mint 1000 kerékpár talált gazdát nálunk.
+            </p>
+            <a href="tel:+36308897559" style={{
+              display: 'inline-flex', alignItems: 'center', gap: '8px',
+              background: '#e8c547', color: '#111111',
+              padding: '13px 24px', borderRadius: '6px',
+              fontSize: '13.5px', fontWeight: 700,
+              textDecoration: 'none', letterSpacing: '-0.01em'
+            }}>
+              Hívj most – +36 30 889 7559
+            </a>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
+            {[
+              { szam: '1000+', cimke: 'Eladott kerékpár 2008 óta', leiras: 'Tapasztalat, amit nem lehet megvásárolni.' },
+              { szam: '~300 000 Ft', cimke: 'Átlagos megtakarítás vásárlónként', leiras: 'A bolti árhoz képest, garanciával együtt.' },
+              { szam: '4.9 ★', cimke: 'Google értékelés', leiras: 'Valódi vásárlói visszajelzések alapján.' },
+              { szam: '50 km', cimke: 'Budapesttől', leiras: 'Kápolnásnyék, személyes megtekintés rugalmasan.' },
+            ].map((item, i) => (
+              <div key={i} style={{
+                background: 'rgba(255,255,255,0.04)',
+                padding: '1.5rem 2rem',
+                display: 'flex', alignItems: 'center', gap: '1.5rem',
+                borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none'
+              }}>
+                <div style={{ minWidth: '110px' }}>
+                  <div style={{ fontSize: 'clamp(1.2rem, 2vw, 1.6rem)', fontWeight: 900, color: '#e8c547', letterSpacing: '-0.03em', lineHeight: 1 }}>
+                    {item.szam}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#ffffff', marginBottom: '3px' }}>{item.cimke}</div>
+                  <div style={{ fontSize: '11.5px', color: 'rgba(255,255,255,0.35)', lineHeight: 1.5 }}>{item.leiras}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
