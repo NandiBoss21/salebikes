@@ -142,7 +142,15 @@ export default function ChatBot() {
   const [messages, setMessages]       = useState<Message[]>([{ role: 'bot', text: NODES.start.message }])
   const [currentNode, setCurrentNode] = useState('start')
   const [bannerHeight, setBannerHeight] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function check() { setIsMobile(window.innerWidth <= 768) }
+    check()
+    window.addEventListener('resize', check, { passive: true })
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   useEffect(() => {
     function measure() {
@@ -206,7 +214,7 @@ export default function ChatBot() {
   return (
     <div style={{
       position: 'fixed',
-      bottom: bannerHeight > 0 ? bannerHeight + 16 : 24,
+      bottom: bannerHeight > 0 ? bannerHeight + 16 : isMobile ? 80 : 24,
       right: '24px',
       zIndex: 1000,
       transition: 'bottom 0.3s ease',
