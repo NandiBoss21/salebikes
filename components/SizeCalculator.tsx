@@ -80,8 +80,11 @@ export default function SizeCalculator() {
       .then(({ data }) => setAllBikes((data || []) as Bike[]))
   }, [])
 
+  const isChild = height < 148
   const { label, range } = getSizeInfo(height)
-  const matchingBikes = allBikes.filter(b => matchesSize(b.size, label))
+  const matchingBikes = isChild
+    ? allBikes.filter(b => b.category === 'gyerek')
+    : allBikes.filter(b => matchesSize(b.size, label) && b.category !== 'gyerek')
 
   return (
     <section id="meretkereso" style={{
@@ -188,8 +191,10 @@ export default function SizeCalculator() {
                   fontSize: '20px', fontWeight: 900,
                   padding: '4px 16px', borderRadius: '6px',
                   letterSpacing: '-0.02em', lineHeight: 1.4,
-                }}>{label}</span>
-                <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)' }}>{range}</span>
+                }}>{isChild ? 'Gyerek' : label}</span>
+                <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)' }}>
+                  {isChild ? '24" kerék és kisebb' : range}
+                </span>
               </div>
             </div>
             <div style={{ fontSize: '13px' }}>
@@ -200,6 +205,14 @@ export default function SizeCalculator() {
             </div>
           </div>
         </div>
+
+        {/* Child-height message */}
+        {isChild && (
+          <p style={{
+            textAlign: 'center', marginBottom: '1.5rem',
+            fontSize: '14px', color: 'rgba(255,255,255,0.5)',
+          }}>Gyerek kerékpárokat ajánlunk ennél a magasságnál.</p>
+        )}
 
         {/* Bike grid */}
         {matchingBikes.length > 0 ? (
