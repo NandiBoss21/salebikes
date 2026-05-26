@@ -9,6 +9,7 @@ import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
 import { motion } from 'framer-motion'
 import AnimatedSection from '@/components/AnimatedSection'
+import SizeCalculator from '@/components/SizeCalculator'
 import { useCountUp } from '@/hooks/useCountUp'
 import { usePageView } from '@/hooks/usePageView'
 
@@ -696,6 +697,9 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      {/* ── MÉRETKERESŐ ────────────────────────────────────────── */}
+      <SizeCalculator />
 
       {/* ── REVIEWS ────────────────────────────────────────────── */}
       <section style={{
