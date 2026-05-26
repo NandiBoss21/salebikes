@@ -7,7 +7,7 @@ const supabase = createClient(
 )
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://salebikes.hu'
+  const baseUrl = 'https://testbikevelence.hu'
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: baseUrl,                              lastModified: new Date(), changeFrequency: 'weekly',  priority: 1.0 },
@@ -29,14 +29,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/adatkezeles`,             lastModified: new Date(), changeFrequency: 'monthly', priority: 0.2 },
   ]
 
-  const { data: bikes } = await supabase
+  const { data: bikes, error } = await supabase
     .from('bikes')
-    .select('id, updated_at')
-    .eq('is_active', true)
+    .select('id, created_at')
+    .eq('available', true)
+
+  console.log('[sitemap] bikes fetched:', bikes?.length ?? 0, 'error:', error?.message ?? null)
 
   const bikePages: MetadataRoute.Sitemap = (bikes ?? []).map((bike) => ({
     url: `${baseUrl}/kerekpar/${bike.id}`,
-    lastModified: new Date(bike.updated_at ?? new Date()),
+    lastModified: new Date(bike.created_at ?? new Date()),
     changeFrequency: 'weekly',
     priority: 0.8,
   }))
