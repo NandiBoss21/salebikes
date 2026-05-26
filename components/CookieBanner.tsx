@@ -27,23 +27,15 @@ export default function CookieBanner() {
     if (getConsent() === null) setVisible(true)
   }, [])
 
-  function acceptAll() {
-    saveConsent('all')
+  function dismiss() {
     setVisible(false)
     setModalOpen(false)
+    window.dispatchEvent(new Event('cookie-consent-changed'))
   }
 
-  function rejectAll() {
-    saveConsent('necessary')
-    setVisible(false)
-    setModalOpen(false)
-  }
-
-  function saveCustom() {
-    saveConsent({ necessary: true, statistics, marketing })
-    setVisible(false)
-    setModalOpen(false)
-  }
+  function acceptAll() { saveConsent('all'); dismiss() }
+  function rejectAll()  { saveConsent('necessary'); dismiss() }
+  function saveCustom() { saveConsent({ necessary: true, statistics, marketing }); dismiss() }
 
   if (!visible) return null
 
@@ -168,7 +160,7 @@ export default function CookieBanner() {
       )}
 
       {/* ── Banner ─────────────────────────────────────────────── */}
-      <div style={{
+      <div id="cookie-banner" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000,
         background: '#ffffff',
         borderTop: '1px solid #E8E4DC',

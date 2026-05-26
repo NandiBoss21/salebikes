@@ -137,11 +137,23 @@ type Message = { role: 'bot' | 'user'; text: string }
 
 export default function ChatBot() {
   const router = useRouter()
-  const [isOpen, setIsOpen]         = useState(false)
-  const [visible, setVisible]       = useState(false)
-  const [messages, setMessages]     = useState<Message[]>([{ role: 'bot', text: NODES.start.message }])
+  const [isOpen, setIsOpen]           = useState(false)
+  const [visible, setVisible]         = useState(false)
+  const [messages, setMessages]       = useState<Message[]>([{ role: 'bot', text: NODES.start.message }])
   const [currentNode, setCurrentNode] = useState('start')
+  const [bannerHeight, setBannerHeight] = useState(0)
   const bottomRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function measure() {
+      const el = document.getElementById('cookie-banner')
+      setBannerHeight(el ? el.getBoundingClientRect().height : 0)
+    }
+    function onConsent() { setBannerHeight(0) }
+    const t = setTimeout(measure, 50)
+    window.addEventListener('cookie-consent-changed', onConsent)
+    return () => { clearTimeout(t); window.removeEventListener('cookie-consent-changed', onConsent) }
+  }, [])
 
   useEffect(() => {
     if (isOpen) {
@@ -192,7 +204,13 @@ export default function ChatBot() {
     : [...node.buttons, { label: 'Főmenü', action: { type: 'reset' } }]
 
   return (
-    <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 1000 }}>
+    <div style={{
+      position: 'fixed',
+      bottom: bannerHeight > 0 ? bannerHeight + 16 : 24,
+      right: '24px',
+      zIndex: 1000,
+      transition: 'bottom 0.3s ease',
+    }}>
 
       {/* Chat window */}
       <div style={{
