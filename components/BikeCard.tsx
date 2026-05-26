@@ -148,16 +148,21 @@ export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: numb
             </div>
 
             <div style={{
-              fontSize: '15px', fontWeight: 700,
-              color: '#111111', lineHeight: 1.3,
-              letterSpacing: '-0.02em',
-            }}>{bike.model}</div>
-            {bike.size && (
+              display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '8px',
+              marginBottom: 'auto',
+            }}>
               <div style={{
-                fontSize: '12px', color: '#6B6B6B',
-                marginTop: '2px', marginBottom: 'auto',
-              }}>{bike.size}</div>
-            )}
+                fontSize: '15px', fontWeight: 700,
+                color: '#111111', lineHeight: 1.3,
+                letterSpacing: '-0.02em',
+              }}>{bike.model}</div>
+              {bike.size && (
+                <div style={{
+                  fontSize: '12px', color: '#6B6B6B',
+                  whiteSpace: 'nowrap', flexShrink: 0,
+                }}>{bike.size}</div>
+              )}
+            </div>
 
             {/* Price row */}
             <div style={{
