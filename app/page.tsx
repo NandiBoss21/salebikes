@@ -458,6 +458,48 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── SEO TEXT ────────────────────────────────────────────── */}
+      <section style={{
+        background: '#FAFAF8',
+        padding: 'clamp(3rem, 6vw, 5rem) clamp(1.5rem, 4vw, 3rem)',
+        borderBottom: '1px solid rgba(17,17,17,0.07)'
+      }}>
+        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+          <h2 style={{
+            fontSize: 'clamp(1.4rem, 3vw, 2rem)',
+            fontWeight: 900,
+            letterSpacing: '-0.04em',
+            color: '#111111',
+            marginBottom: '1.5rem'
+          }}>
+            Prémium kerékpárok – outlet és használt, garanciával
+          </h2>
+          <p style={{
+            fontSize: '15px',
+            lineHeight: 1.8,
+            color: 'rgba(17,17,17,0.65)',
+            marginBottom: '1.25rem'
+          }}>
+            A Bringabarát Tesztbike Kápolnásnyéken, a Velencei-tó mellett kínál válogatott outlet és használt kerékpárokat – Budapesttől mindössze 50 km-re. Raktáron tartunk Cube, Scott, Bulls, Giant, KTM és más prémium márkájú elektromos kerékpárokat, MTB-ket, trekking és gravel bringákat, amelyek mindegyikét személyesen ellenőrzünk és garanciával adunk el.
+          </p>
+          <p style={{
+            fontSize: '15px',
+            lineHeight: 1.8,
+            color: 'rgba(17,17,17,0.65)',
+            marginBottom: '1.25rem'
+          }}>
+            Minden kerékpár átvilágított, dokumentált, adásvételi szerződéssel. Nem alkalmi túrákon összeszedett ismeretlen darabok – hanem szakmai szelekció, ahol csak azt kínáljuk, amit mi magunk is megvennénk. 2008 óta több mint 1000 kerékpár talált gazdát nálunk, és vásárlóink átlagosan 300 000 Ft-ot takarítottak meg a bolti árhoz képest.
+          </p>
+          <p style={{
+            fontSize: '15px',
+            lineHeight: 1.8,
+            color: 'rgba(17,17,17,0.65)'
+          }}>
+            Személyes megtekintés rugalmasan egyeztethető – hívj, és megmutatjuk mi van raktáron.
+          </p>
+        </div>
+      </section>
+
       {/* ── BRANDS ─────────────────────────────────────────────── */}
       <section style={{
         background: '#FAFAF8',
