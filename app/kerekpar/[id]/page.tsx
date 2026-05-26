@@ -101,6 +101,8 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: `${bike.brand} ${bike.model}`,
+    image: bike.images?.[0],
+    description: bike.description || `${bike.brand} ${bike.model} ${bike.condition === 'outlet' ? 'outlet' : 'használt'} kerékpár garanciával.`,
     brand: {
       '@type': 'Brand',
       name: bike.brand,
