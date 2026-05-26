@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   try {
     console.log('Sending email to:', email)
     const result = await resend.emails.send({
-      from: 'Bringabarát Tesztbike <onboarding@resend.dev>',
+      from: 'Bringabarát Tesztbike <noreply@testbikevelence.hu>',
       to: email,
       subject: 'Köszönjük érdeklődésedet – Bringabarát Tesztbike',
       html: `
@@ -59,6 +59,23 @@ export async function POST(request: Request) {
     })
 
     console.log('Resend result:', result)
+
+    await resend.emails.send({
+      from: 'Bringabarát Tesztbike <noreply@testbikevelence.hu>',
+      to: 'bringabarat@hotmail.com',
+      subject: `Új érdeklődés – ${name}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
+          <h2 style="color: #111111;">Új érdeklődés érkezett</h2>
+          <p><strong>Név:</strong> ${name}</p>
+          <p><strong>Telefon:</strong> ${phone ?? '–'}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Üzenet:</strong></p>
+          <p style="background: #f9f9f7; padding: 16px; border-radius: 8px;">${message}</p>
+        </div>
+      `,
+    })
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.log('Resend error:', error)
