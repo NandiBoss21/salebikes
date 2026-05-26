@@ -86,11 +86,11 @@ function KapcsolatForm() {
       </section>
 
       {/* Main content */}
-      <section style={{
+      <section className="kapcsolat-section" style={{
         background: '#FAFAF8',
         padding: 'clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem)',
       }}>
-        <div style={{
+        <div className="kapcsolat-grid" style={{
           maxWidth: '1100px', margin: '0 auto',
           display: 'grid',
           gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
@@ -141,6 +141,8 @@ function KapcsolatForm() {
                       <a href={item.href} style={{
                         fontSize: '14px', fontWeight: 500,
                         color: '#111111', textDecoration: 'none',
+                        ...(item.label === 'Telefon' && { whiteSpace: 'nowrap' }),
+                        ...(item.label === 'Email'   && { wordBreak: 'break-all' }),
                       }}
                         onMouseEnter={e => (e.currentTarget.style.color = '#e8c547')}
                         onMouseLeave={e => (e.currentTarget.style.color = '#111111')}
@@ -283,6 +285,7 @@ function KapcsolatForm() {
       <style>{`
         @media (max-width: 768px) {
           .kapcsolat-grid { grid-template-columns: 1fr !important; }
+          .kapcsolat-section { padding-bottom: 6rem !important; }
         }
       `}</style>
     </>
