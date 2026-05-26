@@ -104,7 +104,7 @@ export default function Home() {
   usePageView('/')
   const [mounted, setMounted] = useState(false)
   const [bikes, setBikes] = useState<Bike[]>([])
-  const [latestBikes, setLatestBikes] = useState<Bike[]>([])
+  const [featuredBikes, setFeaturedBikes] = useState<Bike[]>([])
   const [loading, setLoading] = useState(true)
   const [sizeTab, setSizeTab] = useState<SizeTab>('MTB')
   const [catOrder, setCatOrder] = useState<{ slug: string; visible: boolean }[] | null>(null)
@@ -128,10 +128,23 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    supabase.from('bikes').select('*').eq('available', true).not('sold', 'eq', true)
-      .order('created_at', { ascending: false })
-      .limit(3)
-      .then(({ data }) => setLatestBikes((data || []) as Bike[]))
+    supabase.from('bikes').select('*')
+      .eq('available', true).not('sold', 'eq', true).eq('featured', true)
+      .then(({ data }) => {
+        const featured = (data || []) as Bike[]
+        if (featured.length > 0) {
+          setFeaturedBikes(featured.sort((a, b) => {
+            const pctA = a.original_price > 0 ? Math.round((1 - a.sale_price / a.original_price) * 100) : 0
+            const pctB = b.original_price > 0 ? Math.round((1 - b.sale_price / b.original_price) * 100) : 0
+            return pctB - pctA
+          }))
+        } else {
+          supabase.from('bikes').select('*')
+            .eq('available', true).not('sold', 'eq', true)
+            .order('created_at', { ascending: false }).limit(6)
+            .then(({ data: fallback }) => setFeaturedBikes((fallback || []) as Bike[]))
+        }
+      })
   }, [])
 
   useEffect(() => setMounted(true), [])
@@ -566,8 +579,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── LEGÚJABBAN FELTÖLTÖTT ───────────────────────────────── */}
-      {mounted && latestBikes.length > 0 && (
+      {/* ── KIEMELT AJÁNLATOK ──────────────────────────────────── */}
+      {mounted && featuredBikes.length > 0 && (
         <section style={{
           background: '#F2F0EB',
           padding: 'clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem)',
@@ -584,16 +597,20 @@ export default function Home() {
                   fontSize: '10px', fontWeight: 800,
                   letterSpacing: '0.12em', textTransform: 'uppercase',
                   color: 'rgba(17,17,17,0.35)', marginBottom: '6px',
-                }}>Friss feltöltés</div>
+                }}>Kiemelt ajánlat</div>
                 <h2 style={{
                   fontSize: 'clamp(1.4rem, 3vw, 2rem)',
                   fontWeight: 900, letterSpacing: '-0.04em',
                   color: '#111111', lineHeight: 1.1,
-                }}>Legújabban feltöltött</h2>
+                }}>Kiemelt ajánlatok</h2>
+                <p style={{
+                  fontSize: '14px', color: 'rgba(17,17,17,0.45)',
+                  marginTop: '6px', lineHeight: 1.5,
+                }}>Személyesen válogatott, legjobb ár-érték arányú kerékpárok</p>
               </div>
             </div>
             <div className="bikes-grid">
-              {latestBikes.map((bike, i) => (
+              {featuredBikes.map((bike, i) => (
                 <BikeCard key={bike.id} bike={bike} delay={i * 0.08} />
               ))}
             </div>
