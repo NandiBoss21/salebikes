@@ -4,14 +4,20 @@ import { NextResponse } from 'next/server'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: Request) {
-  const { name, email, phone, message } = await request.json()
+  console.log('Contact API called')
+  const body = await request.json()
+  console.log('Body:', body)
+
+  const { name, email, phone, message } = body
 
   if (!name || !email || !message) {
+    console.log('Missing fields')
     return NextResponse.json({ error: 'Hiányzó mezők' }, { status: 400 })
   }
 
   try {
-    await resend.emails.send({
+    console.log('Sending email to:', email)
+    const result = await resend.emails.send({
       from: 'Bringabarát Tesztbike <onboarding@resend.dev>',
       to: email,
       subject: 'Köszönjük érdeklődésedet – Bringabarát Tesztbike',
@@ -52,8 +58,10 @@ export async function POST(request: Request) {
       `,
     })
 
+    console.log('Resend result:', result)
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.log('Resend error:', error)
     return NextResponse.json({ error: 'Email küldés sikertelen' }, { status: 500 })
   }
 }
