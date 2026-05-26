@@ -13,7 +13,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { data } = await supabase.from('bikes').select('*').eq('id', id).single()
   if (!data) return { title: 'Kerékpár | SaleBikes' }
   const bike = data as Bike
-  const bikeImage = bike.images?.[0] ?? 'https://testbikevelence.hu/hero-bg.png'
+  const bikeImage = Array.isArray(bike.images) && bike.images.length > 0
+    ? bike.images[0]
+    : 'https://testbikevelence.hu/hero-bg.png'
   return {
     title: `${bike.brand} ${bike.model} – ${bike.sale_price.toLocaleString('hu-HU')} Ft | SaleBikes`,
     description: `${bike.brand} ${bike.model} ${bike.condition === 'outlet' ? 'outlet' : 'használt'} kerékpár ${bike.sale_price.toLocaleString('hu-HU')} Ft-ért. Bolti ár: ${bike.original_price.toLocaleString('hu-HU')} Ft. Garancia, adásvételi szerződés.`,
