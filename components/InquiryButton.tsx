@@ -26,7 +26,10 @@ export function InquiryButtonDesktop({ bikeId, bikeName }: { bikeId: string; bik
         <Phone size={18} />
         Érdeklődöm – +36 30 889 7559
       </a>
-      <p style={{ fontSize: '13px', color: '#6B6B6B', textAlign: 'center', marginBottom: '1.5rem' }}>
+      <p style={{
+        fontSize: '13px', color: '#444444', textAlign: 'center', marginBottom: '1.5rem',
+        background: '#f2f0eb', borderRadius: '8px', padding: '10px 14px',
+      }}>
         📍 Személyes átvétel Kápolnásnyéken, előre egyeztetett időpontban
       </p>
     </>
