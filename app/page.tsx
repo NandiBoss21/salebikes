@@ -805,13 +805,13 @@ export default function Home() {
               onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
             >+36 30 889 7559</a>
-            <a href="mailto:ht.bike@hotmail.com" style={{
+            <a href="mailto:bringabarat@hotmail.com" style={{
               fontSize: '12.5px', color: 'rgba(255,255,255,0.45)',
               textDecoration: 'none', transition: 'color 0.15s',
             }}
               onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
-            >ht.bike@hotmail.com</a>
+            >bringabarat@hotmail.com</a>
             <a href="/rolunk" style={{
               fontSize: '12.5px', color: 'rgba(255,255,255,0.45)',
               textDecoration: 'none', transition: 'color 0.15s',

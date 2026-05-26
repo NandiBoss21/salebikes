@@ -93,7 +93,7 @@ export default function AdminPage() {
   const [flashIds, setFlashIds] = useState<string[]>([])
 
   type NotifSettings = { newInquiry: boolean; unsoldAfter7: boolean; email: string }
-  const [notifSettings, setNotifSettings] = useState<NotifSettings>({ newInquiry: true, unsoldAfter7: false, email: 'ht.bike@hotmail.com' })
+  const [notifSettings, setNotifSettings] = useState<NotifSettings>({ newInquiry: true, unsoldAfter7: false, email: 'bringabarat@hotmail.com' })
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -919,7 +919,7 @@ export default function AdminPage() {
             <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.75rem 2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div>
                 <label style={labelStyle}>Értesítési e-mail cím</label>
-                <input value={notifSettings.email} onChange={e => setNotifSettings(p => ({ ...p, email: e.target.value }))} style={inputStyle} placeholder="ht.bike@hotmail.com" />
+                <input value={notifSettings.email} onChange={e => setNotifSettings(p => ({ ...p, email: e.target.value }))} style={inputStyle} placeholder="bringabarat@hotmail.com" />
               </div>
               {([
                 { key: 'newInquiry' as const, label: 'E-mail értesítés új érdeklődőnél' },

@@ -275,7 +275,7 @@ export default function RolunkPage() {
           }}>
             {[
               { icon: <Phone size={14} />, value: '+36 30 889 7559', href: 'tel:+36308897559' },
-              { icon: <Mail size={14} />, value: 'ht.bike@hotmail.com', href: 'mailto:ht.bike@hotmail.com' },
+              { icon: <Mail size={14} />, value: 'bringabarat@hotmail.com', href: 'mailto:bringabarat@hotmail.com' },
               { icon: <MapPin size={14} />, value: '2475 Kápolnásnyék, Tó utca 6.', href: undefined },
             ].map(item => (
               <div key={item.value} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

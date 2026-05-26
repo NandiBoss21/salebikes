@@ -13,7 +13,7 @@ const SECTIONS = [
     content: `Adatkezelő neve: Házi Nándor (SaleBikes)
 Székhely: 2475 Kápolnásnyék, Tó utca 6
 Telefonszám: +36 30 889 7559
-Email: ht.bike@hotmail.com
+Email: bringabarat@hotmail.com
 Weboldal: salebikes.hu`,
   },
   {
@@ -60,7 +60,7 @@ Adatkezelés korlátozása – kérheti az adatkezelés felfüggesztését.
 Adathordozhatóság – kérheti adatai strukturált, géppel olvasható formátumban való átadását.
 Tiltakozás joga – tiltakozhat az adatkezelés ellen jogos érdeken alapuló adatkezelés esetén.
 
-Kérelmét az ht.bike@hotmail.com emailre vagy a fenti postai címre küldheti. A kérelemre 30 napon belül válaszolunk.`,
+Kérelmét az bringabarat@hotmail.com emailre vagy a fenti postai címre küldheti. A kérelemre 30 napon belül válaszolunk.`,
   },
   {
     id: 'jogorvoslat',

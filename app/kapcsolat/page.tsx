@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Navbar from '@/components/Navbar'
 import { Phone, Mail, MapPin, Clock, Truck } from 'lucide-react'
-import type { Metadata } from 'next'
 
 export default function KapcsolatPage() {
   const [name, setName] = useState('')
@@ -11,12 +10,30 @@ export default function KapcsolatPage() {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const body = `Név: ${name}\nTelefon: ${phone}\nEmail: ${email}\n\nÜzenet:\n${message}`
-    window.location.href = `mailto:ht.bike@hotmail.com?subject=${encodeURIComponent(`Érdeklődés – ${name}`)}&body=${encodeURIComponent(body)}`
-    setSent(true)
+    setError('')
+    setLoading(true)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, message }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        setError(data.error ?? 'Hiba történt. Kérjük próbáld újra.')
+      } else {
+        setSent(true)
+      }
+    } catch {
+      setError('Hiba történt. Kérjük próbáld újra.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const inputStyle: React.CSSProperties = {
@@ -93,7 +110,7 @@ export default function KapcsolatPage() {
               {[
                 { icon: <MapPin size={16} />, label: 'Cím', value: '2475 Kápolnásnyék, Tó utca 6.\nMagyarország', href: undefined },
                 { icon: <Phone size={16} />, label: 'Telefon', value: '+36-30-889-7559', href: 'tel:+36308897559' },
-                { icon: <Mail size={16} />, label: 'Email', value: 'ht.bike@hotmail.com', href: 'mailto:ht.bike@hotmail.com' },
+                { icon: <Mail size={16} />, label: 'Email', value: 'bringabarat@hotmail.com', href: 'mailto:bringabarat@hotmail.com' },
                 { icon: <Clock size={16} />, label: 'Nyitvatartás', value: 'Előzetes egyeztetés alapján', href: undefined },
                 { icon: <Truck size={16} />, label: 'Szállítás', value: 'Magyar Posta mindenkori díjszabása szerint', href: undefined },
               ].map((item) => (
@@ -176,7 +193,7 @@ export default function KapcsolatPage() {
                 <div style={{ fontSize: '32px', marginBottom: '0.75rem' }}>✓</div>
                 <div style={{ fontSize: '15px', fontWeight: 700, color: '#111111', marginBottom: '6px' }}>Köszönjük!</div>
                 <div style={{ fontSize: '13px', color: 'rgba(17,17,17,0.5)' }}>
-                  Az e-mail kliens megnyílt. Hamarosan jelentkezünk!
+                  Üzenetedet megkaptuk. Hamarosan visszahívunk!
                 </div>
               </div>
             ) : (
@@ -225,19 +242,27 @@ export default function KapcsolatPage() {
                     onBlur={e => (e.currentTarget.style.borderColor = '#E8E4DC')}
                   />
                 </div>
-                <button type="submit" style={{
-                  background: '#e8c547', color: '#111111',
+                {error && (
+                  <div style={{
+                    padding: '12px 16px', borderRadius: '8px',
+                    background: '#fef2f2', border: '1px solid rgba(239,68,68,0.2)',
+                    fontSize: '13px', color: '#b91c1c',
+                  }}>{error}</div>
+                )}
+                <button type="submit" disabled={loading} style={{
+                  background: loading ? '#d4b23e' : '#e8c547', color: '#111111',
                   border: 'none', borderRadius: '8px',
-                  padding: '14px 24px', cursor: 'pointer',
+                  padding: '14px 24px', cursor: loading ? 'not-allowed' : 'pointer',
                   fontSize: '14px', fontWeight: 800,
                   letterSpacing: '-0.02em',
                   transition: 'background 0.15s',
                   fontFamily: 'inherit',
+                  opacity: loading ? 0.7 : 1,
                 }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#d4b23e')}
-                  onMouseLeave={e => (e.currentTarget.style.background = '#e8c547')}
+                  onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#d4b23e' }}
+                  onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#e8c547' }}
                 >
-                  Üzenet küldése →
+                  {loading ? 'Küldés...' : 'Üzenet küldése →'}
                 </button>
               </form>
             )}

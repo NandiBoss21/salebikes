@@ -58,7 +58,7 @@ export default function RootLayout({
             name: 'Bringabarát Tesztbike',
             url: 'https://testbikevelence.hu',
             telephone: '+36308897559',
-            email: 'ht.bike@hotmail.com',
+            email: 'bringabarat@hotmail.com',
             address: {
               '@type': 'PostalAddress',
               streetAddress: 'Tó utca 6.',
