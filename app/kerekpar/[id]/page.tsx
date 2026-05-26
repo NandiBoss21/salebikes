@@ -13,8 +13,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { data } = await supabase.from('bikes').select('*').eq('id', id).single()
   if (!data) return { title: 'Kerékpár | SaleBikes' }
   const bike = data as Bike
-  const bikeImage = Array.isArray(bike.images) && bike.images.length > 0
+  const rawImage = Array.isArray(bike.images) && bike.images.length > 0
     ? bike.images[0]
+    : null
+  const bikeImage = rawImage
+    ? `${rawImage}?width=1200&height=630&resize=cover`
     : 'https://testbikevelence.hu/hero-bg.png'
   return {
     title: `${bike.brand} ${bike.model} – ${bike.sale_price.toLocaleString('hu-HU')} Ft | SaleBikes`,
