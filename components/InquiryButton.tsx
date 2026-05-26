@@ -1,5 +1,4 @@
 'use client'
-import { MessageCircle } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
 function track(bikeId: string, bikeName: string, source: string) {
@@ -7,33 +6,38 @@ function track(bikeId: string, bikeName: string, source: string) {
 }
 
 export function InquiryButtonDesktop({ bikeId, bikeName, bikeLabel }: { bikeId: string; bikeName: string; bikeLabel: string }) {
-  const href = `/kapcsolat?bike=${encodeURIComponent(bikeLabel)}`
+  const formHref = `/kapcsolat?bike=${encodeURIComponent(bikeLabel)}`
   return (
-    <>
+    <div className="hide-mobile" style={{ marginBottom: '1.5rem' }}>
       <a
-        href={href}
-        className="bike-cta-btn hide-mobile"
-        onClick={() => track(bikeId, bikeName, 'detail_desktop')}
+        href="tel:+36308897559"
+        onClick={() => track(bikeId, bikeName, 'detail_desktop_call')}
         style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          gap: '10px', width: '100%', padding: '16px',
-          color: '#111111',
-          borderRadius: '9px', textDecoration: 'none',
-          fontSize: '16px', fontWeight: 800,
-          letterSpacing: '-0.02em',
-          marginBottom: '8px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+          background: '#e8c547', color: '#111111',
+          padding: '14px 24px', borderRadius: '8px',
+          fontSize: '15px', fontWeight: 700,
+          textDecoration: 'none', width: '100%',
+          marginBottom: '10px',
         }}
       >
-        <MessageCircle size={18} />
-        Érdeklődöm →
+        📞 Hívj most – +36 30 889 7559
       </a>
-      <p style={{
-        fontSize: '13px', color: '#444444', textAlign: 'center', marginBottom: '1.5rem',
-        background: '#f2f0eb', borderRadius: '8px', padding: '10px 14px',
-      }}>
-        📍 Személyes átvétel Kápolnásnyéken, előre egyeztetett időpontban
-      </p>
-    </>
+      <a
+        href={formHref}
+        onClick={() => track(bikeId, bikeName, 'detail_desktop_form')}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+          background: '#111111', color: '#ffffff',
+          border: '1.5px solid rgba(0,0,0,0.12)',
+          padding: '14px 24px', borderRadius: '8px',
+          fontSize: '15px', fontWeight: 600,
+          textDecoration: 'none', width: '100%',
+        }}
+      >
+        ✉️ Kérdésem van erről a kerékpárról
+      </a>
+    </div>
   )
 }
 
@@ -53,8 +57,7 @@ export function InquiryButtonMobile({ bikeId, bikeName, bikeLabel }: { bikeId: s
         letterSpacing: '-0.01em', textDecoration: 'none',
       }}
     >
-      <MessageCircle size={17} />
-      Érdeklődöm
+      ✉️ Érdeklődöm
     </a>
   )
 }
