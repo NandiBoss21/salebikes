@@ -494,7 +494,7 @@ export default function Home() {
               Prémium kerékpárok.<br />Átvilágítva, garanciával,<br />tisztességes áron.
             </h2>
             <p style={{ fontSize: '15px', lineHeight: 1.85, color: 'rgba(255,255,255,0.55)', marginBottom: '1.25rem' }}>
-              A Bringabarát Tesztbike Kápolnásnyéken, a Velencei-tó mellett kínál válogatott outlet és használt kerékpárokat – Budapesttől mindössze 50 km-re. Cube, Scott, Bulls, Giant, KTM és más prémium márkák, személyesen ellenőrizve, garanciával.
+              A Bringabarát Testbike Kápolnásnyéken, a Velencei-tó mellett kínál válogatott outlet és használt kerékpárokat – Budapesttől mindössze 50 km-re. Cube, Scott, Bulls, Giant, KTM és más prémium márkák, személyesen ellenőrizve, garanciával.
             </p>
             <p style={{ fontSize: '15px', lineHeight: 1.85, color: 'rgba(255,255,255,0.55)', marginBottom: '2rem' }}>
               Nem alkalmi túrákon összeszedett ismeretlen darabok – hanem szakmai szelekció, ahol csak azt kínáljuk, amit mi magunk is megvennénk. 2008 óta több mint 1000 kerékpár talált gazdát nálunk. Kápolnásnyék és Velence Fejér és Pest megye határán helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.
@@ -745,7 +745,7 @@ export default function Home() {
                 color: '#111111', lineHeight: 1,
               }}>4.9★</span>
               <a
-                href="https://www.google.com/maps/place/Bringabarát+Tesztbike/@47.279,18.679,17z"
+                href="https://www.google.com/maps/place/Bringabarát+Testbike/@47.279,18.679,17z"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -809,7 +809,7 @@ export default function Home() {
               fontSize: '12.5px', color: 'rgba(255,255,255,0.35)',
               lineHeight: 1.8,
             }}>
-              Bringabarát Tesztbike<br />
+              Bringabarát Testbike<br />
               2475 Kápolnásnyék, Tó utca 6.
             </div>
           </div>
@@ -891,7 +891,7 @@ export default function Home() {
           display: 'flex', justifyContent: 'space-between',
           flexWrap: 'wrap', gap: '8px',
         }}>
-          <span>© 2026 Bringabarát Tesztbike</span>
+          <span>© 2026 Bringabarát Testbike</span>
           <span>Outlet · Bemutató · Használt kerékpárok</span>
         </div>
       </footer>

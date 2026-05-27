@@ -111,7 +111,7 @@ function KapcsolatForm() {
                 fontSize: '16px', fontWeight: 800,
                 letterSpacing: '-0.03em', color: '#111111',
                 marginBottom: '4px',
-              }}>Bringabarát Tesztbike</div>
+              }}>Bringabarát Testbike</div>
               <div style={{
                 fontSize: '13px', color: 'rgba(17,17,17,0.45)',
                 marginBottom: '1.75rem',
@@ -172,7 +172,7 @@ function KapcsolatForm() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Bringabarát Tesztbike térkép"
+                title="Bringabarát Testbike térkép"
               />
             </div>
           </div>

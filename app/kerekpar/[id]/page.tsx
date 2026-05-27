@@ -132,7 +132,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
       availability: 'https://schema.org/InStock',
       seller: {
         '@type': 'LocalBusiness',
-        name: 'Bringabarát Tesztbike',
+        name: 'Bringabarát Testbike',
         address: {
           '@type': 'PostalAddress',
           streetAddress: 'Tó utca 6.',

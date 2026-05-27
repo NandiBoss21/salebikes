@@ -25,7 +25,7 @@ export const metadata: Metadata = {
         url: 'https://testbikevelence.hu/hero-bg.png',
         width: 1200,
         height: 630,
-        alt: 'Bringabarát Tesztbike – Prémium kerékpárok garanciával',
+        alt: 'Bringabarát Testbike – Prémium kerékpárok garanciával',
       },
     ],
   },
@@ -55,7 +55,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'LocalBusiness',
-            name: 'Bringabarát Tesztbike',
+            name: 'Bringabarát Testbike',
             url: 'https://testbikevelence.hu',
             telephone: '+36308897559',
             email: 'bringabarat@hotmail.com',

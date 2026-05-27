@@ -18,14 +18,14 @@ export async function POST(request: Request) {
   try {
     console.log('Sending email to:', email)
     const result = await resend.emails.send({
-      from: 'Bringabarát Tesztbike <noreply@testbikevelence.hu>',
+      from: 'Bringabarát Testbike <noreply@testbikevelence.hu>',
       to: email,
-      subject: 'Köszönjük érdeklődésedet – Bringabarát Tesztbike',
+      subject: 'Köszönjük érdeklődésedet – Bringabarát Testbike',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background: #ffffff;">
           <div style="margin-bottom: 32px;">
             <h1 style="font-size: 24px; font-weight: 900; color: #111111; margin: 0 0 4px 0;">Bringabarát</h1>
-            <p style="font-size: 12px; color: #999999; margin: 0;">Tesztbike – Kápolnásnyék · Velence</p>
+            <p style="font-size: 12px; color: #999999; margin: 0;">Testbike – Kápolnásnyék · Velence</p>
           </div>
           <p style="font-size: 16px; color: #111111; margin-bottom: 16px;">Kedves ${name}!</p>
           <p style="font-size: 15px; line-height: 1.7; color: #444444; margin-bottom: 16px;">
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
           <hr style="border: none; border-top: 1px solid #eeeeee; margin-bottom: 24px;" />
           <p style="font-size: 13px; color: #999999; line-height: 1.6; margin: 0;">
             <strong style="color: #111111;">Tamás</strong><br />
-            Bringabarát Tesztbike<br />
+            Bringabarát Testbike<br />
             Kápolnásnyék, Tó utca 6.<br />
             +36 30 889 7559<br />
             bringabarat@hotmail.com
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     console.log('Resend result:', result)
 
     await resend.emails.send({
-      from: 'Bringabarát Tesztbike <noreply@testbikevelence.hu>',
+      from: 'Bringabarát Testbike <noreply@testbikevelence.hu>',
       to: 'bringabarat@hotmail.com',
       subject: `Új érdeklődés – ${name}`,
       html: `
