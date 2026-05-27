@@ -10,7 +10,7 @@ import type { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
-  const { data } = await supabase.from('bikes').select('*').eq('id', id).single()
+  const { data } = await supabase.from('bikes').select('*').eq('id', id).eq('is_deleted', false).single()
   if (!data) return { title: 'Kerékpár | SaleBikes' }
   const bike = data as Bike
   const rawImage = Array.isArray(bike.images) && bike.images.length > 0
@@ -77,7 +77,7 @@ function cleanDescription(text: string): string {
 
 export default async function BikePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const { data } = await supabase.from('bikes').select('*').eq('id', id).single()
+  const { data } = await supabase.from('bikes').select('*').eq('id', id).eq('is_deleted', false).single()
 
   if (!data) {
     return (

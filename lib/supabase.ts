@@ -23,6 +23,7 @@ export type Bike = {
   year?: number
   color?: string
   sold?: boolean
+  is_deleted?: boolean
   condition_detail: 'uj' | 'kivalo' | 'jo' | 'megfelelo'
   kilometers: number
 }

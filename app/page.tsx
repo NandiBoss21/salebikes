@@ -121,7 +121,7 @@ export default function Home() {
     : CATEGORIES
 
   useEffect(() => {
-    supabase.from('bikes').select('*').eq('available', true).not('sold', 'eq', true)
+    supabase.from('bikes').select('*').eq('available', true).not('sold', 'eq', true).not('is_deleted', 'eq', true)
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false })
       .then(({ data }) => { setBikes((data || []) as Bike[]); setLoading(false) })
@@ -129,7 +129,7 @@ export default function Home() {
 
   useEffect(() => {
     supabase.from('bikes').select('*')
-      .eq('available', true).not('sold', 'eq', true).eq('featured', true)
+      .eq('available', true).not('sold', 'eq', true).not('is_deleted', 'eq', true).eq('featured', true)
       .then(({ data }) => {
         const featured = (data || []) as Bike[]
         if (featured.length > 0) {
@@ -140,7 +140,7 @@ export default function Home() {
           }))
         } else {
           supabase.from('bikes').select('*')
-            .eq('available', true).not('sold', 'eq', true)
+            .eq('available', true).not('sold', 'eq', true).not('is_deleted', 'eq', true)
             .order('created_at', { ascending: false }).limit(6)
             .then(({ data: fallback }) => setFeaturedBikes((fallback || []) as Bike[]))
         }

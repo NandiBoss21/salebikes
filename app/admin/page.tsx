@@ -253,7 +253,7 @@ export default function AdminPage() {
 
   // Filtered + sorted bikes
   const filteredBikes = useMemo(() => {
-    let result = [...bikes]
+    let result = bikes.filter(b => !b.is_deleted)
     if (search) {
       const q = search.toLowerCase()
       result = result.filter(b =>
@@ -285,7 +285,7 @@ export default function AdminPage() {
   }
   async function bulkDelete() {
     if (!confirm(`Biztosan törlöd ezt a(z) ${selected.length} kerékpárt?`)) return
-    await supabase.from('bikes').delete().in('id', selected)
+    await supabase.from('bikes').update({ is_deleted: true }).in('id', selected)
     setSelected([]); loadBikes(); showToast(`${selected.length} kerékpár törölve`)
   }
 
@@ -382,8 +382,8 @@ export default function AdminPage() {
 
   async function deleteBike(id: string) {
     if (!confirm('Biztosan törlöd ezt a kerékpárt?')) return
-    await supabase.from('bikes').delete().eq('id', id)
-    setBikes(prev => prev.filter(b => b.id !== id))
+    await supabase.from('bikes').update({ is_deleted: true }).eq('id', id)
+    setBikes(prev => prev.map(b => b.id === id ? { ...b, is_deleted: true } : b))
     showToast('Kerékpár törölve')
   }
 
@@ -460,15 +460,18 @@ export default function AdminPage() {
     .filter(c => c.value > 0)
 
   // Admin stats (top bar)
-  const totalBikes = bikes.length
-  const availableBikes = bikes.filter(b => b.available && !b.sold).length
-  const soldBikes = bikes.filter(b => b.sold).length
-  const featuredBikes = bikes.filter(b => b.featured).length
-  const availableList = bikes.filter(b => b.available && !b.sold)
+  const activeBikes = bikes.filter(b => !b.is_deleted)
+  const totalBikes = activeBikes.length
+  const availableBikes = activeBikes.filter(b => b.available && !b.sold).length
+  const soldBikes = activeBikes.filter(b => b.sold).length
+  const featuredBikes = activeBikes.filter(b => b.featured).length
+  const availableList = activeBikes.filter(b => b.available && !b.sold)
   const totalInventoryValue = availableList.reduce((sum, b) => sum + b.sale_price, 0)
   const avgDiscountPct = availableList.length > 0
     ? availableList.reduce((sum, b) => sum + (b.original_price > 0 ? (1 - b.sale_price / b.original_price) * 100 : 0), 0) / availableList.length
     : 0
+  // Realized revenue: all sold bikes including soft-deleted (preserved for history)
+  const realizedRevenue = bikes.filter(b => b.sold).reduce((sum, b) => sum + b.sale_price, 0)
 
   async function login() {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
@@ -947,18 +950,19 @@ export default function AdminPage() {
         {view === 'list' && (
           <div>
             {/* Stats bar */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.75rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.75rem' }}>
               {[
                 { label: 'Összes kerékpár', value: totalBikes, unit: 'db' },
                 { label: 'Elérhető', value: availableBikes, unit: 'db' },
                 { label: 'Eladott', value: soldBikes, unit: 'db' },
                 { label: 'Kiemelt', value: featuredBikes, unit: 'db' },
+                { label: 'Realizált bevétel', value: realizedRevenue.toLocaleString('hu-HU'), unit: 'Ft', highlight: true },
                 { label: 'Készlet értéke', value: totalInventoryValue.toLocaleString('hu-HU'), unit: 'Ft' },
                 { label: 'Átl. kedvezmény', value: avgDiscountPct.toFixed(1), unit: '%' },
               ].map(s => (
-                <div key={s.label} style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1rem 1.25rem' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(17,17,17,0.4)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '5px' }}>{s.label}</div>
-                  <div style={{ fontSize: '24px', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 }}>{s.value} <span style={{ fontSize: '13px', fontWeight: 500, color: 'rgba(17,17,17,0.4)' }}>{s.unit}</span></div>
+                <div key={s.label} style={{ background: s.highlight ? '#111111' : '#ffffff', border: `1px solid ${s.highlight ? '#111111' : '#E8E4DC'}`, borderRadius: '12px', padding: '1rem 1.25rem' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 600, color: s.highlight ? 'rgba(255,255,255,0.5)' : 'rgba(17,17,17,0.4)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '5px' }}>{s.label}</div>
+                  <div style={{ fontSize: '24px', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1, color: s.highlight ? '#e8c547' : '#111111' }}>{s.value} <span style={{ fontSize: '13px', fontWeight: 500, color: s.highlight ? 'rgba(255,255,255,0.4)' : 'rgba(17,17,17,0.4)' }}>{s.unit}</span></div>
                 </div>
               ))}
             </div>

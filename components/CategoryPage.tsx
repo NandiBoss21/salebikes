@@ -17,6 +17,7 @@ export default function CategoryPage({ category, label, suffix = 'kerékpárok' 
       .select('*')
       .eq('available', true)
       .not('sold', 'eq', true)
+      .not('is_deleted', 'eq', true)
       .eq('category', category)
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false })

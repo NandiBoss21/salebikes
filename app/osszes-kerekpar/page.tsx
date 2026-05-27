@@ -47,6 +47,7 @@ export default function OsszesKerekparPage() {
       .select('*')
       .eq('available', true)
       .not('sold', 'eq', true)
+      .not('is_deleted', 'eq', true)
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false })
       .then(({ data }) => {
