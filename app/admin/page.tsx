@@ -463,8 +463,12 @@ export default function AdminPage() {
   const totalBikes = bikes.length
   const availableBikes = bikes.filter(b => b.available && !b.sold).length
   const soldBikes = bikes.filter(b => b.sold).length
-  const avgSavings = bikes.length > 0
-    ? Math.round(bikes.reduce((sum, b) => sum + Math.max(0, b.original_price - b.sale_price), 0) / bikes.length) : 0
+  const featuredBikes = bikes.filter(b => b.featured).length
+  const availableList = bikes.filter(b => b.available && !b.sold)
+  const totalInventoryValue = availableList.reduce((sum, b) => sum + b.sale_price, 0)
+  const avgDiscountPct = availableList.length > 0
+    ? availableList.reduce((sum, b) => sum + (b.original_price > 0 ? (1 - b.sale_price / b.original_price) * 100 : 0), 0) / availableList.length
+    : 0
 
   async function login() {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
@@ -943,12 +947,14 @@ export default function AdminPage() {
         {view === 'list' && (
           <div>
             {/* Stats bar */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.75rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.75rem' }}>
               {[
-                { label: 'Összes', value: totalBikes, unit: 'db' },
+                { label: 'Összes kerékpár', value: totalBikes, unit: 'db' },
                 { label: 'Elérhető', value: availableBikes, unit: 'db' },
                 { label: 'Eladott', value: soldBikes, unit: 'db' },
-                { label: 'Átl. megtakarítás', value: avgSavings.toLocaleString('hu-HU'), unit: 'Ft' },
+                { label: 'Kiemelt', value: featuredBikes, unit: 'db' },
+                { label: 'Készlet értéke', value: totalInventoryValue.toLocaleString('hu-HU'), unit: 'Ft' },
+                { label: 'Átl. kedvezmény', value: avgDiscountPct.toFixed(1), unit: '%' },
               ].map(s => (
                 <div key={s.label} style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1rem 1.25rem' }}>
                   <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(17,17,17,0.4)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '5px' }}>{s.label}</div>
