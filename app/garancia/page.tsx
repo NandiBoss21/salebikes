@@ -10,8 +10,7 @@ export const metadata = {
 const COVERED = [
   'Mechanikai meghibásodás normál használat esetén',
   'Váz, villa gyártási hiba',
-  'Hajtáslánc (lánc, fogaskerekek, pedálok) meghibásodása',
-  'Fékezési rendszer meghibásodása',
+'Fékezési rendszer meghibásodása',
   'Elektronika (e-bike esetén motor, akkumulátor-töltő csatlakozó)',
 ]
 
@@ -19,7 +18,7 @@ const NOT_COVERED = [
   'Balesetek, ütések, esések következtében keletkező kár',
   'Normál kopás (gumi, fékbetét, lánc elhasználódás)',
   'Nem rendeltetésszerű vagy szakszerűtlen használat',
-  'Saját módosítás vagy külső javítás után keletkező hiba',
+  'Saját vagy szakszervizen kívüli harmadik fél által végzett módosítás után keletkező hiba',
   'Esztétikai sérülések (karcolások, festékhibák)',
   'E-bike akkumulátor kapacitáscsökkenése (természetes folyamat)',
 ]
