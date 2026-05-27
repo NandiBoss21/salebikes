@@ -256,7 +256,7 @@ export default function AdminPage() {
 
   // Filtered + sorted bikes
   const filteredBikes = useMemo(() => {
-    let result = bikes.filter(b => !b.is_deleted)
+    let result = bikes.filter(b => !b.is_deleted && !b.sold)
     if (search) {
       const q = search.toLowerCase()
       result = result.filter(b =>
