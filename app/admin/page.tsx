@@ -86,6 +86,9 @@ export default function AdminPage() {
   const [catLoading, setCatLoading] = useState(false)
   const [catDragIdx, setCatDragIdx] = useState<number | null>(null)
 
+  const [deleteModal, setDeleteModal] = useState<{ bike: Bike } | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
+
   const [addFooter, setAddFooter] = useState(true)
   const [exportOpen, setExportOpen] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
@@ -285,7 +288,7 @@ export default function AdminPage() {
   }
   async function bulkDelete() {
     if (!confirm(`Biztosan törlöd ezt a(z) ${selected.length} kerékpárt?`)) return
-    await supabase.from('bikes').update({ is_deleted: true }).in('id', selected)
+    await supabase.from('bikes').delete().in('id', selected)
     setSelected([]); loadBikes(); showToast(`${selected.length} kerékpár törölve`)
   }
 
@@ -381,10 +384,18 @@ export default function AdminPage() {
   }
 
   async function deleteBike(id: string) {
-    if (!confirm('Biztosan törlöd ezt a kerékpárt?')) return
-    await supabase.from('bikes').update({ is_deleted: true }).eq('id', id)
-    setBikes(prev => prev.map(b => b.id === id ? { ...b, is_deleted: true } : b))
+    await supabase.from('bikes').delete().eq('id', id)
+    setBikes(prev => prev.filter(b => b.id !== id))
+    setDeleteModal(null)
+    setDeleteConfirm(false)
     showToast('Kerékpár törölve')
+  }
+
+  async function markAsSold(id: string) {
+    await supabase.from('bikes').update({ sold: true, available: false }).eq('id', id)
+    loadBikes()
+    setDeleteModal(null)
+    showToast('Kerékpár eladottnak jelölve')
   }
 
   async function toggleField(id: string, field: 'available' | 'featured', val: boolean) {
@@ -518,6 +529,60 @@ export default function AdminPage() {
       {/* Toast */}
       {toast && (
         <div style={{ position: 'fixed', top: '1rem', right: '1rem', background: '#111111', color: '#ffffff', padding: '12px 20px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', zIndex: 999, boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>{toast}</div>
+      )}
+
+      {/* Delete / Sold modal */}
+      {deleteModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
+          onClick={e => { if (e.target === e.currentTarget) { setDeleteModal(null); setDeleteConfirm(false) } }}>
+          <div style={{ background: '#ffffff', borderRadius: '16px', padding: '2rem', maxWidth: '420px', width: '100%', boxShadow: '0 24px 48px rgba(0,0,0,0.2)' }}>
+            {!deleteConfirm ? (
+              <>
+                <div style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.03em', marginBottom: '4px' }}>
+                  Mit szeretnél tenni ezzel a kerékpárral?
+                </div>
+                <div style={{ fontSize: '13px', color: 'rgba(17,17,17,0.45)', marginBottom: '1.75rem' }}>
+                  {deleteModal.bike.brand} {deleteModal.bike.model}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <button onClick={() => markAsSold(deleteModal.bike.id)}
+                    style={{ background: '#e8c547', color: '#111111', border: 'none', padding: '13px 18px', borderRadius: '10px', fontWeight: 700, fontSize: '14px', cursor: 'pointer', textAlign: 'left' }}>
+                    Eladtam
+                    <div style={{ fontSize: '11px', fontWeight: 500, color: 'rgba(17,17,17,0.55)', marginTop: '2px' }}>Eladottnak jelöli · beleszámít a realizált bevételbe</div>
+                  </button>
+                  <button onClick={() => setDeleteConfirm(true)}
+                    style={{ background: 'rgba(220,38,38,0.07)', color: '#dc2626', border: '1px solid rgba(220,38,38,0.18)', padding: '13px 18px', borderRadius: '10px', fontWeight: 700, fontSize: '14px', cursor: 'pointer', textAlign: 'left' }}>
+                    Törlés
+                    <div style={{ fontSize: '11px', fontWeight: 500, color: 'rgba(220,38,38,0.6)', marginTop: '2px' }}>Véglegesen eltávolítja · nem számít bevételbe</div>
+                  </button>
+                  <button onClick={() => { setDeleteModal(null); setDeleteConfirm(false) }}
+                    style={{ background: 'transparent', color: 'rgba(17,17,17,0.5)', border: '1px solid #E8E4DC', padding: '11px 18px', borderRadius: '10px', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>
+                    Mégse
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.03em', marginBottom: '4px' }}>
+                  Biztosan törlöd?
+                </div>
+                <div style={{ fontSize: '13px', color: 'rgba(17,17,17,0.45)', marginBottom: '1.75rem' }}>
+                  Ez nem vonható vissza. A kerékpár véglegesen törlődik az adatbázisból.
+                </div>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button onClick={() => deleteBike(deleteModal.bike.id)}
+                    style={{ flex: 1, background: '#dc2626', color: '#ffffff', border: 'none', padding: '12px 18px', borderRadius: '10px', fontWeight: 700, fontSize: '14px', cursor: 'pointer' }}>
+                    Igen, törlöm
+                  </button>
+                  <button onClick={() => setDeleteConfirm(false)}
+                    style={{ flex: 1, background: 'transparent', color: '#111111', border: '1px solid #E8E4DC', padding: '12px 18px', borderRadius: '10px', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>
+                    Vissza
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       )}
 
       {/* Nav */}
@@ -1099,7 +1164,7 @@ export default function AdminPage() {
                         </button>
                         <button onClick={() => duplicateBike(bike)} title="Másolás" style={iconBtn('rgba(17,17,17,0.4)')}><Copy size={16} /></button>
                         <button onClick={() => editBike(bike)} title="Szerkesztés" style={iconBtn('rgba(17,17,17,0.5)')}><Edit size={16} /></button>
-                        <button onClick={() => deleteBike(bike.id)} title="Törlés" style={iconBtn('#dc2626')}><Trash2 size={16} /></button>
+                        <button onClick={() => { setDeleteModal({ bike }); setDeleteConfirm(false) }} title="Törlés" style={iconBtn('#dc2626')}><Trash2 size={16} /></button>
                       </div>
                     </div>
                   ))}
