@@ -15,7 +15,7 @@ const categoryData = {
   h2line2: 'Outlet és használt ebike-ok,',
   h2line3: 'garanciával.',
   p1: 'Prémium elektromos kerékpárokat kínálunk outlet és használt állapotban, minden darab garanciával és adásvételi szerződéssel. Cube, Bulls, KTM, Giant és más vezető márkák – személyesen ellenőrizve, Kápolnásnyéken és Velencén, Budapesttől mindössze 50 km-re.',
-  p2: 'Az e-bike-ok bolti ára általában 600 000–1 500 000 Ft között mozog – nálunk ugyanezeket a kerékpárokat töredék áron szerezheted meg, nem alkalmi túrákon összeszedett ismeretlen darabként, hanem szakmai szelekcióval. Kápolnásnyék és Velence Fejér és Pest megye határán helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
+  p2: 'Az e-bike-ok bolti ára általában 600 000–1 500 000 Ft között mozog – nálunk ugyanezeket a kerékpárokat töredék áron szerezheted meg, nem alkalmi túrákon összeszedett ismeretlen darabként, hanem szakmai szelekcióval. Kápolnásnyék és Velence Fejér megye szívében, Pest megye közelében helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
 }
 
 const STATS = [

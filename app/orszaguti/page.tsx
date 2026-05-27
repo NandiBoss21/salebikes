@@ -15,7 +15,7 @@ const categoryData = {
   h2line2: 'Könnyű, gyors road bike-ok,',
   h2line3: 'garanciával.',
   p1: 'Könnyű, gyors országúti kerékpárok prémium márkáktól, outlet és használt állapotban garanciával. Minden kerékpár személyesen ellenőrzött, dokumentált.',
-  p2: 'Megtekinthető Kápolnásnyéken és Velencén, Budapesttől 50 km-re. Adásvételi szerződéssel. Kápolnásnyék és Velence Fejér és Pest megye határán helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
+  p2: 'Megtekinthető Kápolnásnyéken és Velencén, Budapesttől 50 km-re. Adásvételi szerződéssel. Kápolnásnyék és Velence Fejér megye szívében, Pest megye közelében helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
 }
 
 const STATS = [

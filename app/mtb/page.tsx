@@ -15,7 +15,7 @@ const categoryData = {
   h2line2: 'Outlet és használt MTB-k,',
   h2line3: 'garanciával.',
   p1: 'Válogatott outlet és használt mountain bike-ok hardtail és fully kivitelben, prémium márkáktól. Scott, Cube, Cannondale, Bulls – minden kerékpár átvilágított, dokumentált, garanciával eladó.',
-  p2: 'Személyes megtekintés Kápolnásnyéken és Velencén egyeztethető, Budapesttől 50 km-re. Nem alkalmi túrákon összeszedett darabok – szakmai szelekció, adásvételi szerződéssel. Kápolnásnyék és Velence Fejér és Pest megye határán helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
+  p2: 'Személyes megtekintés Kápolnásnyéken és Velencén egyeztethető, Budapesttől 50 km-re. Nem alkalmi túrákon összeszedett darabok – szakmai szelekció, adásvételi szerződéssel. Kápolnásnyék és Velence Fejér megye szívében, Pest megye közelében helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
 }
 
 const STATS = [

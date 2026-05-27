@@ -15,7 +15,7 @@ const categoryData = {
   h2line2: 'Túrázáshoz ideális bringák,',
   h2line3: 'garanciával.',
   p1: 'Strapabíró kemping és túra kerékpárok outlet és használt állapotban, garanciával. Hosszú távú túrázáshoz tervezett bringák, prémium minőség elérhető áron.',
-  p2: 'Megtekinthető Kápolnásnyéken, a Velencei-tó és Velence mellett, Budapesttől 50 km-re. Adásvételi szerződéssel. Kápolnásnyék és Velence Fejér és Pest megye határán helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
+  p2: 'Megtekinthető Kápolnásnyéken, a Velencei-tó és Velence mellett, Budapesttől 50 km-re. Adásvételi szerződéssel. Kápolnásnyék és Velence Fejér megye szívében, Pest megye közelében helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
 }
 
 const STATS = [

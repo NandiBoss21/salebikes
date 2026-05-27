@@ -15,7 +15,7 @@ const categoryData = {
   h2line2: 'Aszfalton és terepen,',
   h2line3: 'garanciával.',
   p1: 'Sokoldalú gravel kerékpárok aszfalton és terepen egyaránt – outlet és használt állapotban, garanciával. Minden darab átvilágított, dokumentált, prémium márkák elérhető áron.',
-  p2: 'Személyes megtekintés Kápolnásnyéken és Velencén, Budapesttől 50 km-re. Adásvételi szerződéssel. Kápolnásnyék és Velence Fejér és Pest megye határán helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
+  p2: 'Személyes megtekintés Kápolnásnyéken és Velencén, Budapesttől 50 km-re. Adásvételi szerződéssel. Kápolnásnyék és Velence Fejér megye szívében, Pest megye közelében helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
 }
 
 const STATS = [

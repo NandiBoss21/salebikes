@@ -15,7 +15,7 @@ const categoryData = {
   h2line2: 'Outlet és használt bringák,',
   h2line3: 'garanciával.',
   p1: 'Kényelmes, sokoldalú trekking kerékpárok outlet és használt állapotban, garanciával. Ideális városi és túrázáshoz egyaránt. Cube, Scott, Giant és más prémium márkák – mind személyesen ellenőrizve.',
-  p2: 'Megtekinthető Kápolnásnyéken, a Velencei-tó mellett, Budapesttől 50 km-re. Adásvételi szerződéssel, garanciával. Kápolnásnyék és Velence Fejér és Pest megye határán helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
+  p2: 'Megtekinthető Kápolnásnyéken, a Velencei-tó mellett, Budapesttől 50 km-re. Adásvételi szerződéssel, garanciával. Kápolnásnyék és Velence Fejér megye szívében, Pest megye közelében helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
 }
 
 const STATS = [

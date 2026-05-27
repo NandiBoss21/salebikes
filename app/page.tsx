@@ -497,7 +497,7 @@ export default function Home() {
               A Bringabarát Testbike Kápolnásnyéken, a Velencei-tó mellett kínál válogatott outlet és használt kerékpárokat – Budapesttől mindössze 50 km-re. Cube, Scott, Bulls, Giant, KTM és más prémium márkák, személyesen ellenőrizve, garanciával.
             </p>
             <p style={{ fontSize: '15px', lineHeight: 1.85, color: 'rgba(255,255,255,0.55)', marginBottom: '2rem' }}>
-              Nem alkalmi túrákon összeszedett ismeretlen darabok – hanem szakmai szelekció, ahol csak azt kínáljuk, amit mi magunk is megvennénk. 2008 óta több mint 1000 kerékpár talált gazdát nálunk. Kápolnásnyék és Velence Fejér és Pest megye határán helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.
+              Nem alkalmi túrákon összeszedett ismeretlen darabok – hanem szakmai szelekció, ahol csak azt kínáljuk, amit mi magunk is megvennénk. 2008 óta több mint 1000 kerékpár talált gazdát nálunk. Kápolnásnyék és Velence Fejér megye szívében, Pest megye közelében helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.
             </p>
             <a href="tel:+36308897559" style={{
               display: 'inline-flex', alignItems: 'center', gap: '8px',

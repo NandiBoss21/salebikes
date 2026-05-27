@@ -15,7 +15,7 @@ const categoryData = {
   h2line2: 'Minőségi bringák,',
   h2line3: 'garanciával.',
   p1: 'Minőségi gyerek kerékpárok outlet és használt állapotban, garanciával. Prémium márkák, amelyek biztonságosak és tartósak – töredék bolti áron.',
-  p2: 'Személyes megtekintés Kápolnásnyéken és Velencén, Budapesttől 50 km-re. Adásvételi szerződéssel. Kápolnásnyék és Velence Fejér és Pest megye határán helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
+  p2: 'Személyes megtekintés Kápolnásnyéken és Velencén, Budapesttől 50 km-re. Adásvételi szerződéssel. Kápolnásnyék és Velence Fejér megye szívében, Pest megye közelében helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.',
 }
 
 const STATS = [
