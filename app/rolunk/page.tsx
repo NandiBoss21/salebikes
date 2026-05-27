@@ -1,6 +1,6 @@
 import Navbar from '@/components/Navbar'
 import Link from 'next/link'
-import { Phone, Mail, MapPin, Wrench, Zap, Package, Star } from 'lucide-react'
+import { Phone, Mail, MapPin, Zap, Package, Star } from 'lucide-react'
 
 export const metadata = {
   title: 'Rólunk | SaleBikes – Bringabarát',
@@ -19,12 +19,7 @@ const SERVICES = [
     title: 'Prémium használt kerékpárok',
     desc: 'Többnyire külföldről érkező, prémium minőségű kerékpárokat forgalmazunk garanciával. Az árukészletünk folyamatosan cserélődik.',
   },
-  {
-    icon: <Wrench size={20} />,
-    title: 'Veterán kerékpár felújítás',
-    desc: 'Régi, klasszikus kerékpárok teljes felújítása és restaurálása. Minden alkatrész gondos cseréjével vagy felújításával.',
-  },
-  {
+{
     icon: <Zap size={20} />,
     title: 'Bosch Ebike szakszerviz',
     desc: 'Bosch rendszerű elektromos kerékpárok javítása, alkatrészek, kiegészítők és akkumulátorok beszerzése.',
