@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
   <rect width="32" height="32" rx="6" fill="#e8c547"/>
   <!-- Rear wheel -->
-  <circle cx="9" cy="20" r="6" fill="none" stroke="white" stroke-width="1.5"/>
+  <circle cx="9" cy="20" r="6" fill="none" stroke="#111111" stroke-width="1.5"/>
   <!-- Front wheel -->
-  <circle cx="23" cy="20" r="6" fill="none" stroke="white" stroke-width="1.5"/>
+  <circle cx="23" cy="20" r="6" fill="none" stroke="#111111" stroke-width="1.5"/>
   <!-- Wheel hubs -->
-  <circle cx="9" cy="20" r="1" fill="white"/>
-  <circle cx="23" cy="20" r="1" fill="white"/>
+  <circle cx="9" cy="20" r="1" fill="#111111"/>
+  <circle cx="23" cy="20" r="1" fill="#111111"/>
   <!-- Frame, fork, seat, handlebars -->
-  <g fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <g fill="none" stroke="#111111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <!-- Chainstay: bottom bracket → rear axle -->
     <line x1="16" y1="20" x2="9" y2="20"/>
     <!-- Seat tube: bottom bracket → seat cluster -->
