@@ -33,6 +33,10 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     images: ['https://testbikevelence.hu/hero-bg.png'],
   },
+  icons: {
+    icon: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
   robots: {
     index: true,
     follow: true,
