@@ -48,29 +48,40 @@ a { color: inherit; }
 .d4 { transition-delay: 0.22s; }
 .d5 { transition-delay: 0.28s; }
 
-/* ── Card image zoom ────────────────────────────── */
-.card-img { transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important; }
-.card-img-wrap:hover .card-img { transform: scale(1.04) !important; }
+/* ── Touch targets: eliminate 300 ms delay, prevent scroll interference ── */
+a, button, [role="button"] {
+  touch-action: manipulation;
+}
 
-/* ── Category card hover ────────────────────────── */
-.cat-card {
-  transition: box-shadow 0.3s var(--ease-out-expo);
+/* ── Card image zoom — real pointer devices only ── */
+@media (hover: hover) {
+  .card-img { transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important; }
+  .card-img-wrap:hover .card-img { transform: scale(1.04) !important; }
 }
-.cat-card:hover {
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-}
-.cat-card-img {
-  transition: transform 0.55s var(--ease-out-expo);
-}
-.cat-card:hover .cat-card-img {
-  transform: scale(1.07);
-}
+
+/* ── Category card hover — real pointer devices only ── */
 .cat-card-overlay {
   background: rgba(0, 0, 0, 0.45);
-  transition: background 0.3s ease;
 }
-.cat-card:hover .cat-card-overlay {
-  background: rgba(0, 0, 0, 0.30);
+@media (hover: hover) {
+  .cat-card {
+    transition: box-shadow 0.3s var(--ease-out-expo);
+  }
+  .cat-card:hover {
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  }
+  .cat-card-img {
+    transition: transform 0.55s var(--ease-out-expo);
+  }
+  .cat-card:hover .cat-card-img {
+    transform: scale(1.07);
+  }
+  .cat-card-overlay {
+    transition: background 0.3s ease;
+  }
+  .cat-card:hover .cat-card-overlay {
+    background: rgba(0, 0, 0, 0.30);
+  }
 }
 
 /* ── Responsive grids ───────────────────────────── */
@@ -155,9 +166,11 @@ a { color: inherit; }
 /* ── Bike detail CTA hover ──────────────────────── */
 .bike-cta-btn {
   background: #e8c547;
-  transition: background 0.15s;
 }
-.bike-cta-btn:hover { background: #d4b23e; }
+@media (hover: hover) {
+  .bike-cta-btn { transition: background 0.15s; }
+  .bike-cta-btn:hover { background: #d4b23e; }
+}
 
 /* ── Details tooltip ────────────────────────────── */
 details summary::-webkit-details-marker { display: none; }
@@ -180,11 +193,3 @@ details summary { user-select: none; }
   .bikes-grid { gap: 1rem; }
 }
 
-/* ── Touch-action: pan on scrollable areas ──────── */
-@media (hover: none) {
-  /* Remove card hover zoom on touch devices to avoid stuck states */
-  .card-img-wrap:hover .card-img { transform: none !important; }
-  .cat-card:hover { box-shadow: none; }
-  .cat-card:hover .cat-card-img { transform: none; }
-  .cat-card:hover .cat-card-overlay { background: rgba(0, 0, 0, 0.45); }
-}
