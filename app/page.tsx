@@ -437,7 +437,7 @@ export default function Home() {
 
       {/* ── TRUST STATS ────────────────────────────────────────── */}
       <section style={{ background: '#F2F0EB', borderBottom: '1px solid rgba(17,17,17,0.08)' }}>
-        <div style={{
+        <div className="trust-grid" style={{
           maxWidth: '1360px', margin: '0 auto',
           display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
           padding: '0 clamp(1.5rem, 4vw, 3rem)',
@@ -447,13 +447,13 @@ export default function Home() {
             { num: 'Garancia', label: 'minden bringára', desc: 'Minden bringára, kivétel nélkül' },
             { num: '4.9 ★', label: 'Google értékelés', desc: 'Valódi vásárlói visszajelzés' },
           ].map((s, i) => (
-            <AnimatedSection key={s.label} delay={i * 0.12} style={{
+            <AnimatedSection key={s.label} delay={i * 0.12} className="trust-stat" style={{
               textAlign: 'center',
               padding: 'clamp(2.5rem, 5vw, 4rem) 1.5rem',
               borderRight: i < 2 ? '1px solid rgba(17,17,17,0.1)' : 'none',
               display: 'flex', flexDirection: 'column', gap: '6px',
             }}>
-              <div style={{
+              <div className="trust-stat-num" style={{
                 fontSize: 'clamp(1.85rem, 3.5vw, 2.85rem)',
                 fontWeight: 900, letterSpacing: '-0.05em',
                 color: '#111111', lineHeight: 1,

@@ -129,8 +129,10 @@ a { color: inherit; }
 }
 
 /* ── Trust stats responsive ─────────────────────── */
-@media (max-width: 600px) {
-  .trust-grid { grid-template-columns: 1fr !important; }
+@media (max-width: 640px) {
+  .trust-grid { padding: 0 0.5rem !important; }
+  .trust-stat { padding: 0.75rem 0.5rem !important; gap: 3px !important; }
+  .trust-stat-num { font-size: 1.1rem !important; letter-spacing: -0.03em !important; }
 }
 
 /* ── Product detail responsive ──────────────────── */
