@@ -21,10 +21,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     : 'https://testbikevelence.hu/hero-bg.png'
   return {
     title: `${bike.brand} ${bike.model} – ${bike.sale_price.toLocaleString('hu-HU')} Ft | SaleBikes`,
-    description: `${bike.brand} ${bike.model} ${bike.condition === 'outlet' ? 'outlet' : 'használt'} kerékpár ${bike.sale_price.toLocaleString('hu-HU')} Ft-ért. Bolti ár: ${bike.original_price.toLocaleString('hu-HU')} Ft. Garancia, adásvételi szerződés.`,
+    description: `${bike.brand} ${bike.model} ${bike.condition === 'outlet' ? 'outlet' : 'használt'} kerékpár ${bike.sale_price.toLocaleString('hu-HU')} Ft-ért.${bike.original_price > 0 ? ` Bolti ár: ${bike.original_price.toLocaleString('hu-HU')} Ft.` : ''} Garancia, adásvételi szerződés.`,
     openGraph: {
       title: `${bike.brand} ${bike.model} – ${bike.sale_price.toLocaleString('hu-HU')} Ft`,
-      description: `${bike.brand} ${bike.model} kerékpár garanciával. Bolti ár: ${bike.original_price.toLocaleString('hu-HU')} Ft.`,
+      description: `${bike.brand} ${bike.model} kerékpár garanciával.${bike.original_price > 0 ? ` Bolti ár: ${bike.original_price.toLocaleString('hu-HU')} Ft.` : ''}`,
       type: 'website',
       locale: 'hu_HU',
       images: [
@@ -100,8 +100,8 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
   }
 
   const bike = data as Bike
-  const savings = bike.original_price - bike.sale_price
-  const pct = Math.round((1 - bike.sale_price / bike.original_price) * 100)
+  const savings = bike.original_price > 0 ? bike.original_price - bike.sale_price : 0
+  const pct = bike.original_price > 0 ? Math.round((1 - bike.sale_price / bike.original_price) * 100) : 0
   const conditionIndex = { uj: 0, kivalo: 1, jo: 2, megfelelo: 3 } as const
   const condIdx = conditionIndex[bike.condition_detail as keyof typeof conditionIndex] ?? (bike.condition === 'outlet' ? 0 : 2)
   const pageBg = getBikeBackground(bike.color)
@@ -214,13 +214,15 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
               padding: '1.5rem',
               marginBottom: '1.75rem',
             }}>
-              <div style={{
-                fontSize: '13px', color: 'rgba(17,17,17,0.4)',
-                textDecoration: 'line-through', marginBottom: '6px',
-                letterSpacing: '-0.01em',
-              }}>
-                Bolti ár: {bike.original_price.toLocaleString('hu-HU')} Ft
-              </div>
+              {bike.original_price > 0 && (
+                <div style={{
+                  fontSize: '13px', color: 'rgba(17,17,17,0.4)',
+                  textDecoration: 'line-through', marginBottom: '6px',
+                  letterSpacing: '-0.01em',
+                }}>
+                  Bolti ár: {bike.original_price.toLocaleString('hu-HU')} Ft
+                </div>
+              )}
               <div style={{
                 fontSize: 'clamp(2rem, 5vw, 3rem)',
                 fontWeight: 900, letterSpacing: '-0.05em',

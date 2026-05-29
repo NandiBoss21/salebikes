@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import CookieBanner from '@/components/CookieBanner'
 import ChatBot from '@/components/ChatBot'
+import PageshowFix from '@/components/PageshowFix'
 import { Analytics } from '@vercel/analytics/next'
 
 export const viewport: Viewport = {
@@ -80,6 +81,7 @@ export default function RootLayout({
         {children}
         <CookieBanner />
         <ChatBot />
+        <PageshowFix />
         <Analytics />
       </body>
     </html>

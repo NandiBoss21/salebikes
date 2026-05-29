@@ -171,3 +171,18 @@ details summary { user-select: none; }
 
 /* ── SEO text grid ─────────────────────────────── */
 @media (max-width: 768px) { .seo-text-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; } }
+
+/* ── Osszes kerekpar page ───────────────────────── */
+@media (max-width: 600px) {
+  /* Give content a bit more breathing room on small screens */
+  .bikes-grid { gap: 1rem; }
+}
+
+/* ── Touch-action: pan on scrollable areas ──────── */
+@media (hover: none) {
+  /* Remove card hover zoom on touch devices to avoid stuck states */
+  .card-img-wrap:hover .card-img { transform: none !important; }
+  .cat-card:hover { box-shadow: none; }
+  .cat-card:hover .cat-card-img { transform: none; }
+  .cat-card:hover .cat-card-overlay { background: rgba(0, 0, 0, 0.45); }
+}

@@ -36,7 +36,6 @@ export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: numb
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay }}
-      whileHover={{ y: -4 }}
     >
       <div style={{
         background: '#ffffff',
@@ -170,11 +169,13 @@ export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: numb
               paddingTop: '0.875rem',
               borderTop: '1px solid #E8E4DC',
             }}>
-              <div style={{
-                fontSize: '11px', color: '#6B6B6B',
-                textDecoration: 'line-through', marginBottom: '3px',
-                letterSpacing: '-0.01em',
-              }}>{fmt(bike.original_price)}</div>
+              {bike.original_price > 0 && (
+                <div style={{
+                  fontSize: '11px', color: '#6B6B6B',
+                  textDecoration: 'line-through', marginBottom: '3px',
+                  letterSpacing: '-0.01em',
+                }}>{fmt(bike.original_price)}</div>
+              )}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                 <div style={{
                   fontSize: '21px', fontWeight: 800,

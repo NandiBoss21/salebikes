@@ -32,8 +32,8 @@ const NAV_RIGHT = [
 ]
 
 const NAV_MOBILE = [
-  ...NAV_PRIMARY,
   { label: 'Összes kerékpár', href: '/osszes-kerekpar' },
+  ...NAV_PRIMARY,
   ...NAV_DROPDOWN,
   ...NAV_EXTRA,
   ...NAV_RIGHT,
@@ -124,23 +124,7 @@ export default function Navbar() {
           display: 'flex', listStyle: 'none',
           gap: '0.25rem', flex: 1, alignItems: 'center',
         }}>
-          {/* Primary links */}
-          {NAV_PRIMARY.map(item => (
-            <li key={item.label}>
-              <Link href={item.href} style={linkStyle}
-                onMouseEnter={e => {
-                  e.currentTarget.style.color = hoverColor
-                  e.currentTarget.style.background = hoverBg
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.color = textColor
-                  e.currentTarget.style.background = 'transparent'
-                }}
-              >{item.label}</Link>
-            </li>
-          ))}
-
-          {/* Összes kerékpár dropdown */}
+          {/* Összes kerékpár dropdown — FIRST */}
           <li
             style={{ position: 'relative' }}
             onMouseEnter={openDrop}
@@ -210,6 +194,22 @@ export default function Navbar() {
               ))}
             </div>
           </li>
+
+          {/* Primary links — Ebike, MTB, Trekking */}
+          {NAV_PRIMARY.map(item => (
+            <li key={item.label}>
+              <Link href={item.href} style={linkStyle}
+                onMouseEnter={e => {
+                  e.currentTarget.style.color = hoverColor
+                  e.currentTarget.style.background = hoverBg
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.color = textColor
+                  e.currentTarget.style.background = 'transparent'
+                }}
+              >{item.label}</Link>
+            </li>
+          ))}
 
           {/* Alkatrészek + Ruházat as direct links */}
           {NAV_EXTRA.filter(item => isVisible(item.href)).map(item => (

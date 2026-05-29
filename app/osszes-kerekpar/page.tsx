@@ -127,12 +127,12 @@ export default function OsszesKerekparPage() {
           {/* Filter bar */}
           <div style={{
             background: '#ffffff', border: '1px solid #E8E4DC',
-            borderRadius: '12px', padding: '1rem 1.25rem',
+            borderRadius: '12px', padding: '0.875rem 1rem',
             marginBottom: '1.5rem',
-            display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center',
+            display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center',
           }}>
             {/* Category pills */}
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', flex: 1 }}>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', flex: 1, minWidth: 0 }}>
               <button
                 onClick={() => setCategory('')}
                 style={pillStyle(category === '')}
@@ -251,19 +251,20 @@ export default function OsszesKerekparPage() {
           )}
 
           {/* Sort bar (always visible, compact) */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', gap: '1rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', gap: '0.75rem', flexWrap: 'wrap' }}>
             <div style={{ fontSize: '13px', color: 'rgba(17,17,17,0.45)', fontWeight: 500 }}>
               {loading ? 'Betöltés…' : `${filtered.length} kerékpár`}
             </div>
-            <div style={{ display: 'flex', gap: '6px' }}>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
               {SORT_OPTIONS.map(o => (
                 <button key={o.key} onClick={() => setSortBy(o.key)} style={{
-                  padding: '6px 12px', borderRadius: '6px', border: '1px solid',
+                  padding: '6px 10px', borderRadius: '6px', border: '1px solid',
                   fontSize: '12px', fontWeight: 600, cursor: 'pointer',
                   borderColor: sortBy === o.key ? '#111111' : '#E8E4DC',
                   background: sortBy === o.key ? '#111111' : 'transparent',
                   color: sortBy === o.key ? '#ffffff' : 'rgba(17,17,17,0.5)',
                   transition: 'all 0.15s',
+                  whiteSpace: 'nowrap',
                 }}>{o.label}</button>
               ))}
             </div>
