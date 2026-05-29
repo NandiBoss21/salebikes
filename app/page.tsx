@@ -443,9 +443,9 @@ export default function Home() {
           padding: '0 clamp(1.5rem, 4vw, 3rem)',
         }}>
           {[
-            { num: '1000+', label: 'eladás 2008 óta', desc: 'Kerékpár gazdát cserélt' },
-            { num: 'Garancia', label: 'minden bringára', desc: 'Minden bringára, kivétel nélkül' },
-            { num: '4.9 ★', label: 'Google értékelés', desc: 'Valódi vásárlói visszajelzés' },
+            { num: '1000+', label: 'eladás 2008 óta' },
+            { num: 'Garancia', label: 'minden bringára' },
+            { num: '4.9 ★', label: 'Google értékelés' },
           ].map((s, i) => (
             <AnimatedSection key={s.label} delay={i * 0.12} className="trust-stat" style={{
               textAlign: 'center',
@@ -463,10 +463,6 @@ export default function Home() {
                 color: '#e8c547', textTransform: 'uppercase',
                 letterSpacing: '0.08em', marginTop: '4px',
               }}>{s.label}</div>
-              <div style={{
-                fontSize: '12px', color: 'rgba(17,17,17,0.38)',
-                lineHeight: 1.5,
-              }}>{s.desc}</div>
             </AnimatedSection>
           ))}
         </div>
