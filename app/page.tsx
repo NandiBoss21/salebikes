@@ -7,7 +7,6 @@ import Navbar from '@/components/Navbar'
 import BikeCard from '@/components/BikeCard'
 import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
-import { motion } from 'framer-motion'
 import AnimatedSection from '@/components/AnimatedSection'
 import SizeCalculator from '@/components/SizeCalculator'
 import { useCountUp } from '@/hooks/useCountUp'
@@ -151,6 +150,7 @@ export default function Home() {
 
   useAos([])
   useAos([loading])
+  useAos([catOrder])
 
   const avgSavings = bikes.length > 0
     ? Math.round(bikes.reduce((sum, b) => sum + Math.max(0, b.original_price - b.sale_price), 0) / bikes.length)
@@ -190,15 +190,13 @@ export default function Home() {
           padding: 'clamp(5.5rem, 8vw, 7rem) clamp(2rem, 5vw, 5.5rem) 110px',
           maxWidth: '680px',
         }}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          <div
             style={{
               fontSize: '10.5px', fontWeight: 700,
               letterSpacing: '0.12em', textTransform: 'uppercase',
               color: 'rgba(255,255,255,0.6)', marginBottom: '1.5rem',
               display: 'flex', alignItems: 'center', gap: '10px',
+              animation: 'hero-fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
             }}
           >
             <span style={{
@@ -206,15 +204,9 @@ export default function Home() {
               background: '#e8c547', flexShrink: 0,
             }} />
             Outlet · Bemutató · Használt
-          </motion.div>
+          </div>
 
-          <motion.h1
-            variants={{
-              hidden: {},
-              visible: { transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
-            }}
-            initial="hidden"
-            animate="visible"
+          <h1
             style={{
               fontSize: 'clamp(1.9rem, 5.5vw, 4.2rem)',
               fontWeight: 900, letterSpacing: '-0.045em',
@@ -223,24 +215,21 @@ export default function Home() {
               textShadow: '0 2px 8px rgba(0,0,0,0.5)',
             }}
           >
-            {['Prémium', 'kerékpárok', 'akár félár alatt'].map(line => (
-              <motion.span
+            {['Prémium', 'kerékpárok', 'akár félár alatt'].map((line, i) => (
+              <span
                 key={line}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+                style={{
+                  display: 'block',
+                  animation: 'hero-fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
+                  animationDelay: `${0.15 + i * 0.1}s`,
                 }}
-                style={{ display: 'block' }}
               >
                 {line}
-              </motion.span>
+              </span>
             ))}
-          </motion.h1>
+          </h1>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
+          <div
             style={{
               display: 'flex', gap: '14px', flexWrap: 'wrap',
               alignItems: 'center',
@@ -248,6 +237,7 @@ export default function Home() {
               color: 'rgba(255,255,255,0.7)',
               marginBottom: '2.5rem',
               textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+              animation: 'hero-fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both',
             }}
           >
             <span>1000+ eladás</span>
@@ -261,13 +251,13 @@ export default function Home() {
               borderRadius: '50%', background: 'rgba(255,255,255,0.3)', flexShrink: 0,
             }} />
             <span>Garancia</span>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
-            style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}
+          <div
+            style={{
+              display: 'flex', gap: '10px', flexWrap: 'wrap',
+              animation: 'hero-fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both',
+            }}
           >
             <a href="#kategoriak" style={{
               background: '#ffffff', color: '#111111',
@@ -304,7 +294,7 @@ export default function Home() {
               <Phone size={13} />
               +36 30 889 7559
             </a>
-          </motion.div>
+          </div>
         </div>
 
         {/* Location label – right side, desktop only */}
@@ -392,12 +382,10 @@ export default function Home() {
 
           <div className="cat-grid">
             {visibleCategories.map((cat, i) => (
-              <motion.div
+              <div
                 key={cat.label}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.06 }}
+                className="aos"
+                style={{ transitionDelay: `${i * 0.06}s` }}
               >
               <Link href={cat.href}
                 className="cat-card"
@@ -429,7 +417,7 @@ export default function Home() {
                   textShadow: '0 1px 4px rgba(0,0,0,0.5)',
                 }}>{cat.label}</span>
               </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -722,13 +710,7 @@ export default function Home() {
       }}>
         <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            style={{ marginBottom: '2.5rem' }}
-          >
+          <div className="aos" style={{ marginBottom: '2.5rem' }}>
             <div style={{
               fontSize: '10px', fontWeight: 800,
               letterSpacing: '0.12em', textTransform: 'uppercase',
@@ -751,7 +733,7 @@ export default function Home() {
                 }}
               >Google értékelés</a>
             </div>
-          </motion.div>
+          </div>
 
           <div style={{
             display: 'flex',

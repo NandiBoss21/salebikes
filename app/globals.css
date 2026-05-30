@@ -34,6 +34,12 @@ body {
 
 a { color: inherit; }
 
+/* ── Hero load animations ───────────────────────── */
+@keyframes hero-fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
 /* ── Scroll animations ──────────────────────────── */
 .aos {
   opacity: 0;

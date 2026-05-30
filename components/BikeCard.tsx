@@ -1,9 +1,9 @@
 'use client'
+import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
-import { motion } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
 
 function fmt(n: number) {
@@ -23,6 +23,25 @@ function getCondText(bike: Bike): string {
 }
 
 export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.style.opacity = '1'
+          el.style.transform = 'none'
+          io.disconnect()
+        }
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -50px 0px' }
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
   const img = bike.images?.[0]
   const savings = bike.original_price - bike.sale_price
   const pct = bike.original_price > bike.sale_price
@@ -31,12 +50,11 @@ export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: numb
   const condText = getCondText(bike)
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay }}
-    >
+    <div ref={ref} style={{
+      opacity: 0,
+      transform: 'translateY(40px)',
+      transition: `opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
+    }}>
       <div style={{
         background: '#ffffff',
         border: '1px solid #E8E4DC',
@@ -218,6 +236,6 @@ export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: numb
           </a>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
