@@ -124,6 +124,7 @@ export default function BikeGallery({ images, alt }: { images: string[]; alt: st
         >
           {/* Close */}
           <button
+            aria-label="Bezárás"
             onClick={e => { e.stopPropagation(); closeLightbox() }}
             style={{ ...btnStyle, position: 'absolute', top: '1.25rem', right: '1.25rem', width: '48px', height: '48px', zIndex: 1 }}
             onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.24)')}
@@ -133,6 +134,7 @@ export default function BikeGallery({ images, alt }: { images: string[]; alt: st
           {/* Left arrow */}
           {images.length > 1 && (
             <button
+              aria-label="Előző kép"
               onClick={e => { e.stopPropagation(); prev() }}
               style={{ ...btnStyle, position: 'absolute', left: '1.25rem', width: '52px', height: '52px', zIndex: 1 }}
               onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.24)')}
@@ -143,6 +145,7 @@ export default function BikeGallery({ images, alt }: { images: string[]; alt: st
           {/* Right arrow */}
           {images.length > 1 && (
             <button
+              aria-label="Következő kép"
               onClick={e => { e.stopPropagation(); next() }}
               style={{ ...btnStyle, position: 'absolute', right: '1.25rem', width: '52px', height: '52px', zIndex: 1 }}
               onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.24)')}

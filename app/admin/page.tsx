@@ -334,7 +334,6 @@ export default function AdminPage() {
   }
 
   async function save() {
-    console.log('Save called', form.description)
     if (!form.brand || !form.model || !form.sale_price) {
       showToast('⚠️ Márka, modell és ár kötelező!')
       return
@@ -361,17 +360,12 @@ export default function AdminPage() {
       sold: form.sold || false,
     }
 
-    console.log('Saving data:', saveData)
-    console.log('Editing ID:', editing)
-
     if (editing) {
-      const { data, error } = await supabase.from('bikes').update(saveData).eq('id', editing).select()
-      console.log('Update result:', { data, error })
+      const { error } = await supabase.from('bikes').update(saveData).eq('id', editing).select()
       if (error) { showToast('❌ Hiba: ' + error.message); setSaving(false); return }
       showToast('✓ Kerékpár frissítve')
     } else {
-      const { data, error } = await supabase.from('bikes').insert(saveData).select()
-      console.log('Insert result:', { data, error })
+      const { error } = await supabase.from('bikes').insert(saveData).select()
       if (error) { showToast('❌ Hiba: ' + error.message); setSaving(false); return }
       showToast('✓ Kerékpár hozzáadva')
     }

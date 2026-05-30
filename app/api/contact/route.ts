@@ -3,23 +3,40 @@ import { NextResponse } from 'next/server'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-export async function POST(request: Request) {
-  console.log('Contact API called')
-  const body = await request.json()
-  console.log('Body:', body)
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
 
+export async function POST(request: Request) {
+  const body = await request.json()
   const { name, email, phone, message } = body
 
   if (!name || !email || !message) {
-    console.log('Missing fields')
     return NextResponse.json({ error: 'Hiányzó mezők' }, { status: 400 })
   }
 
+  if (typeof name !== 'string' || typeof email !== 'string' || typeof message !== 'string') {
+    return NextResponse.json({ error: 'Érvénytelen adatok' }, { status: 400 })
+  }
+
+  if (name.length > 100 || email.length > 200 || message.length > 3000 || (phone && String(phone).length > 50)) {
+    return NextResponse.json({ error: 'Túl hosszú mező' }, { status: 400 })
+  }
+
+  const safeName    = escapeHtml(name.trim())
+  const safeEmail   = escapeHtml(email.trim())
+  const safePhone   = phone ? escapeHtml(String(phone).trim()) : '–'
+  const safeMessage = escapeHtml(message.trim()).replace(/\n/g, '<br>')
+
   try {
-    console.log('Sending email to:', email)
-    const result = await resend.emails.send({
+    await resend.emails.send({
       from: 'Bringabarát Testbike <noreply@testbikevelence.hu>',
-      to: email,
+      to: safeEmail,
       subject: 'Köszönjük érdeklődésedet – Bringabarát Testbike',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; background: #ffffff;">
@@ -27,7 +44,7 @@ export async function POST(request: Request) {
             <h1 style="font-size: 24px; font-weight: 900; color: #111111; margin: 0 0 4px 0;">Bringabarát</h1>
             <p style="font-size: 12px; color: #999999; margin: 0;">Testbike – Kápolnásnyék · Velence</p>
           </div>
-          <p style="font-size: 16px; color: #111111; margin-bottom: 16px;">Kedves ${name}!</p>
+          <p style="font-size: 16px; color: #111111; margin-bottom: 16px;">Kedves ${safeName}!</p>
           <p style="font-size: 15px; line-height: 1.7; color: #444444; margin-bottom: 16px;">
             Köszönjük, hogy felvetted velünk a kapcsolatot. Üzenetedet megkaptuk, és hamarosan – általában néhány órán belül – visszahívunk a megadott telefonszámon.
           </p>
@@ -58,27 +75,24 @@ export async function POST(request: Request) {
       `,
     })
 
-    console.log('Resend result:', result)
-
     await resend.emails.send({
       from: 'Bringabarát Testbike <noreply@testbikevelence.hu>',
       to: 'bringabarat@hotmail.com',
-      subject: `Új érdeklődés – ${name}`,
+      subject: `Új érdeklődés – ${safeName}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
           <h2 style="color: #111111;">Új érdeklődés érkezett</h2>
-          <p><strong>Név:</strong> ${name}</p>
-          <p><strong>Telefon:</strong> ${phone ?? '–'}</p>
-          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Név:</strong> ${safeName}</p>
+          <p><strong>Telefon:</strong> ${safePhone}</p>
+          <p><strong>Email:</strong> ${safeEmail}</p>
           <p><strong>Üzenet:</strong></p>
-          <p style="background: #f9f9f7; padding: 16px; border-radius: 8px;">${message}</p>
+          <p style="background: #f9f9f7; padding: 16px; border-radius: 8px;">${safeMessage}</p>
         </div>
       `,
     })
 
     return NextResponse.json({ success: true })
-  } catch (error) {
-    console.log('Resend error:', error)
+  } catch {
     return NextResponse.json({ error: 'Email küldés sikertelen' }, { status: 500 })
   }
 }

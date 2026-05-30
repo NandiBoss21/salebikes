@@ -34,8 +34,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .select('id, created_at')
     .eq('available', true)
 
-  console.log('[sitemap] bikes fetched:', bikes?.length ?? 0, 'error:', error?.message ?? null)
-
   const bikePages: MetadataRoute.Sitemap = (bikes ?? []).map((bike) => ({
     url: `${baseUrl}/kerekpar/${bike.id}`,
     lastModified: new Date(bike.created_at ?? new Date()),

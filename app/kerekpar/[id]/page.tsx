@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import BikeGallery from '@/components/BikeGallery'
@@ -79,25 +80,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
   const { id } = await params
   const { data } = await supabase.from('bikes').select('*').eq('id', id).eq('is_deleted', false).single()
 
-  if (!data) {
-    return (
-      <>
-        <Navbar />
-        <div style={{ textAlign: 'center', padding: '6rem 2rem', background: '#fafaf8' }}>
-          <div style={{ fontSize: '40px', marginBottom: '1rem' }}>🚲</div>
-          <div style={{ fontSize: '16px', color: 'rgba(17,17,17,0.5)', marginBottom: '1.5rem' }}>
-            Ez a kerékpár már nem elérhető.
-          </div>
-          <Link href="/" style={{
-            display: 'inline-flex', alignItems: 'center', gap: '6px',
-            color: '#111111', fontWeight: 600, fontSize: '14px',
-          }}>
-            <ChevronLeft size={16} /> Vissza a kínálathoz
-          </Link>
-        </div>
-      </>
-    )
-  }
+  if (!data) notFound()
 
   const bike = data as Bike
   const savings = bike.original_price > 0 ? bike.original_price - bike.sale_price : 0
