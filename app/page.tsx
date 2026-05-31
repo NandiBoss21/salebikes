@@ -873,7 +873,7 @@ export default function Home() {
           <span>Outlet · Bemutató · Használt kerékpárok</span>
         </div>
         <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.2)', textAlign: 'center', marginTop: '8px' }}>
-          Készítette: <a href="https://hazeos.hu" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>HazeOS</a>
+          Készítette: HazeOS
         </p>
       </footer>
 
