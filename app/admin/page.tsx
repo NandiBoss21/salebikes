@@ -1016,13 +1016,14 @@ export default function AdminPage() {
                 { label: 'Elérhető', value: availableBikes, unit: 'db' },
                 { label: 'Eladott', value: soldBikes, unit: 'db' },
                 { label: 'Kiemelt', value: featuredBikes, unit: 'db' },
-                { label: 'Realizált bevétel', value: realizedRevenue.toLocaleString('hu-HU'), unit: 'Ft', highlight: true },
+                { label: 'Realizált bevétel', value: realizedRevenue.toLocaleString('hu-HU'), unit: 'Ft', highlight: true, subtitle: '2026. máj. 26. óta' },
                 { label: 'Készlet értéke', value: totalInventoryValue.toLocaleString('hu-HU'), unit: 'Ft' },
                 { label: 'Átl. kedvezmény', value: avgDiscountPct.toFixed(1), unit: '%' },
               ].map(s => (
                 <div key={s.label} style={{ background: s.highlight ? '#111111' : '#ffffff', border: `1px solid ${s.highlight ? '#111111' : '#E8E4DC'}`, borderRadius: '12px', padding: '1rem 1.25rem' }}>
                   <div style={{ fontSize: '11px', fontWeight: 600, color: s.highlight ? 'rgba(255,255,255,0.5)' : 'rgba(17,17,17,0.4)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '5px' }}>{s.label}</div>
                   <div style={{ fontSize: '24px', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1, color: s.highlight ? '#e8c547' : '#111111' }}>{s.value} <span style={{ fontSize: '13px', fontWeight: 500, color: s.highlight ? 'rgba(255,255,255,0.4)' : 'rgba(17,17,17,0.4)' }}>{s.unit}</span></div>
+                  {s.subtitle && <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>{s.subtitle}</span>}
                 </div>
               ))}
             </div>
