@@ -54,6 +54,8 @@ function normalizeReferrer(ref: string | null): string {
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [bikes, setBikes] = useState<Bike[]>([])
@@ -99,9 +101,22 @@ export default function AdminPage() {
   const [notifSettings, setNotifSettings] = useState<NotifSettings>({ newInquiry: true, unsoldAfter7: false, email: 'bringabarat@hotmail.com' })
 
   useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
+  useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) setAuthed(true)
+      setAuthLoading(false)
     })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthed(!!session)
+      setAuthLoading(false)
+    })
+    return () => subscription.unsubscribe()
   }, [])
 
   useEffect(() => { if (authed) loadBikes() }, [authed])
@@ -491,13 +506,19 @@ export default function AdminPage() {
   }
 
   // ─── Login screen ───────────────────────────────────────────────────
+  if (authLoading) return (
+    <div style={{ minHeight: '100vh', background: '#fafaf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, system-ui, sans-serif' }}>
+      <div style={{ color: 'rgba(17,17,17,0.3)', fontSize: '14px' }}>Betöltés…</div>
+    </div>
+  )
+
   if (!authed) {
     return (
-      <div style={{ minHeight: '100vh', background: '#fafaf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, system-ui, sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: '#fafaf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Inter, system-ui, sans-serif', padding: '1rem' }}>
         {toast && (
           <div style={{ position: 'fixed', top: '1rem', right: '1rem', background: '#111111', color: '#ffffff', padding: '12px 20px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', zIndex: 999, boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>{toast}</div>
         )}
-        <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '2.5rem', width: '360px', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+        <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '2.5rem', maxWidth: '360px', width: '100%', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
           <div style={{ fontWeight: 900, fontSize: '22px', letterSpacing: '-0.04em', marginBottom: '1.75rem', textAlign: 'center', color: '#111111' }}>
             Bringabarát <span style={{ color: '#e8c547' }}>Admin</span>
           </div>
@@ -581,56 +602,88 @@ export default function AdminPage() {
       )}
 
       {/* Nav */}
-      <div style={{ background: '#ffffff', borderBottom: '1px solid #E8E4DC', padding: '0 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100, height: '60px' }}>
-        <div style={{ fontWeight: 900, fontSize: '18px', letterSpacing: '-0.04em', color: '#111111' }}>
-          Bringabarát <span style={{ color: '#e8c547' }}>·</span>{' '}
-          <span style={{ fontSize: '13px', fontWeight: 500, color: 'rgba(17,17,17,0.4)', letterSpacing: 0 }}>Admin</span>
+      <div style={{ background: '#ffffff', borderBottom: '1px solid #E8E4DC', position: 'sticky', top: 0, zIndex: 100 }}>
+        {/* Top row */}
+        <div style={{ padding: isMobile ? '10px 1rem' : '0 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: isMobile ? 'auto' : '60px' }}>
+          <div style={{ fontWeight: 900, fontSize: '18px', letterSpacing: '-0.04em', color: '#111111' }}>
+            Bringabarát <span style={{ color: '#e8c547' }}>·</span>{' '}
+            <span style={{ fontSize: '13px', fontWeight: 500, color: 'rgba(17,17,17,0.4)', letterSpacing: 0 }}>Admin</span>
+          </div>
+
+          {/* Desktop: center tabs */}
+          {!isMobile && (
+            <div style={{ display: 'flex', gap: '4px' }}>
+              {[
+                { label: 'Kerékpárok', val: 'list' as const, icon: undefined as React.ReactNode },
+                { label: 'Statisztikák', val: 'stats' as const, icon: <BarChart2 size={14} /> as React.ReactNode },
+                { label: 'Kategóriák', val: 'categories' as const, icon: undefined as React.ReactNode },
+                { label: 'Beállítások', val: 'settings' as const, icon: <Settings size={14} /> as React.ReactNode },
+              ].map(tab => (
+                <button key={tab.val} onClick={() => {
+                  if (tab.val === 'stats') { setView('stats'); loadStats() }
+                  else if (tab.val === 'categories') { setView('categories'); loadCategories() }
+                  else setView(tab.val)
+                }}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '5px',
+                    padding: '7px 14px', borderRadius: '7px', border: 'none', cursor: 'pointer',
+                    fontWeight: 600, fontSize: '13px',
+                    background: view === tab.val ? '#111111' : 'transparent',
+                    color: view === tab.val ? '#ffffff' : 'rgba(17,17,17,0.5)',
+                    transition: 'all 0.15s',
+                  }}>
+                  {tab.icon}{tab.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: isMobile ? '6px' : '10px', alignItems: 'center' }}>
+            {view === 'list' && (
+              <button onClick={newBike} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#111111', color: '#ffffff', border: 'none', padding: isMobile ? '8px 12px' : '9px 16px', borderRadius: '8px', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+                <Plus size={15} />{!isMobile && ' Új kerékpár'}
+              </button>
+            )}
+            {view === 'form' && (
+              <button onClick={() => { setView('list'); setEditing(null); setForm({ ...empty }) }} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', color: '#111111', border: '1px solid #E8E4DC', padding: isMobile ? '7px 10px' : '9px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '13px' }}>
+                ←{!isMobile && ' Vissza'}
+              </button>
+            )}
+            <button onClick={logout} style={{ background: 'none', border: 'none', color: 'rgba(17,17,17,0.4)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px', padding: '8px' }}>
+              <LogOut size={15} />{!isMobile && ' Kilépés'}
+            </button>
+          </div>
         </div>
 
-        {/* Tab buttons */}
-        <div style={{ display: 'flex', gap: '4px' }}>
-          {[
-            { label: 'Kerékpárok', val: 'list' as const, icon: undefined as React.ReactNode },
-            { label: 'Statisztikák', val: 'stats' as const, icon: <BarChart2 size={14} /> as React.ReactNode },
-            { label: 'Kategóriák', val: 'categories' as const, icon: undefined as React.ReactNode },
-            { label: 'Beállítások', val: 'settings' as const, icon: <Settings size={14} /> as React.ReactNode },
-          ].map(tab => (
-            <button key={tab.val} onClick={() => {
-              if (tab.val === 'stats') { setView('stats'); loadStats() }
-              else if (tab.val === 'categories') { setView('categories'); loadCategories() }
-              else setView(tab.val)
-            }}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '5px',
-                padding: '7px 14px', borderRadius: '7px', border: 'none', cursor: 'pointer',
-                fontWeight: 600, fontSize: '13px',
-                background: view === tab.val ? '#111111' : 'transparent',
-                color: view === tab.val ? '#ffffff' : 'rgba(17,17,17,0.5)',
-                transition: 'all 0.15s',
-              }}>
-              {tab.icon}{tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          {view === 'list' && (
-            <button onClick={newBike} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#111111', color: '#ffffff', border: 'none', padding: '9px 16px', borderRadius: '8px', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
-              <Plus size={15} /> Új kerékpár
-            </button>
-          )}
-          {view === 'form' && (
-            <button onClick={() => { setView('list'); setEditing(null); setForm({ ...empty }) }} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', color: '#111111', border: '1px solid #E8E4DC', padding: '9px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '13px' }}>
-              ← Vissza
-            </button>
-          )}
-          <button onClick={logout} style={{ background: 'none', border: 'none', color: 'rgba(17,17,17,0.4)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px', padding: '8px' }}>
-            <LogOut size={15} /> Kilépés
-          </button>
-        </div>
+        {/* Mobile: tab row */}
+        {isMobile && (
+          <div style={{ display: 'flex', borderTop: '1px solid #f0ede8' }}>
+            {[
+              { label: 'Kerékpárok', val: 'list' as const },
+              { label: 'Statisztikák', val: 'stats' as const },
+              { label: 'Kategóriák', val: 'categories' as const },
+              { label: 'Beállítások', val: 'settings' as const },
+            ].map(tab => (
+              <button key={tab.val} onClick={() => {
+                if (tab.val === 'stats') { setView('stats'); loadStats() }
+                else if (tab.val === 'categories') { setView('categories'); loadCategories() }
+                else setView(tab.val)
+              }}
+                style={{
+                  flex: 1, padding: '10px 4px', border: 'none', cursor: 'pointer',
+                  fontWeight: 600, fontSize: '10px',
+                  background: view === tab.val ? '#111111' : 'transparent',
+                  color: view === tab.val ? '#ffffff' : 'rgba(17,17,17,0.5)',
+                  transition: 'all 0.15s',
+                }}>
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
-      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ padding: isMobile ? '1rem' : '2rem', maxWidth: '1200px', margin: '0 auto' }}>
 
         {/* ── STATS VIEW ─────────────────────────────────────────── */}
         {view === 'stats' && (
@@ -642,7 +695,7 @@ export default function AdminPage() {
             ) : (
               <>
                 {/* Stat cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
                   {[
                     { label: 'Mai látogatók', value: todayViews },
                     { label: 'Heti látogatók', value: weekViews },
@@ -670,7 +723,7 @@ export default function AdminPage() {
                   </ResponsiveContainer>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
                   {/* Top 5 bikes – bar chart */}
                   <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.25rem' }}>
                     <div style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(17,17,17,0.4)', marginBottom: '1rem' }}>Top 5 megtekintett kerékpár</div>
@@ -711,7 +764,7 @@ export default function AdminPage() {
                 </div>
 
                 {/* Categories pie chart */}
-                <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', alignItems: 'center' }}>
+                <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '1.5rem', alignItems: 'center' }}>
                   <div>
                     <div style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(17,17,17,0.4)', marginBottom: '1rem' }}>Kategória megoszlás</div>
                     {catPieData.length === 0 ? (
@@ -779,7 +832,7 @@ export default function AdminPage() {
               {editing ? 'Kerékpár szerkesztése' : 'Új kerékpár hozzáadása'}
             </h2>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '2rem' }}>
               {/* LEFT */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div>
@@ -834,7 +887,7 @@ export default function AdminPage() {
                     <span style={{ color: 'rgba(17,17,17,0.5)', fontWeight: 400 }}> ({Math.round((1 - form.sale_price / form.original_price) * 100)}%)</span>
                   </div>
                 )}
-                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:'1rem', marginBottom:'1.25rem'}}>
+                <div style={{display:'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : '1fr 1fr 1fr 1fr', gap:'1rem', marginBottom:'1.25rem'}}>
                   <div>
                     <label style={labelStyle}>Futott km</label>
                     <input type="number" value={form.kilometers || 0} onChange={e => setForm(f => ({...f, kilometers: parseInt(e.target.value)||0}))} style={inputStyle} placeholder="0"/>
@@ -1010,7 +1063,7 @@ export default function AdminPage() {
         {view === 'list' && (
           <div>
             {/* Stats bar */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.75rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.75rem' }}>
               {[
                 { label: 'Összes kerékpár', value: totalBikes, unit: 'db' },
                 { label: 'Elérhető', value: availableBikes, unit: 'db' },
@@ -1107,10 +1160,10 @@ export default function AdminPage() {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {filteredBikes.map(bike => (
-                    <div key={bike.id} style={{ background: '#ffffff', border: `1px solid ${selected.includes(bike.id) ? '#111111' : '#E8E4DC'}`, borderRadius: '12px', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', opacity: bike.sold ? 0.6 : 1, transition: 'border-color 0.15s, opacity 0.2s' }}>
-                      {/* Checkbox */}
+                    <div key={bike.id} style={{ background: '#ffffff', border: `1px solid ${selected.includes(bike.id) ? '#111111' : '#E8E4DC'}`, borderRadius: '12px', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', opacity: bike.sold ? 0.6 : 1, transition: 'border-color 0.15s, opacity 0.2s', flexWrap: isMobile ? 'wrap' : 'nowrap' }}>
+                      {/* Checkbox – hidden on mobile */}
                       <input type="checkbox" checked={selected.includes(bike.id)} onChange={() => toggleSelect(bike.id)}
-                        style={{ width: '16px', height: '16px', cursor: 'pointer', flexShrink: 0, accentColor: '#111111' }} />
+                        style={{ width: '16px', height: '16px', cursor: 'pointer', flexShrink: 0, accentColor: '#111111', display: isMobile ? 'none' : 'block' }} />
 
                       {/* Thumb */}
                       <div style={{ width: '72px', height: '54px', flexShrink: 0, background: '#f5f5f5', borderRadius: '8px', overflow: 'hidden', position: 'relative' }}>
@@ -1128,39 +1181,42 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      {/* Price – inline editable */}
-                      <div style={{ textAlign: 'right', flexShrink: 0, minWidth: '110px' }}>
-                        <div style={{ fontSize: '11px', color: 'rgba(17,17,17,0.35)', textDecoration: 'line-through', marginBottom: '2px' }}>{bike.original_price.toLocaleString('hu-HU')} Ft</div>
-                        {editingPrice?.id === bike.id ? (
-                          <input autoFocus value={editingPrice.value}
-                            onChange={e => setEditingPrice({ id: bike.id, value: e.target.value })}
-                            onKeyDown={e => { if (e.key === 'Enter') savePriceEdit(bike.id, bike.sale_price); if (e.key === 'Escape') setEditingPrice(null) }}
-                            onBlur={() => savePriceEdit(bike.id, bike.sale_price)}
-                            style={{ width: '100px', padding: '3px 8px', border: '2px solid #e8c547', borderRadius: '6px', fontSize: '13px', fontWeight: 700, textAlign: 'right', outline: 'none', fontFamily: 'Inter, system-ui, sans-serif' }}
-                          />
-                        ) : (
-                          <div onClick={() => setEditingPrice({ id: bike.id, value: bike.sale_price.toString() })}
-                            title="Kattints az ár módosításához"
-                            style={{ fontWeight: 800, fontSize: '1rem', letterSpacing: '-0.03em', cursor: 'pointer', padding: '2px 4px', borderRadius: '4px', transition: 'background 0.4s, color 0.4s', background: flashIds.includes(bike.id) ? 'rgba(34,197,94,0.15)' : 'transparent', color: flashIds.includes(bike.id) ? '#15803d' : '#111111' }}>
-                            {bike.sale_price.toLocaleString('hu-HU')} Ft
-                          </div>
-                        )}
-                      </div>
+                      {/* Price + Actions – on mobile: own full-width row */}
+                      <div style={{ display: 'flex', alignItems: 'center', ...(isMobile ? { flexBasis: '100%', justifyContent: 'space-between', paddingTop: '8px', borderTop: '1px solid #f5f5f5' } : { flexShrink: 0, gap: '1rem' }) }}>
+                        {/* Price */}
+                        <div style={{ textAlign: isMobile ? 'left' : 'right', flexShrink: 0, minWidth: '110px' }}>
+                          <div style={{ fontSize: '11px', color: 'rgba(17,17,17,0.35)', textDecoration: 'line-through', marginBottom: '2px' }}>{bike.original_price.toLocaleString('hu-HU')} Ft</div>
+                          {editingPrice?.id === bike.id ? (
+                            <input autoFocus value={editingPrice.value}
+                              onChange={e => setEditingPrice({ id: bike.id, value: e.target.value })}
+                              onKeyDown={e => { if (e.key === 'Enter') savePriceEdit(bike.id, bike.sale_price); if (e.key === 'Escape') setEditingPrice(null) }}
+                              onBlur={() => savePriceEdit(bike.id, bike.sale_price)}
+                              style={{ width: '100px', padding: '3px 8px', border: '2px solid #e8c547', borderRadius: '6px', fontSize: '13px', fontWeight: 700, textAlign: 'right', outline: 'none', fontFamily: 'Inter, system-ui, sans-serif' }}
+                            />
+                          ) : (
+                            <div onClick={() => setEditingPrice({ id: bike.id, value: bike.sale_price.toString() })}
+                              title="Kattints az ár módosításához"
+                              style={{ fontWeight: 800, fontSize: '1rem', letterSpacing: '-0.03em', cursor: 'pointer', padding: '2px 4px', borderRadius: '4px', transition: 'background 0.4s, color 0.4s', background: flashIds.includes(bike.id) ? 'rgba(34,197,94,0.15)' : 'transparent', color: flashIds.includes(bike.id) ? '#15803d' : '#111111' }}>
+                              {bike.sale_price.toLocaleString('hu-HU')} Ft
+                            </div>
+                          )}
+                        </div>
 
-                      {/* Actions */}
-                      <div style={{ display: 'flex', gap: '2px', flexShrink: 0 }}>
-                        <button onClick={() => toggleField(bike.id, 'available', bike.available)} title={bike.available ? 'Elrejtés' : 'Megjelenítés'} style={iconBtn(bike.available ? '#059669' : 'rgba(17,17,17,0.25)')}>
-                          {bike.available ? <Eye size={16} /> : <EyeOff size={16} />}
-                        </button>
-                        <button onClick={() => toggleField(bike.id, 'featured', bike.featured)} title={bike.featured ? 'Kiemelt törlés' : 'Kiemelés'} style={iconBtn(bike.featured ? '#e8c547' : 'rgba(17,17,17,0.25)')}>
-                          <Star size={16} fill={bike.featured ? '#e8c547' : 'none'} />
-                        </button>
-                        <button onClick={() => toggleSold(bike.id, !!bike.sold)} title={bike.sold ? 'Eladott visszavon' : 'Eladottnak jelöl'} style={iconBtn(bike.sold ? '#dc2626' : 'rgba(17,17,17,0.25)')}>
-                          <ShoppingBag size={16} />
-                        </button>
-                        <button onClick={() => duplicateBike(bike)} title="Másolás" style={iconBtn('rgba(17,17,17,0.4)')}><Copy size={16} /></button>
-                        <button onClick={() => editBike(bike)} title="Szerkesztés" style={iconBtn('rgba(17,17,17,0.5)')}><Edit size={16} /></button>
-                        <button onClick={() => { setDeleteModal({ bike }); setDeleteConfirm(false) }} title="Törlés" style={iconBtn('#dc2626')}><Trash2 size={16} /></button>
+                        {/* Actions */}
+                        <div style={{ display: 'flex', gap: '2px', flexShrink: 0 }}>
+                          <button onClick={() => toggleField(bike.id, 'available', bike.available)} title={bike.available ? 'Elrejtés' : 'Megjelenítés'} style={iconBtn(bike.available ? '#059669' : 'rgba(17,17,17,0.25)')}>
+                            {bike.available ? <Eye size={16} /> : <EyeOff size={16} />}
+                          </button>
+                          <button onClick={() => toggleField(bike.id, 'featured', bike.featured)} title={bike.featured ? 'Kiemelt törlés' : 'Kiemelés'} style={iconBtn(bike.featured ? '#e8c547' : 'rgba(17,17,17,0.25)')}>
+                            <Star size={16} fill={bike.featured ? '#e8c547' : 'none'} />
+                          </button>
+                          <button onClick={() => toggleSold(bike.id, !!bike.sold)} title={bike.sold ? 'Eladott visszavon' : 'Eladottnak jelöl'} style={iconBtn(bike.sold ? '#dc2626' : 'rgba(17,17,17,0.25)')}>
+                            <ShoppingBag size={16} />
+                          </button>
+                          <button onClick={() => duplicateBike(bike)} title="Másolás" style={iconBtn('rgba(17,17,17,0.4)')}><Copy size={16} /></button>
+                          <button onClick={() => editBike(bike)} title="Szerkesztés" style={iconBtn('rgba(17,17,17,0.5)')}><Edit size={16} /></button>
+                          <button onClick={() => { setDeleteModal({ bike }); setDeleteConfirm(false) }} title="Törlés" style={iconBtn('#dc2626')}><Trash2 size={16} /></button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -1184,7 +1240,7 @@ const inputStyle: React.CSSProperties = {
   width: '100%', padding: '10px 12px',
   background: '#ffffff', border: '1px solid #E8E4DC',
   borderRadius: '8px', color: '#111111',
-  fontSize: '14px', outline: 'none',
+  fontSize: '16px', outline: 'none',
   fontFamily: 'Inter, system-ui, sans-serif',
 }
 
