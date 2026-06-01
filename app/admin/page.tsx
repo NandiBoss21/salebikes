@@ -476,7 +476,8 @@ export default function AdminPage() {
     ? availableList.reduce((sum, b) => sum + (b.original_price > 0 ? (1 - b.sale_price / b.original_price) * 100 : 0), 0) / availableList.length
     : 0
   // Realized revenue: all sold bikes including soft-deleted (preserved for history)
-  const realizedRevenue = bikes.filter(b => b.sold).reduce((sum, b) => sum + b.sale_price, 0)
+  const revenueBaseOffset = -199000
+  const realizedRevenue = bikes.filter(b => b.sold).reduce((sum, b) => sum + b.sale_price, 0) + revenueBaseOffset
 
   async function login() {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
