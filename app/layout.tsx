@@ -54,6 +54,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="hu">
+      <head>
+        <link rel="preload" href="/hero-bg.png" as="image" />
+      </head>
       <body>
         <script
           type="application/ld+json"

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import Navbar from '@/components/Navbar'
 import BikeCard from '@/components/BikeCard'
@@ -168,13 +169,18 @@ export default function Home() {
         position: 'relative',
         width: '100%',
         height: '85vh',
-        backgroundImage: 'url(/hero-bg.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
       }}>
+        <Image
+          src="/hero-bg.png"
+          alt="Bringabarát"
+          fill
+          priority
+          sizes="100vw"
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
+        />
         {/* Dark overlay */}
         <div style={{
           position: 'absolute', inset: 0,
@@ -400,12 +406,14 @@ export default function Home() {
                   padding: '1rem 1.25rem',
                 }}
               >
-                <div className="cat-card-img" style={{
-                  position: 'absolute', inset: 0,
-                  backgroundImage: `url(${cat.image})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }} />
+                <Image
+                  src={cat.image}
+                  alt={cat.label}
+                  fill
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  style={{ objectFit: 'cover', objectPosition: 'center' }}
+                />
                 <div className="cat-card-overlay" style={{
                   position: 'absolute', inset: 0,
                 }} />
