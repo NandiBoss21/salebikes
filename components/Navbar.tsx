@@ -91,13 +91,14 @@ export default function Navbar() {
 
   return (
     <nav style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+      position: 'fixed', top: 0, left: 0, right: 0,
+      zIndex: open ? 1001 : 100,
       background: scrolled ? '#ffffff' : 'rgba(0,0,0,0.55)',
       boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.08)' : 'none',
-      transition: 'all 0.3s ease',
+      transition: 'background 0.3s ease, box-shadow 0.3s ease',
     }}>
       <div style={{
-        padding: '0 3rem', height: '64px',
+        padding: '0 clamp(1rem, 4vw, 3rem)', height: '64px',
         display: 'flex', alignItems: 'center', gap: '1.5rem',
       }}>
 
@@ -262,37 +263,44 @@ export default function Navbar() {
         <button onClick={() => setOpen(o => !o)} className="mob-btn" style={{
           display: 'none', alignItems: 'center', justifyContent: 'center',
           background: 'none', border: 'none',
-          cursor: 'pointer', padding: '6px',
+          cursor: 'pointer', padding: '11px',
+          minHeight: '44px', minWidth: '44px',
           color: scrolled ? '#111111' : '#ffffff',
           borderRadius: '6px', marginLeft: 'auto',
           transition: 'color 0.3s ease',
+          touchAction: 'manipulation',
         }}>
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
-      {/* Mobile dropdown */}
+      {/* Mobile dropdown — scrollable so items are never hidden behind the sticky CTA */}
       {open && (
         <div style={{
           borderTop: '1px solid rgba(0,0,0,0.07)',
           background: '#ffffff',
-          padding: '0.75rem 2rem 1.5rem',
+          padding: '0.5rem 1.5rem 1.5rem',
+          overflowY: 'auto',
+          maxHeight: 'calc(100dvh - 64px)',
+          WebkitOverflowScrolling: 'touch',
         }}>
           {NAV_MOBILE.filter(item => isVisible(item.href)).map(item => (
             <Link key={item.label} href={item.href} onClick={() => setOpen(false)} style={{
-              display: 'block', padding: '13px 0',
+              display: 'flex', alignItems: 'center',
+              minHeight: '44px', padding: '0',
               borderBottom: '1px solid rgba(0,0,0,0.05)',
               fontSize: '15px', fontWeight: 500,
               color: 'rgba(17,17,17,0.65)', textDecoration: 'none',
+              touchAction: 'manipulation',
             }}>{item.label}</Link>
           ))}
           <a href="tel:+36308897559" style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             gap: '8px', marginTop: '1rem',
             background: '#e8c547', color: '#111111',
-            padding: '14px', borderRadius: '8px',
+            padding: '14px', minHeight: '48px', borderRadius: '8px',
             fontSize: '15px', fontWeight: 700,
-            textDecoration: 'none',
+            textDecoration: 'none', touchAction: 'manipulation',
           }}>
             <Phone size={16} />
             +36 30 889 7559
