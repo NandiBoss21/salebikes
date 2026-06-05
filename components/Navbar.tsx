@@ -92,9 +92,7 @@ export default function Navbar() {
   return (
     <nav style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-      background: scrolled ? '#ffffff' : 'rgba(0,0,0,0.3)',
-      backdropFilter: scrolled ? 'none' : 'blur(8px)',
-      WebkitBackdropFilter: scrolled ? 'none' : 'blur(8px)',
+      background: scrolled ? '#ffffff' : 'rgba(0,0,0,0.55)',
       boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.08)' : 'none',
       transition: 'all 0.3s ease',
     }}>

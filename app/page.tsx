@@ -327,9 +327,7 @@ export default function Home() {
         {/* Stat bar */}
         <div className="hero-stat-bar" style={{
           position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 1,
-          background: 'rgba(0,0,0,0.7)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
+          background: 'rgba(0,0,0,0.75)',
           display: 'flex',
           alignItems: 'stretch',
         }}>
