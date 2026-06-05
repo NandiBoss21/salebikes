@@ -218,6 +218,7 @@ export default function ChatBot() {
       right: '24px',
       zIndex: 1000,
       transition: 'bottom 0.3s ease',
+      pointerEvents: 'none',
     }}>
 
       {/* Chat window */}
@@ -353,6 +354,8 @@ export default function ChatBot() {
           boxShadow: '0 4px 16px rgba(232,197,71,0.5)',
           transition: 'transform 0.2s, box-shadow 0.2s',
           float: 'right',
+          pointerEvents: 'auto',
+          touchAction: 'manipulation',
         }}
         onMouseEnter={e => {
           e.currentTarget.style.transform = 'scale(1.08)'

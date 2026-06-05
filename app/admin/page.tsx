@@ -523,7 +523,7 @@ export default function AdminPage() {
         {toast && (
           <div style={{ position: 'fixed', top: '1rem', right: '1rem', background: '#111111', color: '#ffffff', padding: '12px 20px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', zIndex: 999, boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>{toast}</div>
         )}
-        <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: 'clamp(1.5rem, 5vw, 2.5rem)', maxWidth: '400px', width: '100%', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+        <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: 'clamp(1.5rem, 5vw, 2.5rem)', maxWidth: '400px', width: '100%', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', position: 'relative', zIndex: 2 }}>
           <div style={{ fontWeight: 900, fontSize: '22px', letterSpacing: '-0.04em', marginBottom: '1.75rem', textAlign: 'center', color: '#111111' }}>
             Bringabarát <span style={{ color: '#e8c547' }}>Admin</span>
           </div>
@@ -1247,6 +1247,12 @@ const inputStyle: React.CSSProperties = {
   borderRadius: '8px', color: '#111111',
   fontSize: '16px', outline: 'none',
   fontFamily: 'Inter, system-ui, sans-serif',
+  touchAction: 'manipulation',
+  pointerEvents: 'auto',
+  WebkitUserSelect: 'text',
+  userSelect: 'text',
+  position: 'relative',
+  zIndex: 1,
 }
 
 function iconBtn(color: string): React.CSSProperties {
