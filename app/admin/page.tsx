@@ -100,8 +100,13 @@ export default function AdminPage() {
   type NotifSettings = { newInquiry: boolean; unsoldAfter7: boolean; email: string }
   const [notifSettings, setNotifSettings] = useState<NotifSettings>({ newInquiry: true, unsoldAfter7: false, email: 'bringabarat@hotmail.com' })
 
+  const [isSmall, setIsSmall] = useState(false)
+
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768)
+    const check = () => {
+      setIsMobile(window.innerWidth < 768)
+      setIsSmall(window.innerWidth < 420)
+    }
     check()
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
@@ -518,20 +523,20 @@ export default function AdminPage() {
         {toast && (
           <div style={{ position: 'fixed', top: '1rem', right: '1rem', background: '#111111', color: '#ffffff', padding: '12px 20px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', zIndex: 999, boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>{toast}</div>
         )}
-        <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: '2.5rem', maxWidth: '360px', width: '100%', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+        <div style={{ background: '#ffffff', border: '1px solid #E8E4DC', borderRadius: '12px', padding: 'clamp(1.5rem, 5vw, 2.5rem)', maxWidth: '400px', width: '100%', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
           <div style={{ fontWeight: 900, fontSize: '22px', letterSpacing: '-0.04em', marginBottom: '1.75rem', textAlign: 'center', color: '#111111' }}>
             Bringabarát <span style={{ color: '#e8c547' }}>Admin</span>
           </div>
           <label style={labelStyle}>Email</label>
           <input type="email" value={email} onChange={e => setEmail(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && login()}
-            style={{ ...inputStyle, marginBottom: '1rem' }} placeholder="admin@example.com" />
+            style={{ ...inputStyle, marginBottom: '1rem', fontSize: '16px' }} placeholder="admin@example.com" autoComplete="email" />
           <label style={labelStyle}>Jelszó</label>
           <input type="password" value={password} onChange={e => setPassword(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && login()}
-            style={inputStyle} placeholder="••••••••" />
+            style={{ ...inputStyle, fontSize: '16px' }} placeholder="••••••••" autoComplete="current-password" />
           <button onClick={login}
-            style={{ width: '100%', padding: '13px', background: '#111111', color: '#ffffff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '14px', letterSpacing: '-0.01em', marginTop: '0.75rem' }}>
+            style={{ width: '100%', minHeight: '48px', padding: '13px', background: '#111111', color: '#ffffff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '16px', letterSpacing: '-0.01em', marginTop: '0.75rem', touchAction: 'manipulation' }}>
             Belépés
           </button>
         </div>
@@ -640,16 +645,16 @@ export default function AdminPage() {
 
           <div style={{ display: 'flex', gap: isMobile ? '6px' : '10px', alignItems: 'center' }}>
             {view === 'list' && (
-              <button onClick={newBike} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#111111', color: '#ffffff', border: 'none', padding: isMobile ? '8px 12px' : '9px 16px', borderRadius: '8px', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+              <button onClick={newBike} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: '#111111', color: '#ffffff', border: 'none', padding: isMobile ? '10px 14px' : '9px 16px', minHeight: '44px', borderRadius: '8px', fontWeight: 700, fontSize: '13px', cursor: 'pointer', touchAction: 'manipulation' }}>
                 <Plus size={15} />{!isMobile && ' Új kerékpár'}
               </button>
             )}
             {view === 'form' && (
-              <button onClick={() => { setView('list'); setEditing(null); setForm({ ...empty }) }} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', color: '#111111', border: '1px solid #E8E4DC', padding: isMobile ? '7px 10px' : '9px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '13px' }}>
+              <button onClick={() => { setView('list'); setEditing(null); setForm({ ...empty }) }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: 'transparent', color: '#111111', border: '1px solid #E8E4DC', padding: isMobile ? '10px 14px' : '9px 16px', minHeight: '44px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '13px', touchAction: 'manipulation' }}>
                 ←{!isMobile && ' Vissza'}
               </button>
             )}
-            <button onClick={logout} style={{ background: 'none', border: 'none', color: 'rgba(17,17,17,0.4)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px', padding: '8px' }}>
+            <button onClick={logout} style={{ background: 'none', border: 'none', color: 'rgba(17,17,17,0.4)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', fontSize: '13px', padding: '10px', minHeight: '44px', minWidth: '44px', touchAction: 'manipulation' }}>
               <LogOut size={15} />{!isMobile && ' Kilépés'}
             </button>
           </div>
@@ -660,9 +665,9 @@ export default function AdminPage() {
           <div style={{ display: 'flex', borderTop: '1px solid #f0ede8' }}>
             {[
               { label: 'Kerékpárok', val: 'list' as const },
-              { label: 'Statisztikák', val: 'stats' as const },
+              { label: 'Statisztika', val: 'stats' as const },
               { label: 'Kategóriák', val: 'categories' as const },
-              { label: 'Beállítások', val: 'settings' as const },
+              { label: 'Beállítás', val: 'settings' as const },
             ].map(tab => (
               <button key={tab.val} onClick={() => {
                 if (tab.val === 'stats') { setView('stats'); loadStats() }
@@ -670,8 +675,8 @@ export default function AdminPage() {
                 else setView(tab.val)
               }}
                 style={{
-                  flex: 1, padding: '10px 4px', border: 'none', cursor: 'pointer',
-                  fontWeight: 600, fontSize: '10px',
+                  flex: 1, padding: '12px 2px', minHeight: '44px', border: 'none', cursor: 'pointer',
+                  fontWeight: 600, fontSize: '10px', touchAction: 'manipulation',
                   background: view === tab.val ? '#111111' : 'transparent',
                   color: view === tab.val ? '#ffffff' : 'rgba(17,17,17,0.5)',
                   transition: 'all 0.15s',
@@ -962,11 +967,11 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
-              <button onClick={save} disabled={saving} style={{ background: '#111111', color: '#ffffff', border: 'none', padding: '14px 32px', borderRadius: '8px', fontWeight: 700, fontSize: '14px', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1 }}>
+            <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <button onClick={save} disabled={saving} style={{ background: '#111111', color: '#ffffff', border: 'none', padding: '14px 32px', minHeight: '48px', borderRadius: '8px', fontWeight: 700, fontSize: '15px', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, touchAction: 'manipulation', flex: isMobile ? 1 : 'none' }}>
                 {saving ? 'Mentés...' : editing ? 'Módosítások mentése' : 'Kerékpár hozzáadása'}
               </button>
-              <button onClick={() => { setView('list'); setEditing(null); setForm({ ...empty }) }} style={{ background: 'transparent', color: '#111111', border: '1px solid #E8E4DC', padding: '14px 24px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>Mégse</button>
+              <button onClick={() => { setView('list'); setEditing(null); setForm({ ...empty }) }} style={{ background: 'transparent', color: '#111111', border: '1px solid #E8E4DC', padding: '14px 24px', minHeight: '48px', borderRadius: '8px', fontWeight: 600, fontSize: '15px', cursor: 'pointer', touchAction: 'manipulation' }}>Mégse</button>
             </div>
           </div>
         )}
@@ -1063,7 +1068,7 @@ export default function AdminPage() {
         {view === 'list' && (
           <div>
             {/* Stats bar */}
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.75rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isSmall ? '1fr' : isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: '0.75rem', marginBottom: '1.75rem' }}>
               {[
                 { label: 'Összes kerékpár', value: totalBikes, unit: 'db' },
                 { label: 'Elérhető', value: availableBikes, unit: 'db' },
@@ -1082,20 +1087,20 @@ export default function AdminPage() {
             </div>
 
             {/* Search / Filter / Sort toolbar */}
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '1rem', flexWrap: 'wrap' }}>
-              <div style={{ position: 'relative', flex: '1', minWidth: '200px' }}>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ position: 'relative', flex: '1', minWidth: isMobile ? '100%' : '200px' }}>
                 <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(17,17,17,0.35)' }} />
                 <input
                   value={search} onChange={e => setSearch(e.target.value)}
                   placeholder="Keresés márka / modell..."
-                  style={{ ...inputStyle, paddingLeft: '36px' }}
+                  style={{ ...inputStyle, paddingLeft: '36px', minHeight: '44px' }}
                 />
               </div>
-              <select value={filterCat} onChange={e => setFilterCat(e.target.value)} style={{ ...inputStyle, width: 'auto', minWidth: '160px' }}>
+              <select value={filterCat} onChange={e => setFilterCat(e.target.value)} style={{ ...inputStyle, width: 'auto', minWidth: isMobile ? 'calc(50% - 4px)' : '160px', flex: isMobile ? '1' : 'none', minHeight: '44px' }}>
                 <option value="">Összes kategória</option>
                 {CATEGORIES.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
               </select>
-              <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ ...inputStyle, width: 'auto', minWidth: '160px' }}>
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ ...inputStyle, width: 'auto', minWidth: isMobile ? 'calc(50% - 4px)' : '160px', flex: isMobile ? '1' : 'none', minHeight: '44px' }}>
                 <option value="newest">Legújabb</option>
                 <option value="oldest">Legrégebbi</option>
                 <option value="price_asc">Ár: növekvő</option>
@@ -1191,7 +1196,7 @@ export default function AdminPage() {
                               onChange={e => setEditingPrice({ id: bike.id, value: e.target.value })}
                               onKeyDown={e => { if (e.key === 'Enter') savePriceEdit(bike.id, bike.sale_price); if (e.key === 'Escape') setEditingPrice(null) }}
                               onBlur={() => savePriceEdit(bike.id, bike.sale_price)}
-                              style={{ width: '100px', padding: '3px 8px', border: '2px solid #e8c547', borderRadius: '6px', fontSize: '13px', fontWeight: 700, textAlign: 'right', outline: 'none', fontFamily: 'Inter, system-ui, sans-serif' }}
+                              style={{ width: '110px', padding: '3px 8px', border: '2px solid #e8c547', borderRadius: '6px', fontSize: '16px', fontWeight: 700, textAlign: 'right', outline: 'none', fontFamily: 'Inter, system-ui, sans-serif' }}
                             />
                           ) : (
                             <div onClick={() => setEditingPrice({ id: bike.id, value: bike.sale_price.toString() })}
@@ -1203,7 +1208,7 @@ export default function AdminPage() {
                         </div>
 
                         {/* Actions */}
-                        <div style={{ display: 'flex', gap: '2px', flexShrink: 0 }}>
+                        <div style={{ display: 'flex', gap: '0', flexShrink: 0 }}>
                           <button onClick={() => toggleField(bike.id, 'available', bike.available)} title={bike.available ? 'Elrejtés' : 'Megjelenítés'} style={iconBtn(bike.available ? '#059669' : 'rgba(17,17,17,0.25)')}>
                             {bike.available ? <Eye size={16} /> : <EyeOff size={16} />}
                           </button>
@@ -1245,5 +1250,5 @@ const inputStyle: React.CSSProperties = {
 }
 
 function iconBtn(color: string): React.CSSProperties {
-  return { background: 'none', border: 'none', color, cursor: 'pointer', padding: '7px', display: 'flex', alignItems: 'center', borderRadius: '6px' }
+  return { background: 'none', border: 'none', color, cursor: 'pointer', padding: '10px', minHeight: '44px', minWidth: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', touchAction: 'manipulation' }
 }
