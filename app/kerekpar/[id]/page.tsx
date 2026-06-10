@@ -4,8 +4,7 @@ import Navbar from '@/components/Navbar'
 import BikeGallery from '@/components/BikeGallery'
 import TrackPageView from '@/components/TrackPageView'
 import { InquiryButtonDesktop, InquiryButtonMobile } from '@/components/InquiryButton'
-import { CheckCircle, ChevronLeft } from 'lucide-react'
-import Link from 'next/link'
+import { CheckCircle } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
 import type { Metadata } from 'next'
 import { optimizeImage } from '@/lib/supabase-image'
@@ -140,21 +139,23 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
       <Navbar />
       <TrackPageView path={`/kerekpar/${id}`} bikeId={id} />
 
+      <div style={{ background: pageBg, paddingTop: '64px', transition: 'background 0.6s ease' }}>
+        <a href={`/${bike.category}`} style={{
+          display: 'block',
+          fontSize: '13px',
+          fontWeight: 600,
+          color: 'rgba(17,17,17,0.5)',
+          textDecoration: 'none',
+          padding: '16px clamp(1.5rem, 4vw, 3rem)',
+        }}>
+          ← Vissza a kínálathoz
+        </a>
+      </div>
+
       <div className="bike-detail-wrap" style={{
         background: pageBg,
         transition: 'background 0.6s ease',
       }}>
-
-        {/* Back link */}
-        <Link href="/" style={{
-          display: 'inline-flex', alignItems: 'center', gap: '6px',
-          fontSize: '13px', fontWeight: 500,
-          color: 'rgba(17,17,17,0.45)', textDecoration: 'none',
-          marginBottom: '2rem',
-          transition: 'color 0.15s',
-        }}>
-          <ChevronLeft size={15} /> Vissza a kínálathoz
-        </Link>
 
         <div className="bike-detail-grid">
 
