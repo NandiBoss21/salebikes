@@ -2,6 +2,7 @@
 const nextConfig = {
   serverExternalPackages: ['@supabase/supabase-js'],
   images: {
+    minimumCacheTTL: 2592000,
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {

@@ -8,6 +8,7 @@ import { CheckCircle, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import type { Bike } from '@/lib/supabase'
 import type { Metadata } from 'next'
+import { optimizeImage } from '@/lib/supabase-image'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     ? bike.images[0]
     : null
   const bikeImage = rawImage
-    ? `${rawImage}?width=1200&height=630&resize=cover`
+    ? optimizeImage(rawImage, 1200, 75)
     : 'https://testbikevelence.hu/hero-bg.png'
   return {
     title: `${bike.brand} ${bike.model} – ${bike.sale_price.toLocaleString('hu-HU')} Ft | SaleBikes`,
@@ -102,7 +103,7 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: `${bike.brand} ${bike.model}`,
-    image: bike.images?.[0],
+    image: bike.images?.[0] ? optimizeImage(bike.images[0], 800, 80) : undefined,
     description: bike.description || `${bike.brand} ${bike.model} ${bike.condition === 'outlet' ? 'outlet' : 'használt'} kerékpár garanciával.`,
     brand: {
       '@type': 'Brand',

@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Bike } from '@/lib/supabase'
+import { optimizeImage } from '@/lib/supabase-image'
 import { Plus, Trash2, Edit, Eye, EyeOff, Star, Upload, X, LogOut, Check, ShoppingBag, BarChart2, Search, GripVertical, Copy, Settings } from 'lucide-react'
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
@@ -1172,7 +1173,7 @@ export default function AdminPage() {
 
                       {/* Thumb */}
                       <div style={{ width: '72px', height: '54px', flexShrink: 0, background: '#f5f5f5', borderRadius: '8px', overflow: 'hidden', position: 'relative' }}>
-                        {bike.images?.[0] && <img src={bike.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                        {bike.images?.[0] && <img src={optimizeImage(bike.images[0], 200, 60)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                         {bike.sold && <div style={{ position: 'absolute', inset: 0, background: 'rgba(220,38,38,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', fontWeight: 800, color: '#fff', letterSpacing: '0.06em', textTransform: 'uppercase' }}>ELADVA</div>}
                       </div>
 

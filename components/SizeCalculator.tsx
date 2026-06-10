@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import type { Bike } from '@/lib/supabase'
+import { optimizeImage } from '@/lib/supabase-image'
 
 const CATEGORY_LABELS: Record<string, string> = {
   ebike: 'Ebike',
@@ -222,7 +223,7 @@ export default function SizeCalculator() {
             gap: '1.25rem',
           }}>
             {matchingBikes.map(bike => {
-              const img = bike.images?.[0]
+              const img = optimizeImage(bike.images?.[0] ?? '', 400, 70) || undefined
               const pct = bike.original_price > bike.sale_price
                 ? Math.round((1 - bike.sale_price / bike.original_price) * 100)
                 : 0

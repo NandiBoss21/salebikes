@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Phone } from 'lucide-react'
 import type { Bike } from '@/lib/supabase'
 import { supabase } from '@/lib/supabase'
+import { optimizeImage } from '@/lib/supabase-image'
 
 function fmt(n: number) {
   return n.toLocaleString('hu-HU') + ' Ft'
@@ -42,7 +43,7 @@ export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: numb
     return () => io.disconnect()
   }, [])
 
-  const img = bike.images?.[0]
+  const img = optimizeImage(bike.images?.[0] ?? '', 400, 70) || undefined
   const savings = bike.original_price - bike.sale_price
   const pct = bike.original_price > bike.sale_price
     ? Math.round((1 - bike.sale_price / bike.original_price) * 100)
