@@ -424,9 +424,10 @@ export default function AdminPage() {
 
   function editBike(bike: Bike) {
     setForm({ ...bike, condition_detail: bike.condition_detail || 'uj', kilometers: bike.kilometers || 0 })
+    setAddFooter(false)
     setEditing(bike.id); setView('form'); window.scrollTo(0, 0)
   }
-  function newBike() { setForm({ ...empty }); setEditing(null); setView('form'); window.scrollTo(0, 0) }
+  function newBike() { setForm({ ...empty }); setAddFooter(true); setEditing(null); setView('form'); window.scrollTo(0, 0) }
   function addSpec() { if (!specInput.trim()) return; setForm(f => ({ ...f, specs: [...(f.specs || []), specInput.trim()] })); setSpecInput('') }
   function removeSpec(i: number) { setForm(f => ({ ...f, specs: f.specs?.filter((_, idx) => idx !== i) })) }
   function removeImage(i: number) { setForm(f => ({ ...f, images: f.images?.filter((_, idx) => idx !== i) })) }
