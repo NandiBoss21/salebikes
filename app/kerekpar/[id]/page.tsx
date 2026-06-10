@@ -140,14 +140,22 @@ export default async function BikePage({ params }: { params: Promise<{ id: strin
       <TrackPageView path={`/kerekpar/${id}`} bikeId={id} />
 
       <div style={{ background: pageBg, paddingTop: '64px', transition: 'background 0.6s ease' }}>
-        <a href={`/${bike.category}`} style={{
-          display: 'block',
-          fontSize: '13px',
-          fontWeight: 600,
-          color: 'rgba(17,17,17,0.5)',
-          textDecoration: 'none',
-          padding: '16px clamp(1.5rem, 4vw, 3rem)',
-        }}>
+        <a
+          href={`/${bike.category}`}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            fontSize: '13px',
+            fontWeight: 600,
+            color: 'rgba(17,17,17,0.5)',
+            textDecoration: 'none',
+            padding: '12px clamp(1.5rem, 4vw, 3rem)',
+            minHeight: '44px',
+            touchAction: 'manipulation',
+            WebkitTapHighlightColor: 'transparent',
+          }}
+        >
           ← Vissza a kínálathoz
         </a>
       </div>
