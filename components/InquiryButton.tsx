@@ -5,8 +5,7 @@ function track(bikeId: string, bikeName: string, source: string) {
   supabase.from('inquiries').insert({ bike_id: bikeId, bike_name: bikeName, source }).then(() => {})
 }
 
-export function InquiryButtonDesktop({ bikeId, bikeName, bikeLabel }: { bikeId: string; bikeName: string; bikeLabel: string }) {
-  const formHref = `/kapcsolat?bike=${encodeURIComponent(bikeLabel)}`
+export function InquiryButtonDesktop({ bikeId, bikeName, bikeLabel: _bikeLabel }: { bikeId: string; bikeName: string; bikeLabel: string }) {
   return (
     <div className="hide-mobile" style={{ marginBottom: '1.5rem' }}>
       <a
@@ -24,7 +23,7 @@ export function InquiryButtonDesktop({ bikeId, bikeName, bikeLabel }: { bikeId: 
         📞 Hívj most – +36 30 889 7559
       </a>
       <a
-        href={formHref}
+        href="tel:+36308897559"
         onClick={() => track(bikeId, bikeName, 'detail_desktop_form')}
         style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
@@ -35,17 +34,16 @@ export function InquiryButtonDesktop({ bikeId, bikeName, bikeLabel }: { bikeId: 
           textDecoration: 'none', width: '100%',
         }}
       >
-        ✉️ Kérdésem van erről a kerékpárról
+        📞 Kérdésem van erről a kerékpárról
       </a>
     </div>
   )
 }
 
-export function InquiryButtonMobile({ bikeId, bikeName, bikeLabel }: { bikeId: string; bikeName: string; bikeLabel: string }) {
-  const href = `/kapcsolat?bike=${encodeURIComponent(bikeLabel)}`
+export function InquiryButtonMobile({ bikeId, bikeName, bikeLabel: _bikeLabel }: { bikeId: string; bikeName: string; bikeLabel: string }) {
   return (
     <a
-      href={href}
+      href="tel:+36308897559"
       className="mobile-cta"
       onClick={() => track(bikeId, bikeName, 'detail_mobile')}
       style={{
@@ -57,7 +55,7 @@ export function InquiryButtonMobile({ bikeId, bikeName, bikeLabel }: { bikeId: s
         letterSpacing: '-0.01em', textDecoration: 'none',
       }}
     >
-      ✉️ Érdeklődöm
+      📞 Érdeklődöm
     </a>
   )
 }
