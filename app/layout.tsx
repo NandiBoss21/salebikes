@@ -83,7 +83,7 @@ export default function RootLayout({
         />
         {children}
         <CookieBanner />
-        <ChatBot />
+        {/* <ChatBot /> */}
         <PageshowFix />
         <Analytics />
       </body>
