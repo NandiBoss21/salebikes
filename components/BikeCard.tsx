@@ -217,7 +217,7 @@ export default function BikeCard({ bike, delay = 0 }: { bike: Bike; delay?: numb
 
         {/* CTA */}
         <div style={{ padding: '0 1rem 1rem' }}>
-          <a href="tel:+36308897559"
+          <a href="tel:+36302538742"
             onClick={() => supabase.from('inquiries').insert({ bike_id: bike.id, bike_name: `${bike.brand} ${bike.model}`, source: 'bike_card' }).then(() => {})}
             style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',

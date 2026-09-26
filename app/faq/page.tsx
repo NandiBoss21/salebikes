@@ -11,7 +11,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Lehet-e személyesen megnézni a kerékpárt?',
-    a: 'Igen, személyes megtekintésre előzetes időpont egyeztetés alapján van lehetőség. Hívj minket a +36 30 889 7559 számon, és megbeszéljük a megfelelő időpontot. Helyszín: Kápolnásnyék, Tó utca 6.',
+    a: 'Igen, személyes megtekintésre előzetes időpont egyeztetés alapján van lehetőség. Hívj minket a +36 30 253 8742 számon, és megbeszéljük a megfelelő időpontot. Helyszín: Kápolnásnyék, Tó utca 6.',
   },
   {
     q: 'Van-e szállítás?',
@@ -27,7 +27,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Milyen fizetési módok érhetők el?',
-    a: 'Készpénzes fizetés lehetséges. Átutalásos fizetésről előzetesen egyeztetni kell. Részletekért hívj minket: +36 30 889 7559.',
+    a: 'Készpénzes fizetés lehetséges. Átutalásos fizetésről előzetesen egyeztetni kell. Részletekért hívj minket: +36 30 253 8742.',
   },
   {
     q: 'Mit jelent az adásvételi szerződés?',
@@ -141,7 +141,7 @@ export default function FaqPage() {
           <div style={{ fontSize: '13.5px', color: 'rgba(17,17,17,0.55)', lineHeight: 1.6 }}>
             Hívj minket, szívesen segítünk!
           </div>
-          <a href="tel:+36308897559" style={{
+          <a href="tel:+36302538742" style={{
             display: 'inline-flex', alignItems: 'center', gap: '8px',
             background: '#e8c547', color: '#111111',
             padding: '12px 22px', borderRadius: '8px',
@@ -149,7 +149,7 @@ export default function FaqPage() {
             letterSpacing: '-0.02em', textDecoration: 'none',
             alignSelf: 'flex-start',
           }}>
-            +36 30 889 7559
+            +36 30 253 8742
           </a>
         </div>
       </section>

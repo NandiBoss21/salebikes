@@ -304,7 +304,7 @@ export default function OsszesKerekparPage() {
       </section>
 
       {/* Sticky mobile CTA */}
-      <a href="tel:+36308897559" className="mobile-cta" style={{
+      <a href="tel:+36302538742" className="mobile-cta" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200,
         background: '#e8c547', color: '#111111',
         alignItems: 'center', justifyContent: 'center',
@@ -313,7 +313,7 @@ export default function OsszesKerekparPage() {
         letterSpacing: '-0.01em', textDecoration: 'none',
       }}>
         <Phone size={17} />
-        Hívj most · +36 30 889 7559
+        Hívj most · +36 30 253 8742
       </a>
     </>
   )

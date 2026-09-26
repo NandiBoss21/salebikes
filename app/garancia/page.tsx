@@ -169,7 +169,7 @@ export default function GarantiaPage() {
               }}>
                 Kapcsolatfelvétel →
               </Link>
-              <a href="tel:+36308897559" style={{
+              <a href="tel:+36302538742" style={{
                 display: 'inline-flex', alignItems: 'center', gap: '8px',
                 background: 'transparent',
                 border: '1px solid #E8E4DC',
@@ -179,7 +179,7 @@ export default function GarantiaPage() {
                 letterSpacing: '-0.02em', textDecoration: 'none',
               }}>
                 <Phone size={15} />
-                +36 30 889 7559
+                +36 30 253 8742
               </a>
             </div>
           </div>

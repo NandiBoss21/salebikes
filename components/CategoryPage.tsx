@@ -92,14 +92,14 @@ export default function CategoryPage({ category, label, suffix = 'kerékpárok' 
                 Értesülj elsőként az új feltöltésekről — hívj minket!
               </div>
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <a href="tel:+36308897559" style={{
+                <a href="tel:+36302538742" style={{
                   display: 'inline-flex', alignItems: 'center', gap: '7px',
                   background: '#111111', color: '#ffffff',
                   padding: '13px 24px', borderRadius: '8px',
                   fontWeight: 700, fontSize: '14px', textDecoration: 'none',
                   letterSpacing: '-0.01em',
                 }}>
-                  <Phone size={15} /> +36 30 889 7559
+                  <Phone size={15} /> +36 30 253 8742
                 </a>
                 <a href="/" style={{
                   display: 'inline-flex', alignItems: 'center',
@@ -127,7 +127,7 @@ export default function CategoryPage({ category, label, suffix = 'kerékpárok' 
       </section>
 
       {/* Sticky mobile CTA */}
-      <a href="tel:+36308897559" className="mobile-cta" style={{
+      <a href="tel:+36302538742" className="mobile-cta" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200,
         background: '#e8c547', color: '#111111',
         alignItems: 'center', justifyContent: 'center',
@@ -136,7 +136,7 @@ export default function CategoryPage({ category, label, suffix = 'kerékpárok' 
         letterSpacing: '-0.01em', textDecoration: 'none',
       }}>
         <Phone size={17} />
-        Hívj most · +36 30 889 7559
+        Hívj most · +36 30 253 8742
       </a>
     </>
   )

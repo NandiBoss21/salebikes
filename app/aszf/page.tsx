@@ -19,7 +19,7 @@ A weboldal (salebikes.hu) böngészésével és a vásárlással a vásárló el
     title: '2. Szolgáltató adatai',
     content: `Név: Házi Nándor
 Székhely: 2475 Kápolnásnyék, Tó utca 6
-Telefonszám: +36 30 889 7559
+Telefonszám: +36 30 253 8742
 Email: bringabarat@hotmail.com
 Weboldal: salebikes.hu`,
   },
@@ -60,7 +60,7 @@ A garancia nem vonatkozik normál kopásra (gumi, fékbetét, lánc), balesetre,
   {
     id: 'panasz',
     title: '7. Panaszkezelés',
-    content: `Panasz esetén elsősorban telefonon (+36 30 889 7559) vagy emailen (bringabarat@hotmail.com) forduljon hozzánk. Panaszát 30 napon belül megvizsgáljuk és írásban válaszolunk.
+    content: `Panasz esetén elsősorban telefonon (+36 30 253 8742) vagy emailen (bringabarat@hotmail.com) forduljon hozzánk. Panaszát 30 napon belül megvizsgáljuk és írásban válaszolunk.
 
 Amennyiben a panasz kezelése nem vezet eredményre, a vásárló a fogyasztóvédelmi hatósághoz (Budapest Főváros Kormányhivatala, illetékes járási hivatal) vagy az online vitarendezési platformhoz (https://ec.europa.eu/consumers/odr/) fordulhat.`,
   },

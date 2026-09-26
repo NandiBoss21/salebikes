@@ -340,7 +340,7 @@ export default function SizeCalculator() {
               Jelenleg nincs raktáron ilyen méretű kerékpár –<br />
               hívj minket és segítünk!
             </div>
-            <a href="tel:+36308897559" style={{
+            <a href="tel:+36302538742" style={{
               display: 'inline-block', marginTop: '1.25rem',
               background: '#e8c547', color: '#111111',
               padding: '12px 28px', borderRadius: '7px',

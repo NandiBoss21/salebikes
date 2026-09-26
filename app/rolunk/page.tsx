@@ -269,7 +269,7 @@ export default function RolunkPage() {
             flexWrap: 'wrap',
           }}>
             {[
-              { icon: <Phone size={14} />, value: '+36 30 889 7559', href: 'tel:+36308897559' },
+              { icon: <Phone size={14} />, value: '+36 30 253 8742', href: 'tel:+36302538742' },
               { icon: <Mail size={14} />, value: 'bringabarat@hotmail.com', href: 'mailto:bringabarat@hotmail.com' },
               { icon: <MapPin size={14} />, value: '2475 Kápolnásnyék, Tó utca 6.', href: undefined },
             ].map(item => (

@@ -9,7 +9,7 @@ export function InquiryButtonDesktop({ bikeId, bikeName, bikeLabel: _bikeLabel }
   return (
     <div className="hide-mobile" style={{ marginBottom: '1.5rem' }}>
       <a
-        href="tel:+36308897559"
+        href="tel:+36302538742"
         onClick={() => track(bikeId, bikeName, 'detail_desktop_call')}
         style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
@@ -20,10 +20,10 @@ export function InquiryButtonDesktop({ bikeId, bikeName, bikeLabel: _bikeLabel }
           marginBottom: '10px',
         }}
       >
-        📞 Hívj most – +36 30 889 7559
+        📞 Hívj most – +36 30 253 8742
       </a>
       <a
-        href="tel:+36308897559"
+        href="tel:+36302538742"
         onClick={() => track(bikeId, bikeName, 'detail_desktop_form')}
         style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
@@ -43,7 +43,7 @@ export function InquiryButtonDesktop({ bikeId, bikeName, bikeLabel: _bikeLabel }
 export function InquiryButtonMobile({ bikeId, bikeName, bikeLabel: _bikeLabel }: { bikeId: string; bikeName: string; bikeLabel: string }) {
   return (
     <a
-      href="tel:+36308897559"
+      href="tel:+36302538742"
       className="mobile-cta"
       onClick={() => track(bikeId, bikeName, 'detail_mobile')}
       style={{

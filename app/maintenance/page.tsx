@@ -50,7 +50,7 @@ export default function Maintenance() {
         color: 'rgba(255,255,255,0.3)',
         marginTop: '1rem'
       }}>
-        Telefon: <a href="tel:+36308897559" style={{ color: '#e8c547', textDecoration: 'none' }}>+36 30 889 7559</a>
+        Telefon: <a href="tel:+36302538742" style={{ color: '#e8c547', textDecoration: 'none' }}>+36 30 253 8742</a>
       </p>
     </div>
   )

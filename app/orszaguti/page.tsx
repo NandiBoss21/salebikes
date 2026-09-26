@@ -48,14 +48,14 @@ export default function OrszagutiPage() {
             <p style={{ fontSize: '15px', lineHeight: 1.85, color: 'rgba(255,255,255,0.55)', marginBottom: '2rem' }}>
               {categoryData.p2}
             </p>
-            <a href="tel:+36308897559" style={{
+            <a href="tel:+36302538742" style={{
               display: 'inline-flex', alignItems: 'center', gap: '8px',
               background: '#e8c547', color: '#111111',
               padding: '13px 24px', borderRadius: '6px',
               fontSize: '13.5px', fontWeight: 700,
               textDecoration: 'none', letterSpacing: '-0.01em'
             }}>
-              Hívj most – +36 30 889 7559
+              Hívj most – +36 30 253 8742
             </a>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>

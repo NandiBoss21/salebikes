@@ -178,7 +178,7 @@ export default function ChatBot() {
   function handleButton(btn: NodeButton) {
     const { action, label } = btn
     if (action.type === 'tel') {
-      window.location.href = 'tel:+36308897559'
+      window.location.href = 'tel:+36302538742'
       return
     }
     if (action.type === 'external') {

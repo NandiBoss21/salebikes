@@ -242,7 +242,7 @@ export default function Navbar() {
             >{item.label}</Link>
           ))}
 
-          <a href="tel:+36308897559" style={{
+          <a href="tel:+36302538742" style={{
             display: 'flex', alignItems: 'center', gap: '7px',
             background: '#e8c547', color: '#111111',
             padding: '9px 18px', borderRadius: '8px',
@@ -294,7 +294,7 @@ export default function Navbar() {
               touchAction: 'manipulation',
             }}>{item.label}</Link>
           ))}
-          <a href="tel:+36308897559" style={{
+          <a href="tel:+36302538742" style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             gap: '8px', marginTop: '1rem',
             background: '#e8c547', color: '#111111',
@@ -303,7 +303,7 @@ export default function Navbar() {
             textDecoration: 'none', touchAction: 'manipulation',
           }}>
             <Phone size={16} />
-            +36 30 889 7559
+            +36 30 253 8742
           </a>
         </div>
       )}

@@ -279,7 +279,7 @@ export default function Home() {
               Böngéssz most <span style={{ fontSize: '16px' }}>→</span>
             </a>
 
-            <a href="tel:+36308897559" style={{
+            <a href="tel:+36302538742" style={{
               background: 'transparent', color: '#ffffff',
               border: '1.5px solid rgba(255,255,255,0.35)',
               padding: '14px 22px', borderRadius: '6px',
@@ -298,7 +298,7 @@ export default function Home() {
               }}
             >
               <Phone size={13} />
-              +36 30 889 7559
+              +36 30 253 8742
             </a>
           </div>
         </div>
@@ -489,14 +489,14 @@ export default function Home() {
             <p style={{ fontSize: '15px', lineHeight: 1.85, color: 'rgba(255,255,255,0.55)', marginBottom: '2rem' }}>
               Nem alkalmi túrákon összeszedett ismeretlen darabok – hanem szakmai szelekció, ahol csak azt kínáljuk, amit mi magunk is megvennénk. 2008 óta több mint 1000 kerékpár talált gazdát nálunk. Kápolnásnyék és Velence Fejér megye szívében, Pest megye közelében helyezkedik el – könnyen elérhető Székesfehérvárról, Érdről, Budaörsről és Budapest déli kerületeiből egyaránt.
             </p>
-            <a href="tel:+36308897559" style={{
+            <a href="tel:+36302538742" style={{
               display: 'inline-flex', alignItems: 'center', gap: '8px',
               background: '#e8c547', color: '#111111',
               padding: '13px 24px', borderRadius: '6px',
               fontSize: '13.5px', fontWeight: 700,
               textDecoration: 'none', letterSpacing: '-0.01em'
             }}>
-              Hívj most – +36 30 889 7559
+              Hívj most – +36 30 253 8742
             </a>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -803,13 +803,13 @@ export default function Home() {
               letterSpacing: '0.07em', textTransform: 'uppercase',
               color: 'rgba(255,255,255,0.2)', marginBottom: '2px',
             }}>Elérhetőség</div>
-            <a href="tel:+36308897559" style={{
+            <a href="tel:+36302538742" style={{
               fontSize: '12.5px', color: 'rgba(255,255,255,0.45)',
               textDecoration: 'none', transition: 'color 0.15s',
             }}
               onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
               onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
-            >+36 30 889 7559</a>
+            >+36 30 253 8742</a>
             <a href="mailto:bringabarat@hotmail.com" style={{
               fontSize: '12.5px', color: 'rgba(255,255,255,0.45)',
               textDecoration: 'none', transition: 'color 0.15s',
@@ -884,7 +884,7 @@ export default function Home() {
       </footer>
 
       {/* ── STICKY MOBILE CTA ──────────────────────────────────── */}
-      <a href="tel:+36308897559" className="mobile-cta" style={{
+      <a href="tel:+36302538742" className="mobile-cta" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 999,
         background: '#e8c547', color: '#111111',
         alignItems: 'center', justifyContent: 'center',
@@ -892,7 +892,7 @@ export default function Home() {
         fontSize: '16px', fontWeight: 700,
         textDecoration: 'none',
       }}>
-        📞 Hívj most – +36 30 889 7559
+        📞 Hívj most – +36 30 253 8742
       </a>
     </>
   )
